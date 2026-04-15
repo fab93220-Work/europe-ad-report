@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Europe Ad Type Performance — by Country</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #f5f4f0;
+    color: #1a1a18;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-header h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: #1a1a18;
+    margin-bottom: 4px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: #888780;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #888780;
+    margin: 0 0 10px;
+  }
+
+  .tab-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1.5rem;
+  }
+
+  .tab {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 0.5px solid #c8c7be;
+    font-size: 13px;
+    cursor: pointer;
+    background: #fff;
+    color: #5f5e5a;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .tab:hover { background: #f1efe8; }
+
+  .tab.active {
+    background: #e6f1fb;
+    border-color: #378add;
+    color: #185fa5;
+    font-weight: 500;
+  }
+
+  .country-panel { display: none; }
+  .country-panel.active { display: block; }
+
+  .meta-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.2rem;
+  }
+
+  .metric {
+    background: #eeecea;
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+
+  .metric-label {
+    font-size: 12px;
+    color: #888780;
+    margin-bottom: 4px;
+  }
+
+  .metric-value {
+    font-size: 20px;
+    font-weight: 500;
+    color: #1a1a18;
+  }
+
+  .winner-tag {
+    display: inline-block;
+    background: #e6f1fb;
+    border: 0.5px solid #378add;
+    color: #185fa5;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 11px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    border: 0.5px solid #d3d1c7;
+    padding: 1.25rem;
+    margin-bottom: 10px;
+  }
+
+  .note {
+    font-size: 13px;
+    color: #5f5e5a;
+    padding: 10px 14px;
+    background: #fff;
+    border-radius: 8px;
+    border: 0.5px solid #d3d1c7;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .legend-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #5f5e5a;
+  }
+
+  .legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .divider {
+    height: 0.5px;
+    background: #d3d1c7;
+    margin: 1.5rem 0;
+  }
+
+  .footer {
+    font-size: 12px;
+    color: #b4b2a9;
+    margin-top: 2rem;
+    text-align: center;
+  }
+
+  @media (max-width: 500px) {
+    .meta-row { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <h1>Europe — Ad Type Performance by Country</h1>
+    <p>358 ads · 6,313 leads · reporting period ends 14 Apr 2026</p>
+  </div>
+
+  <p class="section-label">Select a country</p>
+  <div class="tab-row">
+    <button class="tab active" onclick="showCountry('uk', this)">🇬🇧 UK</button>
+    <button class="tab" onclick="showCountry('es', this)">🇪🇸 Spain</button>
+    <button class="tab" onclick="showCountry('ch', this)">🇨🇭 Switzerland</button>
+    <button class="tab" onclick="showCountry('it', this)">🇮🇹 Italy</button>
+    <button class="tab" onclick="showCountry('ie', this)">🇮🇪 Ireland</button>
+    <button class="tab" onclick="showCountry('de', this)">🇩🇪 Germany</button>
+    <button class="tab" onclick="showCountry('lu', this)">🇱🇺 Luxembourg</button>
+  </div>
+
+  <!-- UK -->
+  <div class="country-panel active" id="panel-uk">
+    <div class="meta-row">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">5,465</div></div>
+      <div class="metric"><div class="metric-label">Total spend</div><div class="metric-value">£53.7k</div></div>
+      <div class="metric"><div class="metric-label">Ads running</div><div class="metric-value">220</div></div>
+    </div>
+    <span class="winner-tag">Top format: UGC – Staff · £7.21 CPL · 987 leads</span>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:#185fa5"></div>Efficient (≤£7)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#378add"></div>Mid-tier (£7–£10)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#888780"></div>Expensive (£10+)</div>
+    </div>
+    <div class="chart-wrap" style="height:420px">
+      <canvas id="chart-uk" role="img" aria-label="UK ad type weighted CPL bar chart">Image Generic £4.71, Aerial Shot £4.83, Landmark Static £6.56, TSV £6.65, UGC Mix £6.80, UGC Staff £7.21, Landmark Video £7.22, Dynamic Ads £7.89, UGC HQ/Studio £8.67, OOH £9.79, Studio £10.48, HQ Static £10.53, Workout £10.94, Video Generic £11.22.</canvas>
+    </div>
+    <div class="note">Strongest and most mature market. UGC – Staff leads on volume (987 leads), but Image – Generic and Landmark Static offer better efficiency. Avoid Video – Generic, Workout, and Testimonial at current CPLs.</div>
+  </div>
+
+  <!-- Spain -->
+  <div class="country-panel" id="panel-es">
+    <div class="meta-row">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">259</div></div>
+      <div class="metric"><div class="metric-label">Total spend</div><div class="metric-value">~£3.1k</div></div>
+      <div class="metric"><div class="metric-label">Ads running</div><div class="metric-value">29</div></div>
+    </div>
+    <span class="winner-tag">Top format: UGC – Members · £10.25 CPL</span>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:#185fa5"></div>Efficient (≤£7)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#378add"></div>Mid-tier (£7–£10)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#888780"></div>Expensive (£10+)</div>
+    </div>
+    <div class="chart-wrap" style="height:230px">
+      <canvas id="chart-es" role="img" aria-label="Spain ad type weighted CPL bar chart">UGC Members £10.25, TSV £10.48, Workout £12.46, Studio £12.88, UGC Staff £16.44, Landmark Video £19.14.</canvas>
+    </div>
+    <div class="note">CPLs run 30–60% higher than the UK across all formats. UGC – Members and TSV lead. UGC – Staff underperforms sharply here (£16.44 vs £7.21 in UK) — member social proof resonates more than staff-led content in this market.</div>
+  </div>
+
+  <!-- Switzerland -->
+  <div class="country-panel" id="panel-ch">
+    <div class="meta-row">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">175</div></div>
+      <div class="metric"><div class="metric-label">Total spend</div><div class="metric-value">~£1.5k</div></div>
+      <div class="metric"><div class="metric-label">Ads running</div><div class="metric-value">4</div></div>
+    </div>
+    <span class="winner-tag">Top format: UGC – Staff · £8.33 CPL</span>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:#185fa5"></div>Efficient (≤£7)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#378add"></div>Mid-tier (£7–£10)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#888780"></div>Expensive (£10+)</div>
+    </div>
+    <div class="chart-wrap" style="height:160px">
+      <canvas id="chart-ch" role="img" aria-label="Switzerland ad type weighted CPL bar chart">UGC Staff £8.33, Workout £9.33.</canvas>
+    </div>
+    <div class="note">Very limited format variety — only 2 ad types tested across 4 ads. UGC – Staff leads clearly. Opportunity exists to test more formats; current data is too narrow for firm conclusions.</div>
+  </div>
+
+  <!-- Italy -->
+  <div class="country-panel" id="panel-it">
+    <div class="meta-row">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">146</div></div>
+      <div class="metric"><div class="metric-label">Total spend</div><div class="metric-value">~£268</div></div>
+      <div class="metric"><div class="metric-label">Ads running</div><div class="metric-value">6</div></div>
+    </div>
+    <span class="winner-tag">🚨 Undertested — TSV £1.72 · Text/Graphic £1.86 · invest now</span>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:#185fa5"></div>Efficient (≤£7)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#378add"></div>Mid-tier (£7–£10)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#888780"></div>Expensive (£10+)</div>
+    </div>
+    <div class="chart-wrap" style="height:160px">
+      <canvas id="chart-it" role="img" aria-label="Italy ad type weighted CPL bar chart">TSV £1.72, Text/Graphic Image £1.86.</canvas>
+    </div>
+    <div class="note">Standout CPLs — by far the cheapest in the region. Only £268 total spend means this market is massively undertested. TSV and Text/Graphic Image are delivering exceptionally well. Worth increasing budget here immediately.</div>
+  </div>
+
+  <!-- Ireland -->
+  <div class="country-panel" id="panel-ie">
+    <div class="meta-row">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">139</div></div>
+      <div class="metric"><div class="metric-label">Total spend</div><div class="metric-value">~£706</div></div>
+      <div class="metric"><div class="metric-label">Ads running</div><div class="metric-value">10</div></div>
+    </div>
+    <span class="winner-tag">Top format: HQ Static Image · £4.64 CPL</span>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:#185fa5"></div>Efficient (≤£7)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#378add"></div>Mid-tier (£7–£10)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#888780"></div>Expensive (£10+)</div>
+    </div>
+    <div class="chart-wrap" style="height:180px">
+      <canvas id="chart-ie" role="img" aria-label="Ireland ad type weighted CPL bar chart">HQ Static Image £4.64, UGC Members £4.92, POV Video £5.66.</canvas>
+    </div>
+    <div class="note">Unique market — HQ Static and UGC – Members outperform everything, which runs counter to the UK pattern. Ireland responds to polished, high-quality and credible creative over authentic-style UGC. POV video also punches above its weight at £5.66.</div>
+  </div>
+
+  <!-- Germany -->
+  <div class="country-panel" id="panel-de">
+    <div class="meta-row">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">71</div></div>
+      <div class="metric"><div class="metric-label">Total spend</div><div class="metric-value">~£654</div></div>
+      <div class="metric"><div class="metric-label">Ads running</div><div class="metric-value">5</div></div>
+    </div>
+    <span class="winner-tag">Top format: TSV · £9.13 CPL</span>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:#185fa5"></div>Efficient (≤£7)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#378add"></div>Mid-tier (£7–£10)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#888780"></div>Expensive (£10+)</div>
+    </div>
+    <div class="chart-wrap" style="height:160px">
+      <canvas id="chart-de" role="img" aria-label="Germany ad type weighted CPL bar chart">TSV £9.13, Workout £9.23.</canvas>
+    </div>
+    <div class="note">Only 2 format types tested with very limited spend. TSV and Workout are neck-and-neck. Not enough variety to draw cultural conclusions — Germany needs broader format testing before scaling budget.</div>
+  </div>
+
+  <!-- Luxembourg -->
+  <div class="country-panel" id="panel-lu">
+    <div class="meta-row">
+      <div class="metric"><div class="metric-label">Total leads</div><div class="metric-value">57</div></div>
+      <div class="metric"><div class="metric-label">Total spend</div><div class="metric-value">~£363</div></div>
+      <div class="metric"><div class="metric-label">Ads running</div><div class="metric-value">7</div></div>
+    </div>
+    <span class="winner-tag">Top format: TSV + Landmark · £4.64 CPL</span>
+    <div class="legend-row">
+      <div class="legend-item"><div class="legend-swatch" style="background:#185fa5"></div>Efficient (≤£7)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#378add"></div>Mid-tier (£7–£10)</div>
+      <div class="legend-item"><div class="legend-swatch" style="background:#888780"></div>Expensive (£10+)</div>
+    </div>
+    <div class="chart-wrap" style="height:160px">
+      <canvas id="chart-lu" role="img" aria-label="Luxembourg ad type weighted CPL bar chart">TSV + Landmark £4.64, Workout £6.82.</canvas>
+    </div>
+    <div class="note">Small market, small sample. TSV + Landmark is the standout at £4.64 CPL — the hybrid format combining time-sensitive messaging with local visual recognition works notably well here. Workout also solid at £6.82.</div>
+  </div>
+
+  <div class="footer">Europe Regional Report · Data through 14 Apr 2026 · Czech Republic &amp; Austria excluded (insufficient lead data)</div>
+
+</div>
+
+<script>
+function showCountry(id, btn) {
+  document.querySelectorAll('.country-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+const gridColor = 'rgba(0,0,0,0.06)';
+const textColor = '#888780';
+
+function barColor(cpl) {
+  if (cpl <= 7)  return '#185fa5';
+  if (cpl <= 10) return '#378add';
+  return '#888780';
+}
+
+function makeChart(id, data) {
+  const sorted = [...data].sort((a, b) => a.cpl - b.cpl);
+  new Chart(document.getElementById(id), {
+    type: 'bar',
+    data: {
+      labels: sorted.map(d => d.label),
+      datasets: [{
+        data: sorted.map(d => d.cpl),
+        backgroundColor: sorted.map(d => barColor(d.cpl)),
+        borderRadius: 4,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ' £' + ctx.raw.toFixed(2) + ' CPL · ' + sorted[ctx.dataIndex].leads + ' leads'
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: gridColor },
+          ticks: { color: textColor, callback: v => '£' + v },
+          title: { display: true, text: 'Weighted CPL (£)', color: textColor, font: { size: 11 } }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { color: textColor, font: { size: 13 } }
+        }
+      }
+    }
+  });
+}
+
+makeChart('chart-uk', [
+  { label: 'Image – Generic',   cpl: 4.71,  leads: 335 },
+  { label: 'Aerial Shot',       cpl: 4.83,  leads: 132 },
+  { label: 'Landmark Static',   cpl: 6.56,  leads: 324 },
+  { label: 'TSV',               cpl: 6.65,  leads: 783 },
+  { label: 'UGC – Mix',         cpl: 6.80,  leads: 338 },
+  { label: 'UGC – Staff',       cpl: 7.21,  leads: 987 },
+  { label: 'Landmark Video',    cpl: 7.22,  leads: 714 },
+  { label: 'Dynamic Ads',       cpl: 7.89,  leads: 156 },
+  { label: 'UGC – HQ/Studio',   cpl: 8.67,  leads: 193 },
+  { label: 'OOH Repurposed',    cpl: 9.79,  leads: 63  },
+  { label: 'Studio',            cpl: 10.48, leads: 122 },
+  { label: 'HQ Static Image',   cpl: 10.53, leads: 264 },
+  { label: 'Workout',           cpl: 10.94, leads: 362 },
+  { label: 'Video – Generic',   cpl: 11.22, leads: 579 },
+]);
+
+makeChart('chart-es', [
+  { label: 'UGC – Members',   cpl: 10.25, leads: 21 },
+  { label: 'TSV',             cpl: 10.48, leads: 22 },
+  { label: 'Workout',         cpl: 12.46, leads: 92 },
+  { label: 'Studio',          cpl: 12.88, leads: 76 },
+  { label: 'UGC – Staff',     cpl: 16.44, leads: 20 },
+  { label: 'Landmark Video',  cpl: 19.14, leads: 13 },
+]);
+
+makeChart('chart-ch', [
+  { label: 'UGC – Staff', cpl: 8.33, leads: 131 },
+  { label: 'Workout',     cpl: 9.33, leads: 44  },
+]);
+
+makeChart('chart-it', [
+  { label: 'TSV',                  cpl: 1.72, leads: 27  },
+  { label: 'Text/Graphic Image',   cpl: 1.86, leads: 119 },
+]);
+
+makeChart('chart-ie', [
+  { label: 'HQ Static Image', cpl: 4.64, leads: 52 },
+  { label: 'UGC – Members',   cpl: 4.92, leads: 37 },
+  { label: 'POV Video',       cpl: 5.66, leads: 50 },
+]);
+
+makeChart('chart-de', [
+  { label: 'TSV',     cpl: 9.13, leads: 13 },
+  { label: 'Workout', cpl: 9.23, leads: 58 },
+]);
+
+makeChart('chart-lu', [
+  { label: 'TSV + Landmark', cpl: 4.64, leads: 12 },
+  { label: 'Workout',        cpl: 6.82, leads: 45 },
+]);
+</script>
+</body>
+</html>
