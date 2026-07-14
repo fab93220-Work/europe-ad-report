@@ -30,29 +30,31 @@ Creative: LRD radiator visual, "Turn The Heat Up", 20% off with code SAVE20, Tru
 4. Designer Warmth. 20% Off. Limited Time.
 5. Rated ⭐⭐⭐⭐⭐ — Save 20% Today
 
-## Dynamic Product Ads — Primary Text (SPRING15 campaign)
+## Dynamic Product Ads — Primary Text (SAVE20 campaign)
 
 **Main rewrite:**
 
-> 🔥 15% OFF radiators built to last — use code **SPRING15**
+> 🔥 20% OFF radiators built to last — use code **SAVE20**
 >
 > Premium quality. Free UK mainland delivery. Zero compromises. That's the Lincolnshire Radiators Direct promise.
 >
-> Spring sale ends soon — don't miss out! 🌷
+> Limited time only — don't miss out!
 >
 > *Min. spend £500
 
 **Shorter alternative:**
 
-> Quality radiators. 15% off. Free UK delivery. 🔥
+> Quality radiators. 20% off. Free UK delivery. 🔥
 >
-> Use code **SPRING15** at checkout and upgrade your home for less — limited time only. (*Min. spend £500)
+> Use code **SAVE20** at checkout and upgrade your home for less — limited time only. (*Min. spend £500)
 
 **Benefit-led alternative:**
 
 > Your home deserves better than "good enough". 🏠
 >
-> Shop radiators built to last, with free UK mainland delivery — and right now, take 15% off with code **SPRING15** (*min. spend £500). Spring sale, limited time!
+> Shop radiators built to last, with free UK mainland delivery — and right now, take 20% off with code **SAVE20** (*min. spend £500). Limited time only!
+
+*Note: confirm whether the £500 minimum spend still applies to SAVE20 — if not, delete the min. spend footnotes.*
 
 ## Notes
 
