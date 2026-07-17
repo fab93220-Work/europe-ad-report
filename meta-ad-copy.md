@@ -56,6 +56,36 @@ Creative: LRD radiator visual, "Turn The Heat Up", 20% off with code SAVE20, Tru
 
 *Note: confirm whether the £500 minimum spend still applies to SAVE20 — if not, delete the min. spend footnotes.*
 
+## "Big Deals — Up to 50% Off" Creative (no promo code)
+
+### Primary text (5 options)
+
+1. 🔥 BIG DEALS are here! Save up to 50% on radiators, towel rails, showers & more. Premium quality, free UK mainland delivery — but only while the sale lasts. Shop now!
+2. Up to HALF PRICE on home heating & bathroom upgrades! 🏠 Designer radiators, towel rails and showers — all built to last, all with free UK delivery. Don't wait, deals this big don't hang around!
+3. Why pay full price? 💥 Get up to 50% off premium radiators & bathroom essentials at Lincolnshire Radiators Direct. Rated ⭐⭐⭐⭐⭐ on Trustpilot. Free UK mainland delivery on every order!
+4. The sale your home's been waiting for! 🔥 Up to 50% off radiators, heated towel rails, showers & mirrors. Quality that lasts, prices that won't. Shop the Big Deals before they're gone!
+5. BIG DEALS. Small prices. 💰 Up to 50% off across the range — with free UK delivery and a 20-year guarantee on radiators. Upgrade your home for less, limited time only!
+
+### Headlines (5 options)
+
+1. Big Deals: Up to 50% Off
+2. Up to 50% Off — Limited Time
+3. Half-Price Heating & Bathrooms
+4. Sale Now On: Save Up to 50%
+5. Up to 50% Off + Free UK Delivery
+
+### Descriptions (3 options)
+
+1. Free UK mainland delivery. Rated ⭐⭐⭐⭐⭐ on Trustpilot.
+2. Premium quality, up to 50% off. Sale ends soon!
+3. 20-year guarantee. 90-day hassle-free returns.
+
+### Call to action
+
+Shop Now (matches creative button; outperforms "See details" for sale traffic).
+
+*Check the 20-year guarantee applies before running primary text 5 / description 3.*
+
 ## Notes
 
 - Headlines kept under ~40 characters to avoid truncation in feed placements.
