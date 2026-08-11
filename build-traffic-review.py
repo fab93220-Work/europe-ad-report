@@ -314,13 +314,15 @@ sec("escalation","Escalation","Costing us money, outside my remit",
  ["<b>Mobile converts at a third of desktop</b>","78.5% of sessions at £5.05/session vs £17.43 desktop. Largest value gap in the business.","Liam + dev","&nbsp;"],
  ["<b>Discounting 13.3% of gross, 16.6% in Aug</b>","£55,669 over the period — comparable to the entire media budget. Every 1pt = £4,196.","Owner","&nbsp;"],
  ["<b>Search campaigns capped by budget</b>","22–29% of impressions lost to budget. Google's rep flags the same. Cheapest growth before peak.","Owner","&nbsp;"],
- ["<b>Gross margin unknown</b>","Efficiency judgements rest on an inferred 29.8%.","Owner","&nbsp;"],
+ ["<b>Gross margin unknown</b>","Efficiency judgements rest on an inferred 29.8%. Whether it is measured at full price or net of discount changes break-even from 3.36x to 5.25x — the difference between the account working and losing money.","Owner","&nbsp;"],
+ ["<b>No promotional calendar</b>","Pacing budget and setting bid targets blind into the biggest quarter of the year. Discount depth changes required ROAS: 20% off more than doubles it.","Owner","&nbsp;"],
+ ["<b>No Black Friday deal plan</b>","Bid strategies, feed flags and creative need 3–4 weeks' lead. If the plan lands in November we run BF on full-price targets.","Owner","&nbsp;"],
  ["<b>612 pages with broken JavaScript</b>","Crawl errors; risks rendering and measurement.","Liam + dev","&nbsp;"],
  ["<b>Product feed eligibility</b>","Cast iron SKUs were ineligible to serve — Windsor £2,167, Oxford £2,320, Mayfair £1,470.",chip("done","Mine"),chip("done","Owned")],
  ["<b>Titles rewritten by Google, 89 pages</b>","Good rankings, poor CTR.",chip("done","Mine"),chip("done","Owned")],
  ["<b>986 unattributable sessions (2.2%)</b>","Up from 186 LY. 41% engagement vs 69% site average — tracking fault.",chip("done","Mine"),chip("done","Owned")],
 ]) + """
-<p class="note">Three of eight are mine and marked as such — including the product feed, which I own end to end.</p>""")
+<p class="note">Three of ten are mine and marked as such — including the product feed, which I own end to end.</p>""")
 
 # ---- 9 NEXT 90 --------------------------------------------------------
 sec("next","Next 90","Priorities and asks",
@@ -336,17 +338,63 @@ sec("next","Next 90","Priorities and asks",
 <h3>Paid media plan</h3>
 """ + table(["","Priority"],[
  ["<b>Aug</b>","Fix Bing cost per session (pacing, budget caps). Freeze AI Max Electric for 7 days per Google's advice. Upload Customer Match list."],
- ["<b>Sept</b>","Peak budgets set. Pinterest built. \"Functional Art\" / vertical / RAL asset groups added per Google's market data. Cast iron hub live."],
- ["<b>Oct–Dec</b>","<b>Peak. Budget and monitoring only.</b> AWIN launches. No structural changes."],
+ ["<b>Sept</b>","Peak budgets set. Pinterest built. \"Functional Art\" / vertical / RAL asset groups added per Google's market data. Cast iron hub live. <b>Promo calendar and Black Friday deals confirmed.</b>"],
+ ["<b>Oct</b>","Black Friday build: tROAS targets set per discount depth, feed promotion flags, listing group splits, creative approved. <b>All done by late Oct</b> — bid strategies cannot be changed during the event."],
+ ["<b>Nov–Dec</b>","<b>Peak. Budget and monitoring only.</b> AWIN launches. No structural changes."],
  ["<b>Jan</b>","Post-peak rebuild. Technical debt with dev."],
 ]) + """
 <h3>What I need from you</h3>
 """ + table(["Ask","Why","When"],[
+ ["<b>The promotional calendar</b>","Sale periods vs full-price periods, with dates and discount depth. Budget pacing, bid targets and creative all key off this. Right now I am pacing blind into the biggest quarter of the year.",chip("crit","This week")],
+ ["<b>Black Friday plan — the actual deals</b>","What is on offer, how deep, on which categories, and the start and end dates. Not the messaging — the mechanics.",chip("crit","By 30 Sept")],
  ["<b>Peak budget envelope</b>","Search campaigns lose 22–29% of impressions to budget. Google's rep flags the Column campaign as limited by budget with significant uncaptured demand. Cheapest growth available.",chip("crit","Mid-Sept")],
- ["<b>Gross margin by category</b>","Every efficiency judgement rests on an inferred 29.8%.",chip("crit","This week")],
+ ["<b>Gross margin by category</b>","Every efficiency judgement rests on an inferred 29.8%. It also sets the floor on how deep we can discount — see below.",chip("crit","This week")],
  ["<b>A decision on discounting</b>","£55,669 given away vs £82,238 media spend. Not mine to set.",chip("crit","This week")],
  ["<b>Agreement on this scorecard</b>","If you want to measure me on something else, better to know now than in January.",chip("warn","Today")],
 ]) + """
+
+<h3>Why the promo calendar is a bidding input, not an FYI</h3>
+<p>Discount depth changes the ROAS I have to hit. At an assumed 29.8% margin, every extra five points off
+the selling price moves break-even sharply:</p>
+""" + table(["Discount off selling price","Margin left","Break-even ROAS","What that means"],[
+ ["0% — full price","29.8%","<b>3.36x</b>","Current target. Comfortable."],
+ ["5%","26.1%","<b>3.83x</b>","Still workable."],
+ ["10%","22.0%","<b>4.55x</b>","Above our current blended 4.44x."],
+ ["<b>13.3%</b> — our actual average","19.0%","<b>5.25x</b>",chip("watch","We are running 4.44x")],
+ ["15%","17.4%","<b>5.74x</b>",chip("watch","Most campaigns lose money")],
+ ["<b>16.6%</b> — our August rate","15.8%","<b>6.32x</b>",chip("crit","Only brand search clears this")],
+ ["20%","12.2%","<b>8.16x</b>",chip("crit","Nothing in the account clears this")],
+ ["25%","6.4%","<b>15.6x</b>",chip("crit","Nothing clears this")],
+ ["29.8%+","0%","<b>—</b>",chip("crit","Loss on the product before any media")],
+],"num") + """
+<div class="callout callout-warn">
+  <div class="callout-h">This is why I need the margin figure, not just the calendar</div>
+  <p>Everything above depends on one thing I do not know: <b>whether the 29.8% margin is measured at full
+  price or already net of discount.</b></p>
+  <p>If it is measured at full price, then at our actual 13.3% discount rate the real break-even is
+  <b>5.25x</b>, not 3.36x — and we are running <b>4.44x</b>. On that reading, blended paid media is below
+  break-even right now and has been all quarter. If the 29.8% is already net of discount, 3.36x stands and
+  we are comfortably clear.</p>
+  <p><b>Those two readings are the difference between the account working and the account losing money, and
+  I cannot tell them apart without the number.</b> It is a one-line answer from finance and it is the single
+  most valuable thing I could be given.</p>
+</div>
+<p class="note">The shape holds either way: <b>a 20% promotion more than doubles the ROAS I need, and
+anything past roughly 30% loses money before a penny of media is spent.</b> Bidding to a 3.36x target
+through a 20%-off week means buying losses efficiently.</p>
+
+<h3>What I need for Black Friday, specifically</h3>
+""" + table(["Input","Why I need it","Lead time"],[
+ ["<b>Dates — start, end, any early access</b>","Bid strategies need to be set before the period, not during it. Google's own rep advised a 7-day freeze after a bidding change to let the model stabilise.","<b>4 weeks</b> before"],
+ ["<b>Discount depth by category</b>","Sets the tROAS target per campaign. Different depths need different targets — a 10% category and a 25% category cannot share a bid strategy.","<b>4 weeks</b> before"],
+ ["<b>Which products are in and out</b>","Feed-level promotion flags, listing group splits, and product exclusions on anything not discounted.","<b>3 weeks</b> before"],
+ ["<b>Budget for the period</b>","BF week runs at several times normal daily spend. Caps need raising in advance or we throttle on the busiest day of the year.","<b>3 weeks</b> before"],
+ ["<b>Creative and offer messaging</b>","New asset groups, Meta creative, Pinterest pins. All need building and approving.","<b>3 weeks</b> before"],
+ ["<b>Merchant Center promotions</b>","Sale price annotations and promotion extensions need submitting and approving by Google.","<b>2 weeks</b> before"],
+]) + """
+<p class="note">Working back from Black Friday, the first of these is due by <b>late October</b>. If the plan
+lands in November, we run it on default settings at full price targets and lose the week.</p>
+
 <h3>From Liam and Flora</h3>
 """ + table(["Who","Ask"],[
  ["<b>Liam</b>","Mobile experience — a phone session is worth a third of a desktop one. Plus 612 pages with broken JS. Half a day to scope."],
@@ -360,7 +408,7 @@ sec("next","Next 90","Priorities and asks",
  ["Google spend with query visibility","24.4%","<b>40%+</b>"],
  ["Impressions lost to budget on Search","22–29%","<b>Under 10%</b>"],
  ["Live acquisition channels","3","<b>6</b>"],
- ["Escalations with a named owner","3 of 8","<b>8 of 8</b>"],
+ ["Escalations with a named owner","3 of 10","<b>10 of 10</b>"],
 ],"num"))
 
 # ---- 10 COMMERCIAL ----------------------------------------------------
