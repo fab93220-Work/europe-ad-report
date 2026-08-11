@@ -314,7 +314,8 @@ sec("escalation","Escalation","Costing us money, outside my remit",
  ["<b>Mobile converts at a third of desktop</b>","78.5% of sessions at £5.05/session vs £17.43 desktop. Largest value gap in the business.","Liam + dev","&nbsp;"],
  ["<b>Discounting 13.3% of gross, 16.6% in Aug</b>","£55,669 over the period — comparable to the entire media budget. Every 1pt = £4,196.","Owner","&nbsp;"],
  ["<b>Search campaigns capped by budget</b>","22–29% of impressions lost to budget. Google's rep flags the same. Cheapest growth before peak.","Owner","&nbsp;"],
- ["<b>Gross margin unknown</b>","Efficiency judgements rest on an inferred 29.8%. Whether it is measured at full price or net of discount changes break-even from 3.36x to 5.25x — the difference between the account working and losing money.","Owner","&nbsp;"],
+ ["<b>VAT basis of reported revenue</b>","Decides whether break-even is 1.75x or 2.10x. Worth ~£30k of contribution on the quarter. One-line answer.","Owner / finance","&nbsp;"],
+ ["<b>Margin weighted by units sold</b>","Catalogue margin is 57.1%, but bidding by category needs margin against actual units, not RRP across SKUs.","Owner / finance","&nbsp;"],
  ["<b>No promotional calendar</b>","Pacing budget and setting bid targets blind into the biggest quarter of the year. Discount depth changes required ROAS: 20% off more than doubles it.","Owner","&nbsp;"],
  ["<b>No Black Friday deal plan</b>","Bid strategies, feed flags and creative need 3–4 weeks' lead. If the plan lands in November we run BF on full-price targets.","Owner","&nbsp;"],
  ["<b>612 pages with broken JavaScript</b>","Crawl errors; risks rendering and measurement.","Liam + dev","&nbsp;"],
@@ -348,40 +349,53 @@ sec("next","Next 90","Priorities and asks",
  ["<b>The promotional calendar</b>","Sale periods vs full-price periods, with dates and discount depth. Budget pacing, bid targets and creative all key off this. Right now I am pacing blind into the biggest quarter of the year.",chip("crit","This week")],
  ["<b>Black Friday plan — the actual deals</b>","What is on offer, how deep, on which categories, and the start and end dates. Not the messaging — the mechanics.",chip("crit","By 30 Sept")],
  ["<b>Peak budget envelope</b>","Search campaigns lose 22–29% of impressions to budget. Google's rep flags the Column campaign as limited by budget with significant uncaptured demand. Cheapest growth available.",chip("crit","Mid-Sept")],
- ["<b>Gross margin by category</b>","Every efficiency judgement rests on an inferred 29.8%. It also sets the floor on how deep we can discount — see below.",chip("crit","This week")],
+ ["<b>VAT basis + margin by units sold</b>","Master profitability file answers the margin question — catalogue margin is 57.1%, so break-even is ~2x not 3.36x. Two gaps left: whether reported revenue is inc or ex VAT, and margin weighted by units rather than catalogue.",chip("warn","This week")],
  ["<b>A decision on discounting</b>","£55,669 given away vs £82,238 media spend. Not mine to set.",chip("crit","This week")],
  ["<b>Agreement on this scorecard</b>","If you want to measure me on something else, better to know now than in January.",chip("warn","Today")],
 ]) + """
 
 <h3>Why the promo calendar is a bidding input, not an FYI</h3>
-<p>Discount depth changes the ROAS I have to hit. At an assumed 29.8% margin, every extra five points off
-the selling price moves break-even sharply:</p>
-""" + table(["Discount off selling price","Margin left","Break-even ROAS","What that means"],[
- ["0% — full price","29.8%","<b>3.36x</b>","Current target. Comfortable."],
- ["5%","26.1%","<b>3.83x</b>","Still workable."],
- ["10%","22.0%","<b>4.55x</b>","Above our current blended 4.44x."],
- ["<b>13.3%</b> — our actual average","19.0%","<b>5.25x</b>",chip("watch","We are running 4.44x")],
- ["15%","17.4%","<b>5.74x</b>",chip("watch","Most campaigns lose money")],
- ["<b>16.6%</b> — our August rate","15.8%","<b>6.32x</b>",chip("crit","Only brand search clears this")],
- ["20%","12.2%","<b>8.16x</b>",chip("crit","Nothing in the account clears this")],
- ["25%","6.4%","<b>15.6x</b>",chip("crit","Nothing clears this")],
- ["29.8%+","0%","<b>—</b>",chip("crit","Loss on the product before any media")],
+<p>Now calculable from the master profitability file — 733 live SKUs with fully loaded costs (goods,
+freight, labour, haulage, storage and part-allocated overheads). <b>Catalogue margin is 57.1% of RRP
+ex-VAT</b>, so break-even ROAS is far lower than the 3.36x carried in the change journal.</p>
+
+""" + table(["Discount off RRP","Margin left","Break-even ROAS<br>if revenue is ex-VAT","if revenue is inc-VAT","Verdict at our 4.44x"],[
+ ["0% — full price","57.1%","<b>1.75x</b>","<b>2.10x</b>",chip("done","2.1× clear")],
+ ["10%","52.4%","<b>1.91x</b>","<b>2.29x</b>",chip("done","1.9× clear")],
+ ["<b>13.3%</b> — our actual average","50.5%","<b>1.98x</b>","<b>2.37x</b>",chip("done","1.9× clear")],
+ ["<b>16.6%</b> — our August rate","48.6%","<b>2.06x</b>","<b>2.47x</b>",chip("done","1.8× clear")],
+ ["20%","46.4%","<b>2.16x</b>","<b>2.59x</b>",chip("done","1.7× clear")],
+ ["30%","38.7%","<b>2.58x</b>","<b>3.10x</b>",chip("done","1.4× clear")],
+ ["40%","28.5%","<b>3.50x</b>","<b>4.21x</b>",chip("watch","Marginal")],
+ ["45%","22.0%","<b>4.54x</b>","<b>5.45x</b>",chip("crit","Below break-even")],
+ ["50%","14.2%","<b>7.02x</b>","<b>8.43x</b>",chip("crit","Loss-making")],
 ],"num") + """
-<div class="callout callout-warn">
-  <div class="callout-h">This is why I need the margin figure, not just the calendar</div>
-  <p>Everything above depends on one thing I do not know: <b>whether the 29.8% margin is measured at full
-  price or already net of discount.</b></p>
-  <p>If it is measured at full price, then at our actual 13.3% discount rate the real break-even is
-  <b>5.25x</b>, not 3.36x — and we are running <b>4.44x</b>. On that reading, blended paid media is below
-  break-even right now and has been all quarter. If the 29.8% is already net of discount, 3.36x stands and
-  we are comfortably clear.</p>
-  <p><b>Those two readings are the difference between the account working and the account losing money, and
-  I cannot tell them apart without the number.</b> It is a one-line answer from finance and it is the single
-  most valuable thing I could be given.</p>
+<div class="callout">
+  <div class="callout-h">Correcting the record: break-even is roughly 2x, not 3.36x</div>
+  <p>The 3.36x in the change journal implies a 29.8% margin. The actual catalogue data says
+  <b>57.1%</b> — because it is a net margin after freight, labour, haulage and storage, not a
+  simple goods margin. Real break-even is <b>1.75x–2.10x</b> at full price and about <b>2.0x–2.4x</b> at our
+  current discount rate.</p>
+  <p>Consequences: blended paid media at 4.44x is running at roughly <b>twice break-even</b>, not marginally
+  above it. The Bing PMax campaign at 1.50x and PMax Cast Iron at 1.02x were still correctly cut — both sit
+  below break-even on any reading. And we have far more room to discount at Black Friday than the old
+  assumption suggested: <b>30% off still only needs 2.6–3.1x</b>.</p>
 </div>
-<p class="note">The shape holds either way: <b>a 20% promotion more than doubles the ROAS I need, and
-anything past roughly 30% loses money before a penny of media is spent.</b> Bidding to a 3.36x target
-through a 20%-off week means buying losses efficiently.</p>
+
+<div class="callout callout-warn">
+  <div class="callout-h">Two things I still need to firm this up</div>
+  <p><b>1. Is reported revenue inc or ex VAT?</b> That is the difference between the two break-even columns
+  above, and on the quarter it is worth roughly £30,000 of contribution. One-line answer.</p>
+  <p><b>2. Margin weighted by units sold, not by catalogue.</b> The 57.1% weights every SKU by RRP, which
+  assumes we sell one of each. Real achieved margin depends on mix. Simple mean is 54.8% and median 53.5%,
+  so the conclusion holds across all three — but for bidding by category I need margin against actual units.</p>
+  <p class="note" style="margin-top:8px">Not included in the 57.1%: payment processing fees, returns
+  handling (2.7% of gross), and packaging — the packaging column is empty across all 733 SKUs. True
+  break-even is somewhat above these figures, but nowhere near 3.36x.</p>
+</div>
+
+<p class="note">The practical rule for peak: <b>anything up to 30% off is comfortably fundable at our current
+ROAS. Past 40% the media has to be exceptional. Past 45% we are buying losses.</b></p>
 
 <h3>What I need for Black Friday, specifically</h3>
 """ + table(["Input","Why I need it","Lead time"],[
@@ -437,7 +451,9 @@ ROAS would fall short term; it went 4.48x → 4.23x while AOV rose £338 → £3
  ["GA4 sessions are not platform clicks","Tracking loss and attribution differ; trends sound, absolutes vary by source"],
  ["Meta-reported ROAS is platform-attributed","Used for relative ad-set ranking only, never as a business number"],
  ["Google campaign export lists current campaigns only","Legacy campaigns removed from the account do not appear"],
- ["Gross margin 29.8% is inferred","Derived from the 3.36x break-even ROAS in the change journal"],
+ ["Margin now sourced, not inferred","57.1% of RRP ex-VAT, revenue-weighted across 733 live SKUs (master profitability file). Supersedes the 29.8% implied by the change journal's 3.36x."],
+ ["Margin is catalogue-weighted","Weighted by RRP across SKUs, not by units sold. Mean 54.8%, median 53.5%, RRP-weighted 57.1%."],
+ ["Excludes payment fees, returns handling and packaging","Packaging column is unpopulated across all 733 SKUs."],
  ["Google rep figures use a different window","Their live account view; my exports end 10 August"],
 ]))
 
