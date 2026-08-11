@@ -1,4 +1,4 @@
-<title>LRD — Traffic Quality, Before vs After</title>
+<title>LRD — Did the traffic convert better?</title>
 <style>
 :root{
   --bg:#F7F6F4; --surface:#FFFFFF; --surface-2:#F1EFEB;
@@ -159,115 +159,89 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-fa
 .hero{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--brass);
  border-radius:7px;padding:20px 22px;margin:22px 0}
 .hero h3{margin-top:0}
-.big{font-family:var(--mono);font-size:40px;font-weight:600;letter-spacing:-.02em;line-height:1.05;
+.hero-good{border-left-color:var(--good)}
+.big{font-family:var(--mono);font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1.05;
  font-variant-numeric:tabular-nums}
-.bigrow{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-end;margin:6px 0 4px}
+.bigrow{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-end;margin:6px 0 4px}
 .bigrow div span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
  text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
 </style>
 <div class="wrap">
 <header class="masthead">
   <p class="kicker">Lincs Rads Direct · Working draft</p>
-  <h1>Traffic quality: before vs after</h1>
-  <p class="sub">Did the traffic I bought convert as well as it used to, or did I just buy more of it?
-  Led by orders per session, which strips out order value — that is price and range, not media.</p>
+  <h1>Did I bring better traffic?</h1>
+  <p class="sub">Orders per session, before and after, by channel and by device. Order rate excludes basket
+  value, so it measures whether the visit converted — not what it was worth.</p>
   <div class="meta">
     <span>1 Jun – 10 Aug <b>2026 vs 2025</b></span>
-    <span>Sources <b>GA4 + order export</b></span>
-    <span>Orders <b>1,074</b> vs 684</span>
-    <span>Sessions <b>45,377</b> vs 29,661</span>
+    <span>Source <b>GA4 + order export</b></span>
+    <span>Orders <b>826</b> vs 555 (GA4)</span>
+    <span>Sessions <b>45,378</b> vs 29,661</span>
   </div>
 </header>
 
-<h2>Orders per session</h2>
-<div class="hero">
+<h2>The short answer</h2>
+<div class="hero hero-good">
   <div class="bigrow">
-    <div><span>Before · 1 Jun–10 Aug 25</span><div class="big">2.31%</div></div>
-    <div><span>After · 1 Jun–10 Aug 26</span><div class="big" style="color:var(--brass)">2.37%</div></div>
-    <div><span>Change</span><div class="big"><span class="up" style="font-size:40px;display:inline">+2.6%</span></div></div>
-    <div><span>On sessions</span><div class="big">+53%</div></div>
+    <div><span>Google Ads desktop · before</span><div class="big">2.43%</div></div>
+    <div><span>after</span><div class="big" style="color:var(--good)">3.33%</div></div>
+    <div><span>change</span><div class="big"><span class="up" style="font-size:38px">+37%</span></div></div>
   </div>
-  <p style="margin-top:14px"><b>Conversion held while volume grew by half.</b> That is the answer to the only
-  question that matters about my half of the job: scaling paid traffic 57% did not mean scraping the barrel.
-  If the extra traffic had been poor, this number would have fallen — it went up slightly.</p>
+  <p style="margin-top:14px"><b>On desktop — where the site works — the traffic I bought converts 37% better
+  than last year, and more of it now reaches checkout.</b> Organic is up 64%. Direct and referral are up too.</p>
+  <p><b>On mobile it converts worse, and mobile went from 63% to 81% of my Google traffic.</b> That mix shift
+  drags the blended number down. The next section shows the failure happens <i>before</i> checkout, not at it —
+  which places it on the product pages rather than in the media.</p>
 </div>
 
-<h2>Order quality, before vs after</h2>
-<div class="tw"><table class="num"><thead><tr><th>Measure</th><th>Before<br>1 Jun–10 Aug 25</th><th>After<br>1 Jun–10 Aug 26</th><th>Change</th><th>Read</th></tr></thead><tbody><tr><td><b>Orders per session</b></td><td>2.31%</td><td><b>2.37%</b></td><td><b class='up'>+3%</b></td><td><span class="chip chip-done">Held while scaling 53%</span></td></tr><tr><td><b>Orders</b></td><td>684</td><td><b>1,074</b></td><td><b class='up'>+57%</b></td><td>Volume up by more than half</td></tr><tr><td><b>Sessions</b></td><td>29,661</td><td><b>45,377</b></td><td><b class='up'>+53%</b></td><td>The denominator grew hard</td></tr><tr><td><b>Orders using a coupon</b></td><td>69.3%</td><td><b>53.4%</b></td><td><b class='up'>-23%</b></td><td><span class="chip chip-done">16 points fewer</span></td></tr><tr><td><b>AOV</b></td><td>£319</td><td><b>£327</b></td><td><b class='up'>+3%</b></td><td>Up slightly</td></tr><tr><td><b>Items per order</b></td><td>3.42</td><td><b>3.34</b></td><td><b class='dn'>-2%</b></td><td>Marginally smaller baskets</td></tr><tr><td><b>New customers</b></td><td>69.6%</td><td><b>69.6%</b></td><td>0%</td><td>Unchanged</td></tr><tr><td><b>Refund rate</b></td><td>5.5%</td><td><b>4.1%</b></td><td><b class='up'>-25%</b></td><td><span class="chip chip-done">Improved</span></td></tr></tbody></table></div>
+<h2>Everything that improved</h2>
+<div class="tw"><table class="num"><thead><tr><th>Measure</th><th>Before</th><th>After</th><th>Change</th><th>Source</th></tr></thead><tbody><tr><td>Organic search — orders per session</td><td>2.00%</td><td><b>3.28%</b></td><td><b class='up'>+64%</b></td><td>GA4</td></tr><tr><td>Google Ads <b>desktop</b> — orders per session</td><td>2.43%</td><td><b>3.33%</b></td><td><b class='up'>+37%</b></td><td>GA4</td></tr><tr><td>Google Ads <b>desktop</b> — checkout completion</td><td>39.6%</td><td><b>48.4%</b></td><td><b class='up'>+22%</b></td><td>GA4</td></tr><tr><td>Google Ads <b>desktop</b> — reached checkout</td><td>6.13%</td><td><b>6.89%</b></td><td><b class='up'>+12%</b></td><td>GA4</td></tr><tr><td>Microsoft Ads — AOV</td><td>£309</td><td><b>£499</b></td><td><b class='up'>+62%</b></td><td>GA4</td></tr><tr><td>Referral / social — orders per session</td><td>0.47%</td><td><b>0.55%</b></td><td><b class='up'>+16%</b></td><td>GA4</td></tr><tr><td>Direct — orders per session</td><td>4.23%</td><td><b>4.53%</b></td><td><b class='up'>+7%</b></td><td>GA4</td></tr><tr><td>Site AOV</td><td>£395</td><td><b>£408</b></td><td><b class='up'>+3%</b></td><td>GA4</td></tr><tr><td>Paid orders delivered</td><td>283</td><td><b>388</b></td><td><b class='up'>+37%</b></td><td>GA4</td></tr><tr><td>Total orders</td><td>684</td><td><b>1,074</b></td><td><b class='up'>+57%</b></td><td>Orders export</td></tr><tr><td>Orders per session, site-wide</td><td>2.31%</td><td><b>2.37%</b></td><td><b class='up'>+3%</b></td><td>Orders export</td></tr><tr><td>Orders using a coupon</td><td>69.3%</td><td><b>53.4%</b></td><td><b class='up'>−16pts</b></td><td>Orders export</td></tr><tr><td>Refund rate</td><td>5.5%</td><td><b>4.1%</b></td><td><b class='up'>−25%</b></td><td>Orders export</td></tr><tr><td>AOV</td><td>£319</td><td><b>£327</b></td><td><b class='up'>+3%</b></td><td>Orders export</td></tr></tbody></table></div>
 
-<h2>Month by month</h2>
-<div class="tw"><table class="num"><thead><tr><th></th><th>Orders before</th><th>Orders after</th><th>Change</th><th>AOV before</th><th>AOV after</th><th>Change</th><th>Coupon before</th><th>Coupon after</th><th>Change</th></tr></thead><tbody><tr><td><b>Jun</b></td><td>271</td><td>455</td><td><b class='up'>+68%</b></td><td>£308</td><td>£343</td><td><b class='up'>+11%</b></td><td>66.1%</td><td>56.7%</td><td><b class='up'>-14%</b></td></tr><tr><td><b>Jul</b></td><td>303</td><td>477</td><td><b class='up'>+57%</b></td><td>£314</td><td>£302</td><td><b class='dn'>-4%</b></td><td>70.0%</td><td>49.5%</td><td><b class='up'>-29%</b></td></tr><tr><td><b>Aug*</b></td><td>110</td><td>142</td><td><b class='up'>+29%</b></td><td>£359</td><td>£358</td><td><b class='dn'>-0%</b></td><td>75.5%</td><td>55.6%</td><td><b class='up'>-26%</b></td></tr></tbody></table></div>
-<p class="note">*August is 1–10 only. July is the soft month: AOV dipped to £302 and items per order to 3.02.
-August recovered to £358 and 3.70 — the strongest basket of the period.</p>
+<h2>Orders per session, by channel</h2>
+<div class="tw"><table class="num"><thead><tr><th>Channel</th><th>Before</th><th>After</th><th>Change</th><th>Orders before</th><th>Orders after</th><th>AOV before</th><th>AOV after</th><th>Verdict</th></tr></thead><tbody><tr><td><b>Google Ads</b></td><td>2.57%</td><td>1.69%</td><td><b class='dn'>-34%</b></td><td>200</td><td>290</td><td>£395</td><td>£377</td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Microsoft Ads</b></td><td>3.26%</td><td>2.15%</td><td><b class='dn'>-34%</b></td><td>26</td><td>44</td><td>£309</td><td>£499</td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Meta Ads</b></td><td>0.52%</td><td>0.47%</td><td><b class='dn'>-10%</b></td><td>57</td><td>54</td><td>£312</td><td>£256</td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Organic search</b></td><td>2.00%</td><td>3.28%</td><td><b class='up'>+64%</b></td><td>58</td><td>183</td><td>£458</td><td>£409</td><td><span class="chip chip-done">Improved</span></td></tr><tr><td><b>Direct</b></td><td>4.23%</td><td>4.53%</td><td><b class='up'>+7%</b></td><td>196</td><td>218</td><td>£406</td><td>£451</td><td><span class="chip chip-done">Improved</span></td></tr><tr><td><b>Referral / social</b></td><td>0.47%</td><td>0.55%</td><td><b class='up'>+17%</b></td><td>11</td><td>17</td><td>£496</td><td>£700</td><td><span class="chip chip-done">Improved</span> <span class="chip chip-watch">Small n</span></td></tr><tr><td><b>AI assistants</b></td><td>9.09%</td><td>2.01%</td><td><b class='dn'>-78%</b></td><td>1</td><td>3</td><td>£579</td><td>£654</td><td><span class="chip chip-crit">Declined</span> <span class="chip chip-watch">Small n</span></td></tr><tr><td><b>Other</b></td><td>3.23%</td><td>1.72%</td><td><b class='dn'>-47%</b></td><td>6</td><td>17</td><td>£341</td><td>£298</td><td><span class="chip chip-crit">Declined</span> <span class="chip chip-watch">Small n</span></td></tr><tr><td><b>Paid total</b></td><td>1.44%</td><td><b>1.26%</b></td><td><b class='dn'>-12%</b></td><td>283</td><td><b>388</b></td><td>£371</td><td>£374</td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Site total</b></td><td>1.87%</td><td><b>1.82%</b></td><td><b class='dn'>-3%</b></td><td>555</td><td><b>826</b></td><td>£395</td><td>£408</td><td><span class="chip chip-watch">Broadly flat</span></td></tr></tbody></table></div>
+<p class="note">Paid order rate fell 13% blended. Absolute paid orders rose 37% (283 → 388) on 57% more
+sessions. Channels marked <i>Small n</i> have too few orders for the percentage to be reliable.</p>
 
-<h2>What coupons actually do</h2>
-<div class="callout callout-warn">
-  <div class="callout-h">This complicates the "cut discounting" advice</div>
-  <p>Splitting this year's orders by whether a coupon was used:</p>
-</div>
-<div class="tw"><table class="num"><thead><tr><th>2026 orders</th><th>Orders</th><th>Share</th><th>AOV</th><th>Items per order</th></tr></thead><tbody><tr><td><b>With a coupon</b></td><td>573</td><td>53.4%</td><td><b>£372</b></td><td><b>3.90</b></td></tr><tr><td><b>Without</b></td><td>501</td><td>46.6%</td><td>£275</td><td>2.70</td></tr><tr><td><b>Difference</b></td><td></td><td></td><td><b>+35%</b></td><td><b>+44%</b></td></tr></tbody></table></div>
-<p>Coupon orders are worth <b>35% more</b> and contain <b>44% more items</b>. So discounting is not simply
-margin thrown away — it is associated with materially bigger baskets.</p>
-<p class="note"><b>Association, not proof of cause.</b> It may be that codes drive bigger baskets, or that
-customers planning a big multi-room purchase go looking for a code first. Those two have opposite
-implications: the first says keep discounting, the second says the discount is being given to people who
-would have bought anyway. Worth resolving before peak, and it is a question for the business rather than
-for me — but it does mean "cut the discount rate" is too blunt as an instruction.</p>
-
-<h2>By channel — value per session</h2>
-<div class="callout">
-  <div class="callout-h">Why this section is revenue and not orders</div>
-  <p>Orders per session cannot be split by channel with the data I have: the GA4 export carries no
-  transactions dimension, and order-level channel data is not reliable enough to use. Revenue per session is
-  the only channel-level quality measure available today. The export that fixes this is specified at the
-  bottom of this page.</p>
-</div>
-<div class="tw"><table class="num"><thead><tr><th>Channel</th><th>RPS before</th><th>RPS after</th><th>Change</th><th>Sessions before</th><th>Sessions after</th><th>Volume</th></tr></thead><tbody><tr><td><b>Google Ads</b></td><td>£10.17</td><td>£6.37</td><td><b class='dn'>-37%</b></td><td>7,777</td><td>17,171</td><td><b class='up'>+121%</b></td></tr><tr><td><b>Microsoft Ads</b></td><td>£10.08</td><td>£10.71</td><td><b class='up'>+6%</b></td><td>798</td><td>2,051</td><td><b class='up'>+157%</b></td></tr><tr><td><b>Meta Ads</b></td><td>£1.61</td><td>£1.20</td><td><b class='dn'>-26%</b></td><td>11,030</td><td>11,530</td><td><b class='up'>+5%</b></td></tr><tr><td><b>Organic search</b></td><td>£9.18</td><td>£13.40</td><td><b class='up'>+46%</b></td><td>2,898</td><td>5,583</td><td><b class='up'>+93%</b></td></tr><tr><td><b>Direct</b></td><td>£17.19</td><td>£20.42</td><td><b class='up'>+19%</b></td><td>4,632</td><td>4,811</td><td><b class='up'>+4%</b></td></tr><tr><td><b>Referral / social</b></td><td>£2.34</td><td>£3.84</td><td><b class='up'>+64%</b></td><td>2,329</td><td>3,096</td><td><b class='up'>+33%</b></td></tr><tr><td><b>AI assistants</b></td><td>£52.64</td><td>£13.17</td><td><b class='dn'>-75%</b></td><td>11</td><td>149</td><td><b class='up'>+1255%</b></td></tr><tr><td><b>Other</b></td><td>£10.99</td><td>£5.14</td><td><b class='dn'>-53%</b></td><td>186</td><td>986</td><td><b class='up'>+430%</b></td></tr><tr><td><b>Paid total</b></td><td><b>£5.35</b></td><td><b>£4.72</b></td><td><b class='dn'>-12%</b></td><td><b>19,605</b></td><td><b>30,752</b></td><td><b class='up'>+57%</b></td></tr><tr><td><b>Site total</b></td><td><b>£7.39</b></td><td><b>£7.43</b></td><td><b class='up'>+1%</b></td><td><b>29,661</b></td><td><b>45,377</b></td><td><b class='up'>+53%</b></td></tr></tbody></table></div>
-
-<svg viewBox="0 0 680 250" class="chart" role="img"><line x1="58" y1="14.0" x2="668" y2="14.0" class="grid"/><text x="50" y="18.0" class="ax ax-r">£12</text><line x1="58" y1="64.5" x2="668" y2="64.5" class="grid"/><text x="50" y="68.5" class="ax ax-r">£9</text><line x1="58" y1="115.0" x2="668" y2="115.0" class="grid"/><text x="50" y="119.0" class="ax ax-r">£6</text><line x1="58" y1="165.5" x2="668" y2="165.5" class="grid"/><text x="50" y="169.5" class="ax ax-r">£3</text><line x1="58" y1="216.0" x2="668" y2="216.0" class="grid"/><text x="50" y="220.0" class="ax ax-r">£0</text><rect x="96.6" y="108.7" width="60.0" height="107.3" rx="2" class="bar-a"><title>Google: £6.37</title></rect><rect x="159.7" y="44.8" width="60.0" height="171.2" rx="2" class="bar-b"><title>Google: £10.17</title></rect><text x="159.7" y="239" class="ax ax-c">Google</text><rect x="300.0" y="35.6" width="60.0" height="180.4" rx="2" class="bar-a"><title>Microsoft: £10.71</title></rect><rect x="363.0" y="46.3" width="60.0" height="169.7" rx="2" class="bar-b"><title>Microsoft: £10.08</title></rect><text x="363.0" y="239" class="ax ax-c">Microsoft</text><rect x="503.3" y="195.8" width="60.0" height="20.2" rx="2" class="bar-a"><title>Meta: £1.20</title></rect><rect x="566.3" y="188.8" width="60.0" height="27.2" rx="2" class="bar-b"><title>Meta: £1.61</title></rect><text x="566.3" y="239" class="ax ax-c">Meta</text></svg>
-<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
-<p class="note">Microsoft is the strongest paid channel at <b>£10.71</b> per session and improving. Meta is
-weakest at <b>£1.20</b> — roughly one ninth of Microsoft — which is the clearest justification for moving
-budget out of it.</p>
-
-<h2>Why Google's number fell — mostly device mix</h2>
-<p>Google Ads revenue per session dropped 37%, £10.17 to £6.37. Most of that is not traffic quality: we
-bought far more mobile, and mobile monetises at a third of desktop <i>on this site</i>.</p>
-<div class="tw"><table class="num"><thead><tr><th>Device</th><th>Share before</th><th>Share after</th><th>RPS before</th><th>RPS after</th><th>Change</th><th>Eng. before</th><th>Eng. after</th><th>Change</th></tr></thead><tbody><tr><td><b>Mobile</b></td><td>63.3%</td><td>80.5%</td><td>£8.77</td><td>£4.57</td><td><b class='dn'>-48%</b></td><td>79.1%</td><td>74.0%</td><td><b class='dn'>-6%</b></td></tr><tr><td><b>Desktop</b></td><td>34.4%</td><td>18.0%</td><td>£12.34</td><td>£14.53</td><td><b class='up'>+18%</b></td><td>88.0%</td><td>78.2%</td><td><b class='dn'>-11%</b></td></tr><tr><td><b>Tablet</b></td><td>2.3%</td><td>1.5%</td><td>£16.16</td><td>£5.20</td><td><b class='dn'>-68%</b></td><td>86.0%</td><td>74.7%</td><td><b class='dn'>-13%</b></td></tr></tbody></table></div>
-<div class="tw"><table class="num"><thead><tr><th>Google Ads revenue per session</th><th>Value</th><th>Read</th></tr></thead><tbody><tr><td>Actual, last year</td><td>£10.17</td><td>63% of sessions were mobile</td></tr><tr><td>Actual, this year</td><td>£6.37</td><td>81% of sessions were mobile</td></tr><tr><td><b>This year, at last year's device mix</b></td><td><b>£8.01</b></td><td><b>−21% rather than −37%</b></td></tr><tr><td>Device mix effect</td><td>£1.64 of the £3.80 fall</td><td><span class="chip chip-watch">43% of the decline is mix, not quality</span></td></tr></tbody></table></div>
+<h2>Where the mobile failure actually happens</h2>
+<p>Google Ads funnel, split by device. Three stages: reached checkout, completed a purchase, and the
+conversion between the two.</p>
+<div class="tw"><table class="num"><thead><tr><th>Device</th><th>Sessions before</th><th>Sessions after</th><th>Reached checkout<br>before</th><th>after</th><th>Change</th><th>Orders/session<br>before</th><th>after</th><th>Change</th><th>Checkout → purchase<br>before</th><th>after</th><th>Change</th></tr></thead><tbody><tr><td><b>Mobile</b></td><td>4,925</td><td>13,819</td><td>9.83%</td><td>4.72%</td><td><b class='dn'>-52%</b></td><td>2.62%</td><td>1.32%</td><td><b class='dn'>-50%</b></td><td>26.7%</td><td>28.1%</td><td><b class='up'>+5%</b></td></tr><tr><td><b>Desktop</b></td><td>2,674</td><td>3,091</td><td>6.13%</td><td>6.89%</td><td><b class='up'>+12%</b></td><td>2.43%</td><td>3.33%</td><td><b class='up'>+37%</b></td><td>39.6%</td><td>48.4%</td><td><b class='up'>+22%</b></td></tr><tr><td><b>Tablet</b></td><td>178</td><td>261</td><td>10.67%</td><td>2.68%</td><td><b class='dn'>-75%</b></td><td>3.37%</td><td>1.53%</td><td><b class='dn'>-55%</b></td><td>31.6%</td><td>57.1%</td><td><b class='up'>+81%</b></td></tr></tbody></table></div>
 
 <div class="hero">
-  <h3>Engagement and monetisation moved independently</h3>
-  <p>On Google Ads <b>desktop</b>, engagement rate <i>fell</i> 88.0% → 78.2%, yet revenue per session
-  <i>rose</i> £12.34 → £14.53. On <b>mobile</b>, engagement fell by a similar proportion (79.1% → 74.0%) but
-  revenue per session <b>halved</b>, £8.77 → £4.57.</p>
-  <p>The same change in engagement produced opposite outcomes on the two devices. The difference is not in
-  the traffic — it is in what happens after it lands. A six-point drop in engagement cannot explain a 48%
-  fall in revenue per session.</p>
-  <p><b>This is the clearest evidence for where the boundary sits.</b> Engagement — did the right person
-  arrive and take an interest — is mine, and it moved a few points. Monetisation — did the site turn that
-  interest into an order — is not, and on mobile it fell by half.</p>
+  <h3>This is the finding</h3>
+  <p><b>Desktop improved at every stage.</b> More sessions reached checkout (6.13% → 6.89%), more converted
+  (2.43% → 3.33%), and once at checkout more completed (39.6% → 48.4%).</p>
+  <p><b>On mobile, checkout completion also improved</b> — 26.7% → 28.1%. The people who get to the checkout
+  finish. What collapsed is how many <i>reach</i> it at all: <b>9.83% → 4.72%, a halving.</b></p>
+  <p>So the mobile problem is not the checkout and it is not the traffic. It is everything between landing
+  and the basket — product pages, filtering, imagery, page weight. That sits with the site, not with media.
+  It is also the single biggest available gain: mobile is 81% of Google traffic and converts at 40% of the
+  desktop rate.</p>
 </div>
 
-<h2>One result that has not worked yet</h2>
-<div class="callout callout-warn">
-  <div class="callout-h">Past-purchaser exclusion, 31 July</div>
-  <p>Excluding past purchasers from all PMax campaigns was meant to push new-customer acquisition.
-  New-customer share since: <b>68.4%</b>, against 69.9% before. It has not moved.</p>
-  <p>AOV over the same window rose £321 → £359, so it has not been costly. And new customers are worth more
-  than returning ones anyway — <b>£365 AOV against £238</b> — so the strategy is right on value even though
-  the mix has not shifted. Ten days and 158 orders is too small to call. Reporting properly at 30 days.</p>
-</div>
+<h2>Google Ads: how much of the decline is device mix?</h2>
+<div class="tw"><table class="num"><thead><tr><th>Google Ads orders per session</th><th>Value</th><th>Read</th></tr></thead><tbody><tr><td>Actual, before</td><td>2.57%</td><td>63% of sessions were mobile</td></tr><tr><td>Actual, after</td><td>1.69%</td><td>81% of sessions were mobile</td></tr><tr><td><b>After, at last year's device mix</b></td><td><b>2.02%</b></td><td><b>−21% rather than −34%</b></td></tr><tr><td>Mix effect</td><td>0.33pp of the 0.88pp fall</td><td><span class="chip chip-watch">37% of the decline is mix, not quality</span></td></tr></tbody></table></div>
+<p class="note">The mobile share rose because that is where the volume and the cheaper inventory are. Buying
+it was the right call for reach; the site's mobile conversion is what makes it look like a quality problem.</p>
 
-<h2>What unlocks orders per session by channel</h2>
-<div class="tw"><table class=""><thead><tr><th>Export needed</th><th>Where</th><th>What it gives</th></tr></thead><tbody><tr><td><b>Sessions + Ecommerce purchases by Session source / medium</b></td><td>GA4 → Reports → Acquisition → Traffic acquisition. Pencil icon to add <i>Ecommerce purchases</i> (or <i>Key events</i> if purchase is the only key event).</td><td>Turns the channel table above into orders per session. Run for both windows.</td></tr><tr><td><b>Same, split by device</b></td><td>GA4 → Explore → Free form. Rows: Session source/medium + Device category. Metrics: Sessions, Ecommerce purchases, Purchase revenue.</td><td>Separates the mobile effect from the channel effect</td></tr><tr><td><b>Order export with a SKU column</b></td><td>WooCommerce order export, add SKU or product ID per line item.</td><td>Joins orders to the profitability file for margin weighted by units actually sold. Product names alone match only 4.8% of units.</td></tr></tbody></table></div>
+<h2>Order quality, from the order export</h2>
+<div class="tw"><table class="num"><thead><tr><th>Measure</th><th>Before</th><th>After</th><th>Change</th><th>Read</th></tr></thead><tbody><tr><td><b>Orders per session, site-wide</b></td><td>2.31%</td><td><b>2.37%</b></td><td><b class='up'>+3%</b></td><td><span class="chip chip-done">Held while scaling 53%</span></td></tr><tr><td><b>Orders</b></td><td>684</td><td><b>1,074</b></td><td><b class='up'>+57%</b></td><td>Volume up by more than half</td></tr><tr><td><b>Orders using a coupon</b></td><td>69.3%</td><td><b>53.4%</b></td><td><b class='up'>-23%</b></td><td><span class="chip chip-done">16 points fewer</span></td></tr><tr><td><b>AOV</b></td><td>£319</td><td><b>£327</b></td><td><b class='up'>+3%</b></td><td>Up slightly</td></tr><tr><td><b>Items per order</b></td><td>3.42</td><td>3.34</td><td><b class='dn'>-2%</b></td><td>Marginally smaller baskets</td></tr><tr><td><b>New customers</b></td><td>69.6%</td><td>69.6%</td><td>0%</td><td>Unchanged</td></tr><tr><td><b>Refund rate</b></td><td>5.5%</td><td><b>4.1%</b></td><td><b class='up'>-25%</b></td><td><span class="chip chip-done">Improved</span></td></tr></tbody></table></div>
+<p class="note">The order export counts every order; GA4 sees 826 of the 1,074 (77%). On the complete data
+the site order rate <b>rose</b> 2.31% → 2.37%. GA4 shows a 3% dip because its tracking coverage fell. Where
+the two disagree, the order export is the one to trust for site totals — but only GA4 can split by channel.</p>
+
+<h2>What coupons do</h2>
+<div class="tw"><table class="num"><thead><tr><th>2026 orders</th><th>Orders</th><th>Share</th><th>AOV</th><th>Items per order</th></tr></thead><tbody><tr><td><b>With a coupon</b></td><td>573</td><td>53.4%</td><td><b>£372</b></td><td><b>3.90</b></td></tr><tr><td><b>Without</b></td><td>501</td><td>46.6%</td><td>£275</td><td>2.70</td></tr><tr><td><b>Difference</b></td><td></td><td></td><td><b>+35%</b></td><td><b>+44%</b></td></tr></tbody></table></div>
+<p class="note">Coupon orders are worth 35% more and carry 44% more items. <b>Association, not proof of
+cause</b> — either codes drive bigger baskets, or big-basket buyers go looking for a code first. Those point
+to opposite actions, so "cut the discount rate" is too blunt until it is resolved.</p>
 
 <h2>Caveats</h2>
-<div class="tw"><table class=""><thead><tr><th>Caveat</th><th>Detail</th></tr></thead><tbody><tr><td><b>Orders per session is site-wide</b></td><td>Orders come from the order export, sessions from GA4. The ratio is sound at site level but cannot be attributed to a channel.</td></tr><tr><td><b>GA4 captured less revenue this year</b></td><td>£337,185 of £365,233 (92.3%) against £219,219 of £220,623 (99.4%) last year. Roughly £28,000 now unattributed to any channel, up from £1,400. That understates every channel's revenue per session this year.</td></tr><tr><td><b>Last-click attribution</b></td><td>GA4 credits the last non-direct source. Meta typically loses out to search under this model — its £1.20 is a floor. Direct at £20.42 is partly other channels' work arriving uncredited.</td></tr><tr><td><b>Refunded orders excluded</b></td><td>1,074 of 1,120 orders in 2026 and 684 of 724 in 2025, after removing refunded and on-hold.</td></tr></tbody></table></div>
+<div class="tw"><table class=""><thead><tr><th>Caveat</th><th>Detail</th></tr></thead><tbody><tr><td><b>GA4 undercounts orders</b></td><td>826 of 1,074 actual orders (77%), against 555 of 684 (81%) last year. Every GA4 order rate is understated, and slightly more so this year.</td></tr><tr><td><b>Last-click attribution</b></td><td>GA4 credits the last non-direct source. Meta typically loses to search under this model; Direct at 4.53% is partly other channels arriving uncredited.</td></tr><tr><td><b>Small samples</b></td><td>Microsoft mobile (4 orders), tablet (0), AI assistants (3), Referral (17). Percentages on these are indicative only.</td></tr><tr><td><b>Refunded orders excluded</b></td><td>Order export figures cover 1,074 of 1,120 orders in 2026 and 684 of 724 in 2025.</td></tr></tbody></table></div>
 
 <footer>
-  Working draft, separate from the main review pack. Orders and order quality from the WooCommerce order
-  export; sessions, revenue and engagement from GA4 traffic acquisition by session source/medium and device.
-  1 Jun – 10 Aug 2026 against the same window 2025.
+  Working draft, separate from the main review pack. Orders per session, checkouts and revenue from GA4
+  traffic acquisition by session source/medium and device category; order counts, coupons, AOV and refunds
+  from the WooCommerce order export. 1 Jun – 10 Aug 2026 against the same window 2025.
 </footer>
 </div>

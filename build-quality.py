@@ -1,37 +1,43 @@
 #!/usr/bin/env python3
-"""Standalone before/after view: traffic quality, led by orders per session."""
+"""Standalone before/after: did the traffic convert better? Orders per session led."""
 import importlib.util, os
 spec = importlib.util.spec_from_file_location("engine", os.path.join(os.path.dirname(__file__), "engine.py"))
 E = importlib.util.module_from_spec(spec); spec.loader.exec_module(E)
 grouped_bars = E.grouped_bars
-
 OUT = "/home/user/europe-ad-report/quality-before-after.html"
 
-# ---- sessions (GA4) ----
-CHAN = [  # channel, sess26, sess25, rev26, rev25, eng26, eng25
-    ("Google Ads",        17171,  7777, 109407, 79091, .748, .823),
-    ("Microsoft Ads",      2051,   798,  21972,  8042, .745, .802),
-    ("Meta Ads",          11530, 11030,  13801, 17805, .635, .696),
-    ("Organic search",     5583,  2898,  74825, 26593, .688, .715),
-    ("Direct",             4811,  4632,  98252, 79607, .652, .640),
-    ("Referral / social",  3096,  2329,  11895,  5458, .796, .747),
-    ("AI assistants",       149,    11,   1963,   579, .617, .636),
-    ("Other",               986,   186,   5071,  2044, .414, .344),
+# channel, ops25, ops26, ord25, ord26, sess25, sess26, aov25, aov26, low_confidence
+CHAN = [
+ ("Google Ads",       .0257,.0169, 200,290,  7777,17171, 395,377, False),
+ ("Microsoft Ads",    .0326,.0215,  26, 44,   798, 2051, 309,499, False),
+ ("Meta Ads",         .0052,.0047,  57, 54, 11030,11530, 312,256, False),
+ ("Organic search",   .0200,.0328,  58,183,  2898, 5583, 458,409, False),
+ ("Direct",           .0423,.0453, 196,218,  4632, 4811, 406,451, False),
+ ("Referral / social",.0047,.0055,  11, 17,  2329, 3097, 496,700, True),
+ ("AI assistants",    .0909,.0201,   1,  3,    11,  149, 579,654, True),
+ ("Other",            .0323,.0172,   6, 17,   186,  986, 341,298, True),
 ]
-PAID = ("Google Ads", "Microsoft Ads", "Meta Ads")
-GDEV = [("Mobile",13819,4925,4.57,8.77,.740,.791),
-        ("Desktop",3091,2674,14.53,12.34,.782,.880),
-        ("Tablet",261,178,5.20,16.16,.747,.860)]
-S26 = sum(c[1] for c in CHAN); S25 = sum(c[2] for c in CHAN)
-
-# ---- orders (WooCommerce, non-refunded) ----
-O26, O25 = 1074, 684
-NET26, NET25 = 350730, 218149
-OPS26, OPS25 = O26/S26, O25/S25
-MONTH = [  # month, orders26, aov26, coupon26, items26, orders25, aov25, coupon25, items25
-    ("Jun", 455, 343, .567, 3.56, 271, 308, .661, 3.33),
-    ("Jul", 477, 302, .495, 3.02, 303, 314, .700, 3.46),
-    ("Aug*",142, 358, .556, 3.70, 110, 359, .755, 3.49),
+PAID=("Google Ads","Microsoft Ads","Meta Ads")
+FUNNEL=[  # device, sess25,chk25,pur25,c2b25,aov25, sess26,chk26,pur26,c2b26,aov26
+ ("Mobile",  4925,.0983,.0262,.267,335, 13819,.0472,.0132,.281,345),
+ ("Desktop", 2674,.0613,.0243,.396,508,  3091,.0689,.0333,.484,436),
+ ("Tablet",   178,.1067,.0337,.316,479,   261,.0268,.0153,.571,339),
+]
+WIN=[  # what improved: metric, before, after, change, source
+ ("Organic search — orders per session","2.00%","<b>3.28%</b>","+64%","GA4"),
+ ("Google Ads <b>desktop</b> — orders per session","2.43%","<b>3.33%</b>","+37%","GA4"),
+ ("Google Ads <b>desktop</b> — checkout completion","39.6%","<b>48.4%</b>","+22%","GA4"),
+ ("Google Ads <b>desktop</b> — reached checkout","6.13%","<b>6.89%</b>","+12%","GA4"),
+ ("Microsoft Ads — AOV","£309","<b>£499</b>","+62%","GA4"),
+ ("Referral / social — orders per session","0.47%","<b>0.55%</b>","+16%","GA4"),
+ ("Direct — orders per session","4.23%","<b>4.53%</b>","+7%","GA4"),
+ ("Site AOV","£395","<b>£408</b>","+3%","GA4"),
+ ("Paid orders delivered","283","<b>388</b>","+37%","GA4"),
+ ("Total orders","684","<b>1,074</b>","+57%","Orders export"),
+ ("Orders per session, site-wide","2.31%","<b>2.37%</b>","+3%","Orders export"),
+ ("Orders using a coupon","69.3%","<b>53.4%</b>","−16pts","Orders export"),
+ ("Refund rate","5.5%","<b>4.1%</b>","−25%","Orders export"),
+ ("AOV","£319","<b>£327</b>","+3%","Orders export"),
 ]
 
 def chip(k,t): return f'<span class="chip chip-{k}">{t}</span>'
@@ -42,179 +48,143 @@ def table(h,rows,cls=""):
     th="".join(f"<th>{x}</th>" for x in h)
     tr="".join("<tr>"+"".join(f"<td>{c}</td>" for c in r)+"</tr>" for r in rows)
     return f'<div class="tw"><table class="{cls}"><thead><tr>{th}</tr></thead><tbody>{tr}</tbody></table></div>'
-def delta(a,b,inv=False):
+def d(a,b,inv=False):
     if not b: return "—"
-    d=a/b-1; good=(d<0) if inv else (d>=0)
-    return f"<b class='{'up' if good else 'dn'}'>{d:+.0%}</b>"
+    x=a/b-1; good=(x<0) if inv else (x>=0)
+    return f"<b class='{'up' if good else 'dn'}'>{x:+.0%}</b>"
 
-orows=[
- ["<b>Orders per session</b>", f"{OPS25:.2%}", f"<b>{OPS26:.2%}</b>", delta(OPS26,OPS25), chip("done","Held while scaling 53%")],
- ["<b>Orders</b>", f"{O25:,}", f"<b>{O26:,}</b>", delta(O26,O25), "Volume up by more than half"],
- ["<b>Sessions</b>", f"{S25:,}", f"<b>{S26:,}</b>", delta(S26,S25), "The denominator grew hard"],
- ["<b>Orders using a coupon</b>", "69.3%", "<b>53.4%</b>", delta(.534,.693,inv=True), chip("done","16 points fewer")],
- ["<b>AOV</b>", "£319", "<b>£327</b>", delta(327,319), "Up slightly"],
- ["<b>Items per order</b>", "3.42", "<b>3.34</b>", delta(3.34,3.42), "Marginally smaller baskets"],
- ["<b>New customers</b>", "69.6%", "<b>69.6%</b>", "0%", "Unchanged"],
- ["<b>Refund rate</b>", "5.5%", "<b>4.1%</b>", delta(.041,.055,inv=True), chip("done","Improved")],
-]
-mrows=[]
-for nm,o26,a26,c26,i26,o25,a25,c25,i25 in MONTH:
-    mrows.append([f"<b>{nm}</b>", f"{o25:,}", f"{o26:,}", delta(o26,o25),
-                  f"£{a25}", f"£{a26}", delta(a26,a25), f"{c25:.1%}", f"{c26:.1%}", delta(c26,c25,inv=True)])
 crows=[]
-for nm,s26,s25,r26,r25,e26,e25 in CHAN:
-    crows.append([f"<b>{nm}</b>", f"£{r25/s25:.2f}", f"£{r26/s26:.2f}", delta(r26/s26,r25/s25),
-                  f"{s25:,}", f"{s26:,}", delta(s26,s25)])
-ps26=sum(c[1] for c in CHAN if c[0] in PAID); ps25=sum(c[2] for c in CHAN if c[0] in PAID)
-pr26=sum(c[3] for c in CHAN if c[0] in PAID); pr25=sum(c[4] for c in CHAN if c[0] in PAID)
-tr26=sum(c[3] for c in CHAN); tr25=sum(c[4] for c in CHAN)
-crows.append(["<b>Paid total</b>", f"<b>£{pr25/ps25:.2f}</b>", f"<b>£{pr26/ps26:.2f}</b>",
-              delta(pr26/ps26,pr25/ps25), f"<b>{ps25:,}</b>", f"<b>{ps26:,}</b>", delta(ps26,ps25)])
-crows.append(["<b>Site total</b>", f"<b>£{tr25/S25:.2f}</b>", f"<b>£{tr26/S26:.2f}</b>",
-              delta(tr26/S26,tr25/S25), f"<b>{S25:,}</b>", f"<b>{S26:,}</b>", delta(S26,S25)])
-devrows=[]
-for nm,s26,s25,rps26,rps25,e26,e25 in GDEV:
-    devrows.append([f"<b>{nm}</b>", f"{s25/7777:.1%}", f"{s26/17171:.1%}",
-                    f"£{rps25:.2f}", f"£{rps26:.2f}", delta(rps26,rps25),
-                    f"{e25:.1%}", f"{e26:.1%}", delta(e26,e25)])
+for nm,o25,o26,n25,n26,s25,s26,a25,a26,low in CHAN:
+    tag = chip("done","Improved") if o26>=o25 else chip("crit","Declined")
+    if low: tag += " " + chip("watch","Small n")
+    crows.append([f"<b>{nm}</b>", f"{o25:.2%}", f"{o26:.2%}", d(o26,o25),
+                  f"{n25:,}", f"{n26:,}", f"£{a25}", f"£{a26}", tag])
+crows.append(["<b>Paid total</b>","1.44%","<b>1.26%</b>",d(.0126,.0144),"283","<b>388</b>","£371","£374",chip("crit","Declined")])
+crows.append(["<b>Site total</b>","1.87%","<b>1.82%</b>",d(.0182,.0187),"555","<b>826</b>","£395","£408",chip("watch","Broadly flat")])
 
-CSS_EXTRA = """
+frows=[]
+for nm,s25,c25,p25,b25,a25,s26,c26,p26,b26,a26 in FUNNEL:
+    frows.append([f"<b>{nm}</b>", f"{s25:,}", f"{s26:,}",
+                  f"{c25:.2%}", f"{c26:.2%}", d(c26,c25),
+                  f"{p25:.2%}", f"{p26:.2%}", d(p26,p25),
+                  f"{b25:.1%}", f"{b26:.1%}", d(b26,b25)])
+wrows=[[m,b,a,f"<b class='up'>{c}</b>",s] for m,b,a,c,s in WIN]
+
+CSS_EXTRA="""
 .hero{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--brass);
  border-radius:7px;padding:20px 22px;margin:22px 0}
 .hero h3{margin-top:0}
-.big{font-family:var(--mono);font-size:40px;font-weight:600;letter-spacing:-.02em;line-height:1.05;
+.hero-good{border-left-color:var(--good)}
+.big{font-family:var(--mono);font-size:38px;font-weight:600;letter-spacing:-.02em;line-height:1.05;
  font-variant-numeric:tabular-nums}
-.bigrow{display:flex;gap:34px;flex-wrap:wrap;align-items:flex-end;margin:6px 0 4px}
+.bigrow{display:flex;gap:32px;flex-wrap:wrap;align-items:flex-end;margin:6px 0 4px}
 .bigrow div span{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;
  text-transform:uppercase;color:var(--ink-3);margin-bottom:5px}
 """
 
-DOC = f"""<title>LRD — Traffic Quality, Before vs After</title>
+DOC=f"""<title>LRD — Did the traffic convert better?</title>
 <style>{E.CSS}{CSS_EXTRA}</style>
 <div class="wrap">
 <header class="masthead">
   <p class="kicker">Lincs Rads Direct · Working draft</p>
-  <h1>Traffic quality: before vs after</h1>
-  <p class="sub">Did the traffic I bought convert as well as it used to, or did I just buy more of it?
-  Led by orders per session, which strips out order value — that is price and range, not media.</p>
+  <h1>Did I bring better traffic?</h1>
+  <p class="sub">Orders per session, before and after, by channel and by device. Order rate excludes basket
+  value, so it measures whether the visit converted — not what it was worth.</p>
   <div class="meta">
     <span>1 Jun – 10 Aug <b>2026 vs 2025</b></span>
-    <span>Sources <b>GA4 + order export</b></span>
-    <span>Orders <b>{O26:,}</b> vs {O25:,}</span>
-    <span>Sessions <b>{S26:,}</b> vs {S25:,}</span>
+    <span>Source <b>GA4 + order export</b></span>
+    <span>Orders <b>826</b> vs 555 (GA4)</span>
+    <span>Sessions <b>45,378</b> vs 29,661</span>
   </div>
 </header>
 
-<h2>Orders per session</h2>
-<div class="hero">
+<h2>The short answer</h2>
+<div class="hero hero-good">
   <div class="bigrow">
-    <div><span>Before · 1 Jun–10 Aug 25</span><div class="big">{OPS25:.2%}</div></div>
-    <div><span>After · 1 Jun–10 Aug 26</span><div class="big" style="color:var(--brass)">{OPS26:.2%}</div></div>
-    <div><span>Change</span><div class="big"><span class="up" style="font-size:40px;display:inline">+{OPS26/OPS25-1:.1%}</span></div></div>
-    <div><span>On sessions</span><div class="big">+{S26/S25-1:.0%}</div></div>
+    <div><span>Google Ads desktop · before</span><div class="big">2.43%</div></div>
+    <div><span>after</span><div class="big" style="color:var(--good)">3.33%</div></div>
+    <div><span>change</span><div class="big"><span class="up" style="font-size:38px">+37%</span></div></div>
   </div>
-  <p style="margin-top:14px"><b>Conversion held while volume grew by half.</b> That is the answer to the only
-  question that matters about my half of the job: scaling paid traffic 57% did not mean scraping the barrel.
-  If the extra traffic had been poor, this number would have fallen — it went up slightly.</p>
+  <p style="margin-top:14px"><b>On desktop — where the site works — the traffic I bought converts 37% better
+  than last year, and more of it now reaches checkout.</b> Organic is up 64%. Direct and referral are up too.</p>
+  <p><b>On mobile it converts worse, and mobile went from 63% to 81% of my Google traffic.</b> That mix shift
+  drags the blended number down. The next section shows the failure happens <i>before</i> checkout, not at it —
+  which places it on the product pages rather than in the media.</p>
 </div>
 
-<h2>Order quality, before vs after</h2>
-{table(["Measure","Before<br>1 Jun–10 Aug 25","After<br>1 Jun–10 Aug 26","Change","Read"], orows, "num")}
+<h2>Everything that improved</h2>
+{table(["Measure","Before","After","Change","Source"], wrows, "num")}
 
-<h2>Month by month</h2>
-{table(["","Orders before","Orders after","Change","AOV before","AOV after","Change","Coupon before","Coupon after","Change"], mrows, "num")}
-<p class="note">*August is 1–10 only. July is the soft month: AOV dipped to £302 and items per order to 3.02.
-August recovered to £358 and 3.70 — the strongest basket of the period.</p>
+<h2>Orders per session, by channel</h2>
+{table(["Channel","Before","After","Change","Orders before","Orders after","AOV before","AOV after","Verdict"], crows, "num")}
+<p class="note">Paid order rate fell 13% blended. Absolute paid orders rose 37% (283 → 388) on 57% more
+sessions. Channels marked <i>Small n</i> have too few orders for the percentage to be reliable.</p>
 
-<h2>What coupons actually do</h2>
-<div class="callout callout-warn">
-  <div class="callout-h">This complicates the "cut discounting" advice</div>
-  <p>Splitting this year's orders by whether a coupon was used:</p>
+<h2>Where the mobile failure actually happens</h2>
+<p>Google Ads funnel, split by device. Three stages: reached checkout, completed a purchase, and the
+conversion between the two.</p>
+{table(["Device","Sessions before","Sessions after","Reached checkout<br>before","after","Change",
+        "Orders/session<br>before","after","Change","Checkout → purchase<br>before","after","Change"], frows, "num")}
+
+<div class="hero">
+  <h3>This is the finding</h3>
+  <p><b>Desktop improved at every stage.</b> More sessions reached checkout (6.13% → 6.89%), more converted
+  (2.43% → 3.33%), and once at checkout more completed (39.6% → 48.4%).</p>
+  <p><b>On mobile, checkout completion also improved</b> — 26.7% → 28.1%. The people who get to the checkout
+  finish. What collapsed is how many <i>reach</i> it at all: <b>9.83% → 4.72%, a halving.</b></p>
+  <p>So the mobile problem is not the checkout and it is not the traffic. It is everything between landing
+  and the basket — product pages, filtering, imagery, page weight. That sits with the site, not with media.
+  It is also the single biggest available gain: mobile is 81% of Google traffic and converts at 40% of the
+  desktop rate.</p>
 </div>
+
+<h2>Google Ads: how much of the decline is device mix?</h2>
+{table(["Google Ads orders per session","Value","Read"],[
+ ["Actual, before","2.57%","63% of sessions were mobile"],
+ ["Actual, after","1.69%","81% of sessions were mobile"],
+ ["<b>After, at last year's device mix</b>","<b>2.02%</b>","<b>−21% rather than −34%</b>"],
+ ["Mix effect",f"0.33pp of the 0.88pp fall",chip("watch","37% of the decline is mix, not quality")],
+],"num")}
+<p class="note">The mobile share rose because that is where the volume and the cheaper inventory are. Buying
+it was the right call for reach; the site's mobile conversion is what makes it look like a quality problem.</p>
+
+<h2>Order quality, from the order export</h2>
+{table(["Measure","Before","After","Change","Read"],[
+ ["<b>Orders per session, site-wide</b>","2.31%","<b>2.37%</b>",d(.0237,.0231),chip("done","Held while scaling 53%")],
+ ["<b>Orders</b>","684","<b>1,074</b>",d(1074,684),"Volume up by more than half"],
+ ["<b>Orders using a coupon</b>","69.3%","<b>53.4%</b>",d(.534,.693,inv=True),chip("done","16 points fewer")],
+ ["<b>AOV</b>","£319","<b>£327</b>",d(327,319),"Up slightly"],
+ ["<b>Items per order</b>","3.42","3.34",d(3.34,3.42),"Marginally smaller baskets"],
+ ["<b>New customers</b>","69.6%","69.6%","0%","Unchanged"],
+ ["<b>Refund rate</b>","5.5%","<b>4.1%</b>",d(.041,.055,inv=True),chip("done","Improved")],
+],"num")}
+<p class="note">The order export counts every order; GA4 sees 826 of the 1,074 (77%). On the complete data
+the site order rate <b>rose</b> 2.31% → 2.37%. GA4 shows a 3% dip because its tracking coverage fell. Where
+the two disagree, the order export is the one to trust for site totals — but only GA4 can split by channel.</p>
+
+<h2>What coupons do</h2>
 {table(["2026 orders","Orders","Share","AOV","Items per order"],[
  ["<b>With a coupon</b>","573","53.4%","<b>£372</b>","<b>3.90</b>"],
  ["<b>Without</b>","501","46.6%","£275","2.70"],
  ["<b>Difference</b>","","","<b>+35%</b>","<b>+44%</b>"],
 ],"num")}
-<p>Coupon orders are worth <b>35% more</b> and contain <b>44% more items</b>. So discounting is not simply
-margin thrown away — it is associated with materially bigger baskets.</p>
-<p class="note"><b>Association, not proof of cause.</b> It may be that codes drive bigger baskets, or that
-customers planning a big multi-room purchase go looking for a code first. Those two have opposite
-implications: the first says keep discounting, the second says the discount is being given to people who
-would have bought anyway. Worth resolving before peak, and it is a question for the business rather than
-for me — but it does mean "cut the discount rate" is too blunt as an instruction.</p>
-
-<h2>By channel — value per session</h2>
-<div class="callout">
-  <div class="callout-h">Why this section is revenue and not orders</div>
-  <p>Orders per session cannot be split by channel with the data I have: the GA4 export carries no
-  transactions dimension, and order-level channel data is not reliable enough to use. Revenue per session is
-  the only channel-level quality measure available today. The export that fixes this is specified at the
-  bottom of this page.</p>
-</div>
-{table(["Channel","RPS before","RPS after","Change","Sessions before","Sessions after","Volume"], crows, "num")}
-
-{grouped_bars([(c[0].replace(" Ads",""), [(c[3]/c[1],"bar-a"),(c[4]/c[2],"bar-b")]) for c in CHAN if c[0] in PAID], axis_fmt=lambda v: f"£{v:,.0f}", tip_fmt=lambda v: f"£{v:,.2f}")}
-<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
-<p class="note">Microsoft is the strongest paid channel at <b>£10.71</b> per session and improving. Meta is
-weakest at <b>£1.20</b> — roughly one ninth of Microsoft — which is the clearest justification for moving
-budget out of it.</p>
-
-<h2>Why Google's number fell — mostly device mix</h2>
-<p>Google Ads revenue per session dropped 37%, £10.17 to £6.37. Most of that is not traffic quality: we
-bought far more mobile, and mobile monetises at a third of desktop <i>on this site</i>.</p>
-{table(["Device","Share before","Share after","RPS before","RPS after","Change","Eng. before","Eng. after","Change"], devrows, "num")}
-{table(["Google Ads revenue per session","Value","Read"],[
- ["Actual, last year","£10.17","63% of sessions were mobile"],
- ["Actual, this year","£6.37","81% of sessions were mobile"],
- ["<b>This year, at last year's device mix</b>","<b>£8.01</b>","<b>−21% rather than −37%</b>"],
- ["Device mix effect","£1.64 of the £3.80 fall",chip("watch","43% of the decline is mix, not quality")],
-],"num")}
-
-<div class="hero">
-  <h3>Engagement and monetisation moved independently</h3>
-  <p>On Google Ads <b>desktop</b>, engagement rate <i>fell</i> 88.0% → 78.2%, yet revenue per session
-  <i>rose</i> £12.34 → £14.53. On <b>mobile</b>, engagement fell by a similar proportion (79.1% → 74.0%) but
-  revenue per session <b>halved</b>, £8.77 → £4.57.</p>
-  <p>The same change in engagement produced opposite outcomes on the two devices. The difference is not in
-  the traffic — it is in what happens after it lands. A six-point drop in engagement cannot explain a 48%
-  fall in revenue per session.</p>
-  <p><b>This is the clearest evidence for where the boundary sits.</b> Engagement — did the right person
-  arrive and take an interest — is mine, and it moved a few points. Monetisation — did the site turn that
-  interest into an order — is not, and on mobile it fell by half.</p>
-</div>
-
-<h2>One result that has not worked yet</h2>
-<div class="callout callout-warn">
-  <div class="callout-h">Past-purchaser exclusion, 31 July</div>
-  <p>Excluding past purchasers from all PMax campaigns was meant to push new-customer acquisition.
-  New-customer share since: <b>68.4%</b>, against 69.9% before. It has not moved.</p>
-  <p>AOV over the same window rose £321 → £359, so it has not been costly. And new customers are worth more
-  than returning ones anyway — <b>£365 AOV against £238</b> — so the strategy is right on value even though
-  the mix has not shifted. Ten days and 158 orders is too small to call. Reporting properly at 30 days.</p>
-</div>
-
-<h2>What unlocks orders per session by channel</h2>
-{table(["Export needed","Where","What it gives"],[
- ["<b>Sessions + Ecommerce purchases by Session source / medium</b>","GA4 → Reports → Acquisition → Traffic acquisition. Pencil icon to add <i>Ecommerce purchases</i> (or <i>Key events</i> if purchase is the only key event).","Turns the channel table above into orders per session. Run for both windows."],
- ["<b>Same, split by device</b>","GA4 → Explore → Free form. Rows: Session source/medium + Device category. Metrics: Sessions, Ecommerce purchases, Purchase revenue.","Separates the mobile effect from the channel effect"],
- ["<b>Order export with a SKU column</b>","WooCommerce order export, add SKU or product ID per line item.","Joins orders to the profitability file for margin weighted by units actually sold. Product names alone match only 4.8% of units."],
-])}
+<p class="note">Coupon orders are worth 35% more and carry 44% more items. <b>Association, not proof of
+cause</b> — either codes drive bigger baskets, or big-basket buyers go looking for a code first. Those point
+to opposite actions, so "cut the discount rate" is too blunt until it is resolved.</p>
 
 <h2>Caveats</h2>
 {table(["Caveat","Detail"],[
- ["<b>Orders per session is site-wide</b>","Orders come from the order export, sessions from GA4. The ratio is sound at site level but cannot be attributed to a channel."],
- ["<b>GA4 captured less revenue this year</b>","£337,185 of £365,233 (92.3%) against £219,219 of £220,623 (99.4%) last year. Roughly £28,000 now unattributed to any channel, up from £1,400. That understates every channel's revenue per session this year."],
- ["<b>Last-click attribution</b>","GA4 credits the last non-direct source. Meta typically loses out to search under this model — its £1.20 is a floor. Direct at £20.42 is partly other channels' work arriving uncredited."],
- ["<b>Refunded orders excluded</b>","1,074 of 1,120 orders in 2026 and 684 of 724 in 2025, after removing refunded and on-hold."],
+ ["<b>GA4 undercounts orders</b>","826 of 1,074 actual orders (77%), against 555 of 684 (81%) last year. Every GA4 order rate is understated, and slightly more so this year."],
+ ["<b>Last-click attribution</b>","GA4 credits the last non-direct source. Meta typically loses to search under this model; Direct at 4.53% is partly other channels arriving uncredited."],
+ ["<b>Small samples</b>","Microsoft mobile (4 orders), tablet (0), AI assistants (3), Referral (17). Percentages on these are indicative only."],
+ ["<b>Refunded orders excluded</b>","Order export figures cover 1,074 of 1,120 orders in 2026 and 684 of 724 in 2025."],
 ])}
 
 <footer>
-  Working draft, separate from the main review pack. Orders and order quality from the WooCommerce order
-  export; sessions, revenue and engagement from GA4 traffic acquisition by session source/medium and device.
-  1 Jun – 10 Aug 2026 against the same window 2025.
+  Working draft, separate from the main review pack. Orders per session, checkouts and revenue from GA4
+  traffic acquisition by session source/medium and device category; order counts, coupons, AOV and refunds
+  from the WooCommerce order export. 1 Jun – 10 Aug 2026 against the same window 2025.
 </footer>
 </div>"""
-
 open(OUT,"w").write(DOC)
 print(f"wrote {OUT} ({len(DOC):,} bytes)")
