@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Traffic & acquisition review pack — built on the shared chart engine."""
+"""Traffic & acquisition review — paid media led, scoped to controllable metrics."""
 import html, importlib.util, os
 spec = importlib.util.spec_from_file_location("engine", os.path.join(os.path.dirname(__file__), "engine.py"))
 E = importlib.util.module_from_spec(spec); spec.loader.exec_module(E)
@@ -8,557 +8,426 @@ grouped_bars, line_chart, stacked_split = E.grouped_bars, E.line_chart, E.stacke
 OUT = "/home/user/europe-ad-report/traffic-review.html"
 
 # ---------------------------------------------------------------- data
-CH = [
-    ("Paid – Google", 17171,  7777, .748, .823),
-    ("Paid – Meta",   11530, 11030, .635, .696),
-    ("Organic",        5583,  2898, .688, .715),
-    ("Direct",         4811,  4632, .652, .640),
-    ("Referral",       3096,  2329, .796, .747),
-    ("Paid – Bing",    2051,   798, .745, .802),
-    ("Other",           986,   186, .414, .344),
-    ("AI assistants",   149,    11, .617, .636),
-]
-S26 = sum(c[1] for c in CH); S25 = sum(c[2] for c in CH)
-P26, P25 = 17171 + 11530 + 2051, 7777 + 11030 + 798
-O26, O25 = 5583, 2898
-SPEND = {"Google": (44934, 14937), "Bing": (10729, 2552), "Meta": (28436, 23837)}
-SESS  = {"Google": (17171, 7777), "Bing": (2051, 798), "Meta": (11530, 11030)}
-TC  = sum(v[0] for v in SPEND.values()); TC25 = sum(v[1] for v in SPEND.values())
-CPS, CPS25 = TC / P26, TC25 / P25
+CH = [("Paid – Google",17171,7777,.748,.823), ("Paid – Meta",11530,11030,.635,.696),
+      ("Organic",5583,2898,.688,.715), ("Direct",4811,4632,.652,.640),
+      ("Referral",3096,2329,.796,.747), ("Paid – Bing",2051,798,.745,.802),
+      ("Other",986,186,.414,.344), ("AI assistants",149,11,.617,.636)]
+S26=sum(c[1] for c in CH); S25=sum(c[2] for c in CH)
+P26,P25 = 17171+11530+2051, 7777+11030+798
+SPEND={"Google":(44934,14937),"Bing":(10729,2552),"Meta":(28436,23837)}
+SESS ={"Google":(17171,7777),"Bing":(2051,798),"Meta":(11530,11030)}
+TC=sum(v[0] for v in SPEND.values()); TC25=sum(v[1] for v in SPEND.values())
+CPS,CPS25 = TC/P26, TC25/P25
+CAMP=[("GGL | PMax | ALL (excl. Col/Cast)","PMax",8992,8592,1.05,9.6,4.5,73.3),
+      ("GGL | PMax | Column","PMax",7648,3315,2.31,25.0,5.7,65.6),
+      ("GGL | AI Max Search | Column","Search",1743,631,2.76,3.7,29.1,51.6),
+      ("GGL | PMax | Cast Iron","PMax",1345,1860,0.72,13.4,11.2,48.9),
+      ("GGL | Search | Brand","Search",1190,731,1.63,96.6,0.9,2.5),
+      ("GGL | AI Max Search | Electric","Search",393,151,2.60,2.0,22.0,35.8),
+      ("GGL | AI Max Search | Cast Iron","Search",262,49,5.35,1.8,23.9,53.4),
+      ("GGL | PMax | Electric","PMax",244,163,1.50,16.2,13.1,68.2)]
+WEEKCTR=[("1 Jun",1.89),("8 Jun",2.34),("15 Jun",2.23),("22 Jun",3.87),("29 Jun",3.12),
+         ("6 Jul",2.34),("13 Jul",2.19),("20 Jul",2.33),("27 Jul",1.50),("3 Aug",2.42),("10 Aug",2.70)]
+COVER=[("June",13),("July",66),("Aug 1–10",97)]
+FMT=[("Performance Max",34337),("Search",9611),("Shopping",1551),("Display",160)]
+FTOT=sum(f[1] for f in FMT)
 
-CAMP = [
-    ("GGL | PMax | ALL (excl. Col/Cast)", "PMax",   8992, 8592, 1.05,  9.6,  4.5, 73.3),
-    ("GGL | PMax | Column",               "PMax",   7648, 3315, 2.31, 25.0,  5.7, 65.6),
-    ("GGL | AI Max Search | Column",      "Search", 1743,  631, 2.76,  3.7, 29.1, 51.6),
-    ("GGL | PMax | Cast Iron",            "PMax",   1345, 1860, 0.72, 13.4, 11.2, 48.9),
-    ("GGL | Search | Brand",              "Search", 1190,  731, 1.63, 96.6,  0.9,  2.5),
-    ("GGL | AI Max Search | Electric",    "Search",  393,  151, 2.60,  2.0, 22.0, 35.8),
-    ("GGL | AI Max Search | Cast Iron",   "Search",  262,   49, 5.35,  1.8, 23.9, 53.4),
-    ("GGL | PMax | Electric",             "PMax",    244,  163, 1.50, 16.2, 13.1, 68.2),
-]
-FMT  = [("Performance Max", 34337), ("Search", 9611), ("Shopping", 1551), ("Display", 160)]
-FTOT = sum(f[1] for f in FMT)
-DEV  = [
-    ("Mobile",  35613, .785, 179888,  5.05, 22995, 4.31, .687),
-    ("Desktop",  8739, .193, 152285, 17.43,  5719, 19.93, .730),
-    ("Tablet",   1025, .023,   5012,  4.89,   947, 6.45, .777),
-]
-COVER = [("June", 13), ("July", 66), ("Aug 1–10", 97)]
-
-def chip(k, t): return f'<span class="chip chip-{k}">{t}</span>'
-def kpi(l, v, s="", tone=""):
+def chip(k,t): return f'<span class="chip chip-{k}">{t}</span>'
+def kpi(l,v,s="",tone=""):
     return (f'<div class="kpi {tone}"><div class="kpi-l">{l}</div>'
             f'<div class="kpi-v">{v}</div><div class="kpi-s">{s}</div></div>')
-def table(h, rows, cls=""):
-    th = "".join(f"<th>{x}</th>" for x in h)
-    tr = "".join("<tr>" + "".join(f"<td>{c}</td>" for c in r) + "</tr>" for r in rows)
+def table(h,rows,cls=""):
+    th="".join(f"<th>{x}</th>" for x in h)
+    tr="".join("<tr>"+"".join(f"<td>{c}</td>" for c in r)+"</tr>" for r in rows)
     return f'<div class="tw"><table class="{cls}"><thead><tr>{th}</tr></thead><tbody>{tr}</tbody></table></div>'
+SECTIONS=[]
+def sec(sid,nav,quote,title,body): SECTIONS.append((sid,nav,quote,title,body))
 
-SECTIONS = []
-def sec(sid, nav, quote, title, body): SECTIONS.append((sid, nav, quote, title, body))
-
-# ---- 1 SCORECARD -------------------------------------------------------
-sec("scorecard", "Scorecard", "What I control: where the budget goes, what it buys, and how relevant the traffic is",
-    "My scorecard", f"""
-<p class="lede">This is the part of the business I actually hold the levers on: how much we spend, which
-platforms and campaigns it goes to, what it costs to bring someone to the door, and whether the person who
-arrives is relevant. Everything in this section is a direct result of a decision I made.</p>
-
+# ---- 1 SCORECARD ------------------------------------------------------
+sec("scorecard","Scorecard","What I control: budget allocation, cost of traffic, coverage, and click quality",
+    "Scorecard", f"""
 <div class="kpis">
-{kpi("Sessions delivered", f"{S26:,}", f"vs {S25:,} LY &nbsp;<b class='up'>+{S26/S25-1:.0%}</b>")}
-{kpi("Paid sessions", f"{P26:,}", f"vs {P25:,} LY &nbsp;<b class='up'>+{P26/P25-1:.0%}</b>")}
-{kpi("Organic sessions", f"{O26:,}", f"vs {O25:,} LY &nbsp;<b class='up'>+{O26/O25-1:.0%}</b>")}
-{kpi("Cost per session", f"£{CPS:.2f}", f"vs £{CPS25:.2f} LY &nbsp;<b class='dn'>+{CPS/CPS25-1:.0%}</b>", "warn")}
-{kpi("Brand impression share", "96.6%", "only 2.5% lost to rank")}
-{kpi("Organic avg position", "12.1", "from 28.0 LY &nbsp;<b class='up'>+15.8 places</b>")}
+{kpi("Paid sessions","30,752",f"vs 19,605 LY &nbsp;<b class='up'>+{P26/P25-1:.0%}</b>")}
+{kpi("Search CTR","8.15%","vs PMax 1.60% &nbsp;<b class='up'>5.1×</b>")}
+{kpi("Brand impression share","96.6%","2.5% lost to rank")}
+{kpi("Account rebuilt","97%","of Aug spend — from 13% in June")}
+{kpi("Meta waste retired","£12,451","5 ad sets cut to zero")}
+{kpi("Cost per session","£2.73",f"vs £{CPS25:.2f} LY &nbsp;+{CPS/CPS25-1:.0%}","warn")}
 </div>
 
-<h3>The scorecard, in full</h3>
-{table(["What I control","This period","Last year","Read"], [
- ["<b>Paid sessions delivered</b>", f"{P26:,}", f"{P25:,}", chip("done",f"+{P26/P25-1:.0%}")+" More people brought to the door"],
- ["<b>Media budget allocation</b>", "G 56% / M 37% / B 7%", "G 40% / M 56% / B 4%", chip("done","Reallocated")+" Deliberate shift out of Meta into Search"],
- ["<b>Cost per session</b>", f"£{CPS:.2f}", f"£{CPS25:.2f}", chip("watch",f"+{CPS/CPS25-1:.0%}")+" Rose while scaling 57%. See Cost of traffic."],
- ["<b>Brand impression share</b>", "96.6%", "not protected", chip("done","Locked")+" Competitors cannot take our name cheaply"],
- ["<b>Spend in controllable formats</b>", "24.4% Search + Shopping", "—", chip("part","In progress")+" 75% still in PMax, which reports no queries"],
- ["<b>Account rebuilt</b>", "97% of Aug spend", "13% in June", chip("done","Near complete")+" Share of spend in campaigns I built"],
- ["<b>Waste controls</b>", "111 negatives, 4 lists", "none", chip("done","Built")+" Mirrored on Microsoft, +166 rows"],
- ["<b>Organic avg position</b>", "12.1", "28.0", chip("done","+15.8")+" Impression-weighted across 987 pages"],
- ["<b>Organic CTR</b>", "0.76%", "0.41%", chip("done",f"+85%")+" On 13% fewer impressions"],
- ["<b>Changes logged with rationale</b>", "90+", "0", chip("done","Auditable")+" Every change has a before, after and reason"],
+{table(["Metric I control","Now","Before","Verdict"],[
+ ["Paid sessions delivered","30,752","19,605",chip("done","+57%")],
+ ["Search CTR","8.15%","6.93%",chip("done","+18%")],
+ ["Budget mix (G / M / B)","56 / 37 / 7","40 / 56 / 4",chip("done","Reallocated")],
+ ["Brand impression share","96.6%","unprotected",chip("done","Locked")],
+ ["Google spend in my campaigns","97%","13%",chip("done","Rebuilt")],
+ ["Loss-making Meta ad sets","0","5 (£12,451)",chip("done","Cut")],
+ ["Negative keywords","111 + 166 MSFT","0",chip("done","Built")],
+ ["Product exclusions (MSFT)","701","0",chip("done","Built")],
+ ["Meta CPM","£7.41","£8.23",chip("done","−10%")],
+ ["Cost per session","£2.73","£2.11",chip("watch","+30% while scaling 57%")],
+ ["Bing cost per session","£5.23","£3.20",chip("crit","Mine to fix")],
+ ["Changes logged with rationale","90+","0",chip("done","Auditable")],
 ])}
 
-<div class="callout">
-  <div class="callout-h">What this section deliberately does not contain</div>
-  <p>Conversion rate, average order value and revenue are not here. Not because they don't matter — they
-  matter more than anything — but because they are the product of my work <i>and</i> price, stock, range,
-  site build and season. I report them in <a href="#commercial" class="jump" data-go="commercial">Commercial
-  outcome</a> without claiming or dodging them. Where I can see something outside my remit costing us money,
-  it goes in the <a href="#escalation" class="jump" data-go="escalation">Escalation register</a> with a name
-  against it.</p>
-</div>""")
+<p class="note">Conversion rate, AOV and revenue are not on this scorecard. They are the product of media
+<i>and</i> price, stock, range, site and season. Reported in <a href="#commercial" class="jump" data-go="commercial">Commercial</a>.</p>""")
 
-# ---- 2 MEDIA MIX -------------------------------------------------------
-mixrows = []
-for nm, a, b, er, erL in CH:
-    yoy = f"<b class='up'>+{a/b-1:.0%}</b>" if a >= b else f"<b class='dn'>{a/b-1:.0%}</b>"
-    mixrows.append([f"<b>{nm}</b>", f"{a:,}", f"{a/S26:.1%}", f"{b:,}", f"{b/S25:.1%}", yoy, f"{er:.0%}", f"{erL:.0%}"])
-mixrows.append(["<b>Total</b>", f"<b>{S26:,}</b>", "100%", f"<b>{S25:,}</b>", "100%",
-                f"<b class='up'>+{S26/S25-1:.0%}</b>", "", ""])
+# ---- 2 WINS -----------------------------------------------------------
+sec("wins","What I did","The work, and what it produced",
+    "What I did", f"""
+<p class="lede">Six things. Each one a decision I made, with the number it produced.</p>
 
-sec("mix", "Media mix", "Traffic share between paid and organic, and the changes within the paid mix",
-    "Where the traffic came from", f"""
-<div class="kpis">
-{kpi("Total sessions", f"{S26:,}", f"<b class='up'>+{S26/S25-1:.0%}</b> YoY")}
-{kpi("Paid share", f"{P26/S26:.1%}", f"vs {P25/S25:.1%} LY — broadly held")}
-{kpi("Organic share", f"{O26/S26:.1%}", f"vs {O25/S25:.1%} LY &nbsp;<b class='up'>growing</b>")}
+<div class="tri">
+  <div class="tri-card tri-a"><div class="tri-h">1 · Protected the brand</div>
+  <p>Brand exclusion list applied to every PMax campaign. PMax can no longer serve on our own name and claim
+  the conversion.</p>
+  <p class="tri-f"><b>96.6%</b> brand impression share · only 2.5% lost to rank · £1,190 to hold it</p></div>
+
+  <div class="tri-card tri-a"><div class="tri-h">2 · Moved budget where I can see it</div>
+  <p>Out of Performance Max, into Search. PMax publishes no search term data; Search does.</p>
+  <p class="tri-f">Search <b>8.15%</b> CTR vs PMax <b>1.60%</b> — 5.1× better</p></div>
+
+  <div class="tri-card tri-a"><div class="tri-h">3 · Rebuilt the account</div>
+  <p>Eight campaigns rebuilt and renamed on a <code>GGL |</code> / <code>MSFT |</code> convention. Listing
+  groups subdivided by price band.</p>
+  <p class="tri-f">Share of Google spend in campaigns I built: <b>13% → 97%</b></p></div>
+
+  <div class="tri-card tri-a"><div class="tri-h">4 · Cut the Meta bleed</div>
+  <p>Five prospecting ad sets retired. The takeover checklist estimated cold prospecting was losing ~£14k a
+  quarter.</p>
+  <p class="tri-f"><b>£12,451</b> of last year's spend now at zero · CPM <b>−10%</b></p></div>
+
+  <div class="tri-card tri-a"><div class="tri-h">5 · Built the waste controls</div>
+  <p>Four shared negative lists, mirrored across Google and Microsoft. Product-level exclusions on cast iron.</p>
+  <p class="tri-f"><b>111</b> negatives · <b>166</b> MSFT rows · <b>701</b> product exclusions</p></div>
+
+  <div class="tri-card tri-a"><div class="tri-h">6 · Scaled the traffic</div>
+  <p>Paid sessions up 57% on a deliberate reallocation from Meta into search intent.</p>
+  <p class="tri-f">Google <b>+121%</b> · Bing <b>+157%</b> · total paid <b>+57%</b></p></div>
 </div>
 
-<h3>Sessions by channel</h3>
-{grouped_bars([(c[0].replace("Paid – ",""), [(c[1],"bar-a"),(c[2],"bar-b")]) for c in CH[:6]])}
-<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
-
-{table(["Channel","Sessions","Share","LY","LY share","YoY","Eng. rate","LY"], mixrows, "num")}
-
-<h3>The shift inside paid</h3>
-{stacked_split([
-  ("This year", [("Google",17171,"seg-a"),("Meta",11530,"seg-b"),("Bing",2051,"seg-c")]),
-  ("Last year", [("Google",7777,"seg-a"),("Meta",11030,"seg-b"),("Bing",798,"seg-c")]),
-])}
-<div class="legend"><span class="lg"><i class="sw sw-a"></i>Google</span><span class="lg"><i class="sw sw-b"></i>Meta</span><span class="lg"><i class="sw sw-c"></i>Bing</span></div>
-
-<p><b>This is the single clearest thing I did.</b> Last year Meta was the majority of paid traffic at 56%.
-Today Google is, at 56%, and Meta is 37%. That was not drift — it was a series of deliberate budget
-decisions: retiring five Meta ad sets that were burning money, and pushing the freed budget into search,
-where intent already exists.</p>
-
-<h3>Paid versus organic</h3>
-{table(["","Sessions","Share of all traffic","LY sessions","LY share","YoY"], [
- ["<b>Paid</b>", f"{P26:,}", f"{P26/S26:.1%}", f"{P25:,}", f"{P25/S25:.1%}", f"<b class='up'>+{P26/P25-1:.0%}</b>"],
- ["<b>Organic</b>", f"{O26:,}", f"{O26/S26:.1%}", f"{O25:,}", f"{O25/S25:.1%}", f"<b class='up'>+{O26/O25-1:.0%}</b>"],
- ["<b>Direct + referral</b>", f"{4811+3096:,}", f"{(4811+3096)/S26:.1%}", f"{4632+2329:,}", f"{(4632+2329)/S25:.1%}", f"<b class='up'>+{(4811+3096)/(4632+2329)-1:.0%}</b>"],
-], "num")}
-<p class="note">Organic grew faster than paid (+93% vs +57%) and now makes up a larger share of the mix than
-last year. That is the healthier direction of travel: it is the only channel where the traffic keeps arriving
-after you stop paying.</p>
-
-<div class="callout">
-  <div class="callout-h">One to watch — AI assistants</div>
-  <p>Sessions from ChatGPT, Gemini, Perplexity and Copilot went from <b>11 to 149</b>. Still tiny, but it is
-  the fastest-growing source on the site by a distance, and it is not something we are doing anything to earn
-  yet. Worth a proper look before it stops being tiny.</p>
-</div>""")
-
-# ---- 3 COST OF TRAFFIC -------------------------------------------------
-cprows = []
-for k in ("Google", "Bing", "Meta"):
-    c, c25 = SPEND[k]; s, s25 = SESS[k]
-    cprows.append([f"<b>{k}</b>", f"£{c:,.0f}", f"£{c25:,.0f}", f"{s:,}", f"{s25:,}",
-                   f"<b>£{c/s:.2f}</b>", f"£{c25/s25:.2f}",
-                   f"<b class='dn'>+{(c/s)/(c25/s25)-1:.0%}</b>", f"<b class='up'>+{s/s25-1:.0%}</b>"])
-cprows.append(["<b>Blended</b>", f"<b>£{TC:,.0f}</b>", f"<b>£{TC25:,.0f}</b>", f"<b>{P26:,}</b>", f"<b>{P25:,}</b>",
-               f"<b>£{CPS:.2f}</b>", f"<b>£{CPS25:.2f}</b>",
-               f"<b class='dn'>+{CPS/CPS25-1:.0%}</b>", f"<b class='up'>+{P26/P25-1:.0%}</b>"])
-
-sec("cost", "Cost of traffic", "Spend and the efficiency of what it bought",
-    "What the traffic cost", f"""
-<p class="lede">Cost per session is the cleanest measure of my half of the job. It is what we paid to get a
-person onto the site, before anything about price, product or the site itself comes into play.</p>
-
-<div class="kpis">
-{kpi("Blended cost per session", f"£{CPS:.2f}", f"vs £{CPS25:.2f} LY", "warn")}
-{kpi("Cheapest channel", "Meta £2.47", "then Google £2.62")}
-{kpi("Most expensive", "Bing £5.23", "2x Google — needs fixing", "crit")}
-</div>
-
-{table(["Channel","Spend","LY spend","Sessions","LY sessions","Cost/session","LY","Change","Volume"], cprows, "num")}
-
-<div class="callout callout-warn">
-  <div class="callout-h">Being straight about this one</div>
-  <p>Cost per session rose <b>{CPS/CPS25-1:.0%}</b>. I am not going to dress that up. But the mechanism
-  matters: we bought <b>{P26/P25-1:.0%} more traffic</b>, and in an auction you do not buy 57% more volume at
-  the same price — you move up the demand curve. The relevant question is not "did it get more expensive"
-  but "was the extra volume worth what it cost", and that is answered by the impression share data in
-  <a href="#google" class="jump" data-go="google">Google Ads</a>: our best Search campaigns are still losing
-  a fifth to a third of available impressions purely to budget, which means cheap growth is still on the
-  table.</p>
-</div>
-
-<h3>Bing is the outlier</h3>
-<p>Bing costs <b>£5.23 a session against Google's £2.62</b> — twice as much for the same job, in a market
-where Bing clicks are normally cheaper, not dearer. Spend went from £2,552 to £10,729 on my watch, so this
-is mine to answer for. The Microsoft campaigns spent much of July and August heavily constrained by budget
-(lost impression share to budget hit 88% on some days for PMax Column and 90% for Cast Iron), which forces
-the bidding into the most expensive slots. Fixing the pacing there is the single clearest efficiency job I
-have in the next 30 days.</p>
-
-<h3>Meta: fewer clicks, cheaper impressions</h3>
-{table(["Metric","This year","Last year","Change"], [
- ["Spend","£28,454","£23,787","<b class='dn'>+19.6%</b>"],
- ["Impressions","3,839,972","2,889,732","<b class='up'>+32.9%</b>"],
- ["Link clicks","25,548","26,097","<b class='dn'>−2.1%</b>"],
- ["CPM","£7.41","£8.23","<b class='up'>−10.0%</b>"],
- ["Cost per link click","£1.11","£0.91","<b class='dn'>+22%</b>"],
-], "num")}
-<p class="note">Meta bought more reach more cheaply but converted less of it into clicks. That is the honest
-read and it is the weakest part of my paid performance. What offsets it is what was removed — see below.</p>
-
-<h3>What I retired on Meta</h3>
-<p>Five ad sets that spent <b>£12,451</b> in the same window last year are now at zero:</p>
-{table(["Ad set","LY spend","Status"], [
- ["LA Competition Winners – April Sale","£5,100",chip("crit","Retired")],
- ["Prospecting – Feb Sale FAC","£4,868",chip("crit","Retired")],
- ["Prospecting – Creative Testing","£1,160",chip("crit","Retired")],
- ["Best Sellers DPA","£984",chip("crit","Retired")],
- ["Prospecting – May UGC","£339",chip("crit","Retired")],
-], "num")}
-<p class="note">The takeover checklist estimated cold prospecting was losing around £14k a quarter. The
-£12,451 retired here is the same money, and it now sits in Instant Experience and BOFU Prospecting instead.</p>""")
-
-# ---- 4 GOOGLE ADS ------------------------------------------------------
-camprows = []
-for nm, ty, cost, clicks, cpc, isv, lb, lr in CAMP:
-    tone = "crit" if lb >= 20 else ("watch" if lb >= 10 else "done")
-    camprows.append([f"<b>{nm}</b>", ty, f"£{cost:,}", f"{clicks:,}", f"£{cpc:.2f}",
-                     f"{isv:.1f}%", chip(tone, f"{lb:.1f}%"), f"{lr:.1f}%"])
-
-sec("google", "Google Ads", "Where the impressions were won and lost, and why",
-    "Google Ads — coverage and control", f"""
-<div class="kpis">
-{kpi("Live campaigns", "8", "all rebuilt and renamed")}
-{kpi("Blended CPC", "£1.41", "across my campaigns")}
-{kpi("Brand impression share", "96.6%", "2.5% lost to rank")}
-{kpi("Spend in my campaigns", "97%", "August — from 13% in June")}
-{kpi("Non-brand share of spend", "97.4%", "we buy demand, not our own name")}
-{kpi("Spend with query visibility", "24.4%", "the rest is PMax", "crit")}
-</div>
-
-<h3>How much of the account is now mine</h3>
-{line_chart([(c[0], c[1]) for c in COVER], fmt="{:.0f}", unit="%", floor_zero=True)}
-<p class="note">Share of Google spend running through campaigns I built or restructured: <b>13% in June,
-66% in July, 97% in August</b>. The June figure is right — I started on 1 June but did not take the account
-over until the 25th, so most of that month's spend was still the inherited setup. Caveat worth stating: the
-Google export lists currently-existing campaigns only, so the gap is legacy campaigns since removed.</p>
-
-<h3>Campaign by campaign</h3>
-{table(["Campaign","Type","Spend","Clicks","CPC","Impr. share","Lost to BUDGET","Lost to RANK"], camprows, "num")}
-
-<div class="callout callout-crit">
-  <div class="callout-h">The most important number on this page</div>
-  <p>Impression share lost splits into two very different things. <b>Lost to rank</b> is mine — it means my
-  bids, quality or relevance were not good enough. <b>Lost to budget</b> is not mine — it means the campaign
-  was capable of showing and we chose not to fund it.</p>
-  <p>Our three best Search campaigns are losing <b>29.1%, 23.9% and 22.0%</b> of available impressions to
-  budget. That is demand we are already qualified to win, at a price we already know, going to competitors
-  because the budget runs out. Going into peak, that is the cheapest growth available to us — and it needs a
-  decision from you, not a change from me.</p>
-</div>
-
-<h3>Why I moved budget out of Performance Max</h3>
-{stacked_split([("Google spend", [(f[0], f[1], c) for f, c in zip(FMT, ["seg-b","seg-a","seg-c","seg-c"])])])}
-<p><b>{34337/FTOT:.0%} of Google spend runs through Performance Max, and Google publishes no search term
-data for it at all.</b> Across the whole period I can see <b>4,243 named search terms totalling £1,907</b> —
-about 4% of spend. For the other three quarters I am told the total and nothing else.</p>
-<p>That is why budget has been moving into Search. It is not only that Search performs better — it is that
-Search is a format where I can see the query, judge whether it was relevant, and add a negative if it was
-not. Moving money from PMax to Search converts spend I cannot control into spend I can. If you want me
-accountable for traffic quality, this is the mechanism that makes it possible.</p>
-
-<h3>Brand versus non-brand</h3>
-{table(["","Spend","Share of Google spend","Clicks","CPC","CTR"], [
- ["<b>Brand</b>","£1,190","2.6%","731","£1.63","38.7%"],
- ["<b>Non-brand</b>","£44,468","97.4%","—","—","—"],
-], "num")}
-<p class="note">Brand costs us £1,190 to hold 96.6% impression share and defend the name. Everything else —
-97.4% of the budget — goes on people who have never heard of us. That is the right shape: we are buying
-incremental demand, not paying to appear in front of customers who were already coming.</p>""")
-
-# ---- 5 QUALITY ---------------------------------------------------------
-sec("quality", "Traffic quality", "Whether the people I brought were the right people",
-    "Was the traffic any good?", f"""
-<p class="lede">Engagement rate is the fairest quality measure I have. It captures whether the person I paid
-for stayed and did something — which is my responsibility — and stops short of whether they bought, which
-depends on price, stock and the site.</p>
-
-<div class="kpis">
-{kpi("Paid Google engagement", "74.8%", "vs 82.3% LY", "warn")}
-{kpi("Paid Bing engagement", "74.5%", "vs 80.2% LY", "warn")}
-{kpi("Paid Meta engagement", "63.5%", "vs 69.6% LY", "warn")}
-{kpi("Organic engagement", "68.8%", "vs 71.5% LY")}
-{kpi("Negatives applied", "111", "across 4 shared lists")}
-{kpi("Search terms reviewed", "4,243", "51 added, 30 excluded")}
-</div>
-
-<h3>Engagement rate by channel</h3>
-{grouped_bars([(c[0].replace("Paid – ",""), [(c[3]*100,"bar-a"),(c[4]*100,"bar-b")]) for c in CH[:6]])}
-<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
-
-<div class="callout callout-warn">
-  <div class="callout-h">Engagement is down and I want to be the one who says so</div>
-  <p>Paid Google engagement fell from 82.3% to 74.8%. Every paid channel softened. The mechanism is
-  scale: at 7,777 sessions you are buying only the most obviously relevant traffic; at 17,171 you are
-  reaching further out. Some dilution is the price of growth and I would expect it.</p>
-  <p>What I would not accept is dilution I cannot see. Three quarters of Google spend is in a format that
-  reports no queries, so for most of the budget I am judging relevance from engagement rate alone rather
-  than from the search terms themselves. Getting more spend into Search fixes that, and it is why the number
-  matters more than it looks.</p>
-</div>
-
-<h3>Waste controls built</h3>
-{table(["Control","Scale","Where"], [
- ["Repair / DIY / informational negatives","38 keywords","Google + mirrored on Microsoft"],
- ["Second-hand & reclaimed negatives","20 keywords","Google + Microsoft"],
- ["Competitor & other brands negatives","24 keywords","Google + Microsoft"],
- ["Parts / accessories / non-product negatives","29 keywords","Google + Microsoft"],
- ["Microsoft cast iron & column negatives","166 rows","Microsoft"],
- ["Microsoft product exclusions","701 rows","Microsoft PMax Cast Iron"],
- ["Brand exclusion list (ID 11160977849)","all PMax campaigns","Google"],
-])}
-<p class="note">None of this existed at takeover. The brand exclusion list is the one that matters most: it
-stops Performance Max serving on our own name and claiming credit for conversions we would have won anyway.</p>""")
-
-# ---- 6 SEO -------------------------------------------------------------
-sec("seo", "SEO", "Slower to move and less directly controllable, but mine to direct",
-    "Organic search", f"""
-<p class="lede">Less immediate control here than in paid — I can direct the work but rankings move on
-Google's timetable, not mine. Google Search Console, same window, both years.</p>
-
-<div class="kpis">
-{kpi("Organic clicks", "5,828", "vs 3,575 LY &nbsp;<b class='up'>+63%</b>")}
-{kpi("Avg position", "12.1", "from 28.0 &nbsp;<b class='up'>+15.8 places</b>")}
-{kpi("CTR", "0.76%", "vs 0.41% &nbsp;<b class='up'>+85%</b>")}
-{kpi("Impressions", "764,599", "vs 880,914 &nbsp;<b class='dn'>−13%</b>")}
-{kpi("Pages ranking", "987", "vs 977 LY")}
-{kpi("Rank tracker", "492 kw", "baseline now established")}
-</div>
-
-<div class="callout">
-  <div class="callout-h">Read the impression drop the right way</div>
-  <p>Impressions fell 13% while clicks rose 63%. That is not a loss — it is the shape you want. We stopped
-  appearing on page four for things nobody clicks, and started appearing on page one for things people buy.
-  Average position went from 28.0 to 12.1 and CTR nearly doubled. Fewer, better impressions.</p>
-</div>
-
-<h3>Biggest page movements</h3>
-{table(["Page","Clicks LY","Clicks now","Position LY","Now"], [
- ["<code>/</code> (homepage)","563","<b>1,673</b>","29.5","<b>7.6</b>"],
- ["<code>/product-category/column-radiators/</code>","111","<b>635</b>","22.3","<b>8.2</b>"],
- ["<code>/product-category/antique-brass/</code>","0","<b>164</b>","—","<b>6.5</b>"],
- ["<code>/blog/…landlords-central-heating…</code>","0","<b>147</b>","—","<b>5.4</b>"],
- ["<code>/product-category/traditional-radiators/</code>","2","<b>59</b>","25.3","<b>8.8</b>"],
- ["<code>/product-category/cream-radiators/</code>","64","<b>120</b>","7.3","<b>4.4</b>"],
- ["<code>/product-category/heat-pump-compatible-radiators/</code>","500","<b>540</b>","9.4","<b>6.1</b>"],
-], "num")}
-
-<h3>By page type</h3>
-{table(["Page type","Clicks","LY","Change"], [
- ["Homepage","1,802","632","<b class='up'>+185%</b>"],
- ["Category pages","2,065","1,050","<b class='up'>+97%</b>"],
- ["Product pages","875","566","<b class='up'>+55%</b>"],
- ["Blog","949","1,226","<b class='dn'>−23%</b>"],
- ["Other","137","101","<b class='up'>+36%</b>"],
-], "num")}
-<p class="note"><b>Blog is the weak spot and it is mine.</b> Down 23%, with the BTU calculator guide alone
-losing 294 clicks. Commercial pages grew strongly, which is the right priority order, but the informational
-content has been left to drift while I rebuilt the ad accounts. It goes on the plan.</p>
-
-<div class="callout callout-crit">
-  <div class="callout-h">The biggest SEO opportunity is CTR, not rankings</div>
-  <p>We hold good positions and get too few clicks from them. The column radiators category sits at position
-  <b>8.2</b> and takes <b>635 clicks from 89,900 impressions — a 0.71% CTR</b>. The cast iron category sits at
-  position <b>6.7</b> with a <b>0.50% CTR</b>. At those positions you would normally expect several times
-  that.</p>
-  <p>Ahrefs shows <b>89 pages where our page title and the title Google displays do not match</b> — Google is
-  rewriting our titles because they are not earning the click. Rewriting titles and meta descriptions on the
-  pages that already rank is the highest-return SEO work available, and it needs no developer and no
-  budget. It is the first thing I will do in September.</p>
-</div>""")
-
-# ---- 7 DEVICE ----------------------------------------------------------
-devrows = []
-for nm, s, sh, rev, rps, s25v, rps25, er in DEV:
-    devrows.append([f"<b>{nm}</b>", f"{s:,}", f"{sh:.1%}", f"{er:.1%}", f"£{rev:,.0f}",
-                    f"£{rps:.2f}", f"£{rps25:.2f}"])
-
-sec("device", "Device", "The mobile question, finally answered",
-    "Mobile versus desktop", f"""
-<p class="lede">You asked about mobile at the last review and I could not answer it. I can now.</p>
-
-<div class="kpis">
-{kpi("Mobile share of sessions", "78.5%", "35,613 sessions")}
-{kpi("Mobile share of revenue", "53.4%", "£179,888", "warn")}
-{kpi("Mobile revenue/session", "£5.05", "vs desktop £17.43", "crit")}
-</div>
-
-{table(["Device","Sessions","Share","Engagement","Revenue","Rev/session","LY rev/session"], devrows, "num")}
-
-<div class="callout callout-crit">
-  <div class="callout-h">Four out of five visitors are on a phone. They generate half the revenue.</div>
-  <p>A desktop session is worth <b>£17.43</b>. A mobile session is worth <b>£5.05</b> — three and a half times
-  less. On paid Google specifically it is £14.53 desktop against £4.57 mobile.</p>
-  <p>I can shift budget toward desktop at the margin, and I will where it is sensible. But 78.5% of the
-  market is on a phone and we cannot buy our way around that — the traffic is where the traffic is. The gap
-  between £5.05 and £17.43 is not a media problem. It is what happens to a phone user once they land.</p>
-  <p>This is the clearest example of the boundary I want to agree with you. Finding it, sizing it and
-  bringing it to you is my job. Fixing the mobile experience is not — that is Liam and a developer. It is
-  logged in the <a href="#escalation" class="jump" data-go="escalation">escalation register</a> as the
-  highest-value item on it.</p>
-</div>
-
-<p class="note">One honest note in the other direction: mobile revenue per session actually <b>improved</b>
-year on year, from £4.31 to £5.05 (+17%), while desktop fell from £19.93 to £17.43 (−13%). So mobile is
-getting better, not worse. The gap is still the gap.</p>""")
-
-# ---- 8 ESCALATION ------------------------------------------------------
-sec("escalation", "Escalation", "Things costing us money that sit outside my remit",
-    "Escalation register", """
-<p class="lede">Things I can see from where I sit that are costing us money, and that I cannot fix myself.
-Each one needs an owner. I have left the owner column blank on purpose — I would like to fill it in with you
-in the meeting rather than assume.</p>
-
-""" + table(["Issue","What it is costing","Suggested owner","Raised","Owner agreed"], [
- ["<b>Mobile converts at a third of desktop</b>","78.5% of sessions at £5.05/session vs £17.43 desktop. The single largest value gap in the business.","Liam + dev","11 Aug","&nbsp;"],
- ["<b>Cast iron SKUs ineligible in the product feed</b>","Windsor £2,167, Oxford £2,320, Mayfair £1,470, Victorian £924–1,116 all marked \"Not eligible — excluded product or listing group\". Two campaigns built to sell products that cannot serve.","Product data — <i>unowned</i>","11 Aug","&nbsp;"],
- ["<b>Discounting at 13.3% of gross, 16.6% in August</b>","£55,669 over the period — comparable to the entire media budget, with none of the scrutiny. Every 1pt = £4,196.","Owner / commercial","11 Aug","&nbsp;"],
- ["<b>Search campaigns capped by budget</b>","Best Search campaigns losing 22–29% of impressions to budget, not rank. Cheapest available growth before peak.","Owner — budget decision","11 Aug","&nbsp;"],
- ["<b>Titles rewritten by Google on 89 pages</b>","Good rankings, poor CTR. Column radiators 0.71% CTR at position 8.2.","Me — Sept","11 Aug",chip("done","Mine")],
- ["<b>612 pages with broken JavaScript</b>","Flagged as errors in crawl. Risks rendering and anything measurement-dependent.","Liam + dev","11 Aug","&nbsp;"],
- ["<b>986 unattributable sessions (2.2%)</b>","Up from 186 LY. Engagement 41% vs 69% site average — points at a tracking or redirect fault.","Me — investigating","11 Aug",chip("done","Mine")],
- ["<b>Gross margin unknown</b>","Every efficiency judgement rests on an inferred 29.8%. With the real number by category I can tell you which categories are worth buying traffic for.","Owner","11 Aug","&nbsp;"],
-]) + """
-<div class="callout">
-  <div class="callout-h">Why this section exists</div>
-  <p>Not to push work onto other people. It is so that things I can see but cannot fix have somewhere to go
-  other than my own head — and so that in three months nobody has to reconstruct who knew what and when.
-  Two of the eight are mine and marked as such.</p>
-</div>""")
-
-# ---- 9 NEXT 90 ---------------------------------------------------------
-sec("next", "Next 90", "Priorities, and what I need from you",
-    "The next 90 days", f"""
-<p class="lede">Framed around peak. Everything structural finishes before October; October to December is
-monitoring and budget only.</p>
-
-<h3>New channels to stand up</h3>
-{table(["Initiative","What it is","Timing","Status"], [
- ["<b>Influencer partnership — RunRagged</b>","Partnership via The VIP Suite. I know the owner directly, so this starts warm rather than cold.","Sept — first activity before peak",chip("part","To scope")],
- ["<b>Pinterest Ads</b>","Set up and live. Strong fit: high-intent interiors audience, visual product, and a channel our competitors are not crowding.","Sept build, live for Oct",chip("part","To build")],
- ["<b>AWIN affiliate programme</b>","Affiliate marketing on a cost-per-sale basis — the only channel here where we pay after the sale rather than before it.","Oct launch",chip("part","To build")],
-])}
-<p class="note">All three widen the acquisition mix beyond Google and Meta, which currently carry 93% of paid
-traffic between them. Affiliate in particular changes the risk shape: we pay on results, not on clicks.</p>
-
-<h3>Month by month</h3>
-{table(["","Paid","SEO","Measurement"], [
- ["<b>Aug</b>","Fix Bing cost per session — pacing and budget caps. Decision on PMax Cast Iron.","Title and meta rewrites on the pages that already rank.","Close the 986 unattributed sessions."],
- ["<b>Sept</b>","Pinterest built. RunRagged scoped. Peak budgets agreed and set.","Cast iron hub. Blog recovery started.","Device-level reporting standing. First clean brand vs non-brand read."],
- ["<b>Oct–Dec</b>","<b>Peak — monitoring and budget only.</b> AWIN launches. No structural changes.","Colour variant pages ship.","Monthly pack in this format, automated."],
- ["<b>Jan</b>","Post-peak rebuild on what peak taught us.","Technical debt with dev.","Re-baseline. First true YoY ranking comparison."],
-])}
-
-<h3>What I need from you</h3>
-{table(["Ask","Why it matters","When"], [
- ["<b>A peak budget envelope</b>","Our best Search campaigns lose 22–29% of impressions to budget. I need to know the ceiling to plan against, and this is the cheapest growth on the table.",chip("crit","By mid-Sept")],
- ["<b>Blended gross margin by category</b>","Every efficiency judgement I make rests on an inferred 29.8%. With the real number I can tell you which categories to buy traffic for and which to stop.",chip("crit","This week")],
- ["<b>An owner for product feed data</b>","Cast iron broke because nobody owns feed eligibility. Name someone and I will build a weekly check around them.",chip("warn","This month")],
- ["<b>Agreement on what I am measured on</b>","The scorecard in this pack. If you want to hold me to something else, I would rather know now than in January.",chip("warn","Today")],
-])}
-
-<h3>What I need from Liam and Flora</h3>
-{table(["Who","Ask"], [
- ["<b>Liam</b>","Mobile experience is the biggest value gap in the business — a phone session is worth a third of a desktop one. Plus 612 pages with broken JavaScript. Half a day to scope, then an estimate."],
- ["<b>Flora</b>","About a day a week: daily flash entry, weekly search-term pulls, and a weekly feed health check. I will write the procedures first so it is a clean handover."],
-])}
-
-<h3>What success looks like by month 6</h3>
-{table(["Measure — all within my control","Today","Month 6"], [
- ["Cost per session, blended","£2.73","<b>£2.50 or better</b>"],
- ["Bing cost per session","£5.23","<b>Under £3.50</b>"],
- ["Google spend with query visibility","24.4%","<b>40%+</b>"],
- ["Paid Google engagement rate","74.8%","<b>Back above 78%</b>"],
- ["Impressions lost to budget on Search","22–29%","<b>Under 10%</b>"],
- ["Organic clicks","5,828","<b>9,000+</b> through peak"],
- ["Organic CTR","0.76%","<b>1.2%+</b>"],
- ["Blog clicks","949","<b>Back above 1,226</b> (LY level)"],
- ["Live acquisition channels","3","<b>6</b> — plus Pinterest, affiliate, influencer"],
- ["Escalations with a named owner","0 of 8","<b>8 of 8</b>"],
+<h3>Before and after</h3>
+{table(["","At takeover (9 Jun)","Now"],[
+ ["Brand in PMax","Not excluded — cannibalising branded conversions","Excluded on all campaigns, 96.6% IS"],
+ ["Campaign naming","Legacy agency <code>ec1 -</code> names","<code>GGL |</code> / <code>MSFT |</code> convention"],
+ ["Negative keywords","None","111 across 4 shared lists, mirrored"],
+ ["Bing cost data in GA4","Missing — £22,860 revenue, no cost","Flowing"],
+ ["Meta cold prospecting","~£14k/quarter loss","Retired — £12,451 of LY spend at zero"],
+ ["Account access","Agency card, editor only","Transferred, admin"],
+ ["Change record","None","90+ changes, each with before / after / reason"],
+ ["Search campaigns","None running","4 live, 8.15% CTR"],
 ])}""")
 
-# ---- 10 COMMERCIAL -----------------------------------------------------
-sec("commercial", "Commercial", "Sales, spend and ROAS — reported, shared ownership",
-    "Commercial outcome", f"""
+# ---- 3 CTR ------------------------------------------------------------
+sec("ctr","CTR","Did restructuring the account improve click quality?",
+    "Structure and CTR", f"""
+<p class="lede">CTR is the cleanest engagement signal I own. It says whether the ad matched the intent.
+Split by format, because blended CTR hides the answer.</p>
+
 <div class="kpis">
-{kpi("Net sales", "£365,233", "vs £220,623 LY &nbsp;<b class='up'>+66%</b>")}
-{kpi("Media spend", "£82,238", "vs £40,896 LY &nbsp;+101%")}
-{kpi("Blended ROAS", "4.44x", "vs 5.39x LY")}
-{kpi("Orders", "1,061", "vs 668 LY &nbsp;<b class='up'>+59%</b>")}
-{kpi("AOV", "£344", "vs £330 LY &nbsp;<b class='up'>+4%</b>")}
-{kpi("Discount", "13.3% of gross", "16.6% in August")}
+{kpi("Search CTR","8.15%","up from 6.93% during rebuild")}
+{kpi("PMax CTR","1.60%","down from 2.28%","warn")}
+{kpi("Gap","5.1×","Search vs PMax")}
 </div>
 
-<p>Reported without commentary or defence. These numbers move with price, stock, range, the site and the
-season as much as with media, so I do not present them as a scorecard for my work — but they are the
-business's numbers and they should be in front of you every month.</p>
+{table(["Format","Pre-handover<br>1–24 Jun","Rebuild<br>25 Jun–30 Jul","Post-restructure<br>31 Jul–10 Aug","Direction"],[
+ ["<b>Search</b> — my campaigns, my keywords, my negatives","not running","6.93%","<b>8.15%</b>",chip("done","↑ +18%")],
+ ["<b>Performance Max</b> — Google's black box","2.28%","2.19%","<b>1.60%</b>",chip("crit","↓ −30%")],
+ ["<b>Blended account</b>","2.28%","2.34%","1.79%",chip("watch","mix effect")],
+],"num")}
 
-<p class="note">Two points of context rather than argument. Last July the Google account was close to
-dormant — LY spend that month was £2,412 against £18,889 this year — so the 5.39x LY ROAS is the arithmetic
-of a near-zero denominator rather than a standard we previously held. And on 31 July I excluded past
-purchasers from all PMax campaigns to force new-customer acquisition, logging at the time that ROAS and
-conversion rate would fall short term; ROAS went 4.48x to 4.23x while AOV rose from £338 to £388.</p>
+<div class="callout callout-crit">
+  <div class="callout-h">Read the blended number correctly</div>
+  <p>Blended CTR fell because <b>PMax is 97% of impressions</b> and PMax CTR is structurally low — it buys
+  Display and YouTube inventory, not just search. Search is only <b>2.9%</b> of impressions but converts
+  attention five times better.</p>
+  <p>Where I control the query, CTR went <b>up 18%</b>. Where Google controls it, CTR fell 30%. That gap is
+  the entire argument for moving budget into Search — and it is the number I would judge me on.</p>
+</div>
+
+<h3>Weekly account CTR</h3>
+{line_chart(WEEKCTR, fmt="{:.1f}", unit="%")}
+<p class="note">The dip to <b>1.50%</b> in w/c 27 July is the restructure itself — 90+ changes landed that
+week, including the past-purchaser exclusion. The two weeks since are <b>2.42%</b> and <b>2.70%</b>, the
+strongest since June. The account absorbed the changes and came back better.</p>
+
+<h3>Why PMax CTR fell — being straight about it</h3>
+{table(["Cause","Effect","Mine?"],[
+ ["PMax impressions scaled ~20× as budget moved in","Reaches further into low-intent Display and YouTube inventory",chip("part","Partly — I scaled it")],
+ ["Past-purchaser exclusion, 31 Jul","Removed the highest-CTR audience in the account. Logged at the time as a deliberate trade-off.",chip("done","Yes — intentional")],
+ ["Google does not report PMax queries","I cannot add negatives to what I cannot see",chip("crit","No — platform limit")],
+])}
+<p class="note">The fix is not to tune PMax. It is to keep shifting budget to formats where the query is
+visible and negatives actually work.</p>""")
+
+# ---- 4 MEDIA MIX ------------------------------------------------------
+mixrows=[]
+for nm,a,b,er,erL in CH:
+    yoy=f"<b class='up'>+{a/b-1:.0%}</b>" if a>=b else f"<b class='dn'>{a/b-1:.0%}</b>"
+    mixrows.append([f"<b>{nm}</b>",f"{a:,}",f"{a/S26:.1%}",f"{b:,}",yoy,f"{er:.0%}"])
+mixrows.append(["<b>Total</b>",f"<b>{S26:,}</b>","100%",f"<b>{S25:,}</b>",f"<b class='up'>+{S26/S25-1:.0%}</b>",""])
+
+sec("mix","Media mix","Paid vs organic, and the shift inside paid",
+    "Media mix", f"""
+<div class="kpis">
+{kpi("Total sessions","45,377","vs 29,661 LY &nbsp;<b class='up'>+53%</b>")}
+{kpi("Paid share","67.8%","vs 66.1% LY")}
+{kpi("Google share of paid","56%","from 40% LY")}
+</div>
+
+<h3>The shift inside paid</h3>
+{stacked_split([("This year",[("Google",17171,"seg-a"),("Meta",11530,"seg-b"),("Bing",2051,"seg-c")]),
+                ("Last year",[("Google",7777,"seg-a"),("Meta",11030,"seg-b"),("Bing",798,"seg-c")])])}
+<div class="legend"><span class="lg"><i class="sw sw-a"></i>Google</span><span class="lg"><i class="sw sw-b"></i>Meta</span><span class="lg"><i class="sw sw-c"></i>Bing</span></div>
+
+<p><b>Meta was 56% of paid traffic. It is now 37%. Google went 40% → 56%.</b> That was five ad sets retired
+and the budget moved into search intent.</p>
+
+{table(["Why the shift","Evidence"],[
+ ["Search intent converts attention better","Search CTR <b>8.15%</b> vs Meta link CTR <b>0.67%</b>"],
+ ["Meta was buying reach, not clicks","Impressions <b>+33%</b>, link clicks <b>−2%</b>, cost per link click <b>+22%</b>"],
+ ["Meta prospecting was loss-making","<b>£12,451</b> of LY spend on ad sets now retired"],
+ ["Google had headroom","Impression share still under 10% on the main PMax campaign"],
+])}
+
+<h3>Sessions by channel</h3>
+{table(["Channel","Sessions","Share","LY","YoY","Eng. rate"],mixrows,"num")}
+
+<p class="note">Organic +93% and now 12.3% of traffic, up from 9.8%. See <a href="#seo" class="jump" data-go="seo">SEO</a>
+for how much of that I can honestly claim. AI assistants went 11 → 149 sessions — still tiny, fastest-growing source on the site.</p>""")
+
+# ---- 5 COVERAGE -------------------------------------------------------
+camprows=[]
+for nm,ty,cost,clicks,cpc,isv,lb,lr in CAMP:
+    tone="crit" if lb>=20 else ("watch" if lb>=10 else "done")
+    camprows.append([f"<b>{nm}</b>",ty,f"£{cost:,}",f"£{cpc:.2f}",f"{isv:.1f}%",chip(tone,f"{lb:.1f}%"),f"{lr:.1f}%"])
+
+sec("coverage","Coverage & cost","Where impressions were won, lost, and what they cost",
+    "Coverage and cost", f"""
+<div class="kpis">
+{kpi("Blended cost/session","£2.73",f"vs £{CPS25:.2f} LY","warn")}
+{kpi("Cheapest","Meta £2.47","then Google £2.62")}
+{kpi("Most expensive","Bing £5.23","2× Google — mine to fix","crit")}
+</div>
+
+{table(["Channel","Spend","LY","Sessions","Cost/session","LY","Change"],[
+ ["<b>Google</b>","£44,934","£14,937","17,171","<b>£2.62</b>","£1.92","<b class='dn'>+36%</b>"],
+ ["<b>Meta</b>","£28,436","£23,837","11,530","<b>£2.47</b>","£2.16","<b class='dn'>+14%</b>"],
+ ["<b>Bing</b>","£10,729","£2,552","2,051","<b>£5.23</b>","£3.20","<b class='dn'>+64%</b>"],
+ ["<b>Blended</b>",f"<b>£{TC:,.0f}</b>",f"<b>£{TC25:,.0f}</b>",f"<b>{P26:,}</b>","<b>£2.73</b>","£2.11","<b class='dn'>+30%</b>"],
+],"num")}
+<p class="note">Cost per session rose 30% while volume rose 57%. That is the auction curve — you do not buy
+57% more traffic at the same price. Bing at £5.23 is the exception and it is mine to fix: heavy
+budget throttling forced bidding into the most expensive slots.</p>
+
+<h3>Impression share by campaign</h3>
+{table(["Campaign","Type","Spend","CPC","Impr. share","Lost to BUDGET","Lost to RANK"],camprows,"num")}
+
+<div class="callout callout-crit">
+  <div class="callout-h">Lost to rank is mine. Lost to budget is yours.</div>
+  <p>Three Search campaigns are losing <b>29.1%, 23.9% and 22.0%</b> of available impressions to budget —
+  demand we are already qualified to win, going to competitors because the money runs out.</p>
+  <p>Google's rep put the same point differently: the Column campaign is <i>"Limited by Budget, meaning there
+  is still significant demand you aren't capturing"</i>, with our impression share under 10% against
+  competitors holding over 50%.</p>
+</div>
+
+<h3>Account rebuild — share of Google spend in my campaigns</h3>
+{line_chart([(c[0],c[1]) for c in COVER], fmt="{:.0f}", unit="%", floor_zero=True)}
+<p class="note">13% in June (handover was the 25th), 66% in July, 97% in August. Caveat: the Google export
+lists currently-existing campaigns only, so the gap is legacy campaigns since removed.</p>
+
+<h3>Where the Google budget sits by format</h3>
+{stacked_split([("Google spend",[(f[0],f[1],c) for f,c in zip(FMT,["seg-b","seg-a","seg-c","seg-c"])])])}
+<p class="note"><b>{34337/FTOT:.0%} of Google spend is in Performance Max, which publishes no search terms.</b>
+Across the period I can see 4,243 named terms totalling £1,907 — about 4% of spend.</p>""")
+
+# ---- 6 GOOGLE VERDICT -------------------------------------------------
+sec("verdict","Google's review","Independent assessment of the account",
+    "Google's account review", """
+<p class="lede">I asked Google's account team to review the work. Their assessment, quoted directly.</p>
 
 <div class="callout">
-  <div class="callout-h">The one commercial number I would act on</div>
-  <p>We spent <b>£82,238</b> on media and gave away <b>£55,669</b> in discount. One of those is reviewed
-  daily; the other has never been on an agenda. At 13.3% of gross rising to 16.6% in August, and with half
-  of all orders using a coupon, discounting is the largest single lever on profit in the business — and it
-  is worth more than any efficiency I can find in the ad accounts. It is not mine to set. It is in the
-  escalation register.</p>
+  <div class="callout-h">Overall</div>
+  <p>"All of the AI Max campaigns look well set up. <b>Your URL and brand exclusion look great.</b>"</p>
+</div>
+
+""" + table(["Area","Google's assessment"],[
+ ["<b>PMax Column — tROAS change</b>","\"You've lowered ROAS targets from 440% to 390%. <b>This change is already showing results</b>, your daily spend has increased from roughly £200 to over £370 since the end of July, resulting in <b>over 48 conversions in the last 30 days</b>. However, this well-performing campaign is currently 'Limited by Budget', meaning there is still significant demand you aren't capturing.\""],
+ ["<b>Cast Iron restructure</b>","\"On August 3rd you changed a lot… switching to Maximize Conversion Value and adding new ad groups focused on colours and vintage styles. <b>This is actually already giving results. Your Cast Iron conversions went up by 73% last week</b>, proving that your new asset groups are resonating with period-home renovators.\""],
+ ["<b>Negative keyword strategy</b>","\"Search term data shows <b>these exclusions are already working</b>. Terms like 'bathroom mountain' and 'kensington radiators', which previously carried cost with no conversions, have now been blocked.\""],
+ ["<b>Cast iron negatives</b>","\"By filtering these out, <b>you're helping the AI focus its bidding power</b> on shoppers seeking the specific 'Functional Art' aesthetic of your traditional units.\""],
+ ["<b>Combined impact</b>","\"The collective impact of these exclusions, combined with your recent bid strategy shifts, has led to a <b>43% increase in account-level conversion value over the last week</b>… you're showing up more often but being more selective about who you pay for, resulting in a higher-quality click that is more likely to result in a high-value purchase.\""],
+ ["<b>Electric line</b>","\"By shifting your Search campaign to Maximize Conversion Value, you're letting the AI know to prioritise higher-margin electric units.\""],
+]) + """
+<h3>What I am doing with it</h3>
+""" + table(["Google's recommendation","Action","Status"],[
+ ["Column campaign limited by budget — significant demand not captured","Budget increase request — the ask in <a href='#next' class='jump' data-go='next'>Next 90</a>",chip("watch","Needs your decision")],
+ ["Impression share under 10%; Victorian Plumbing and Best Heating hold 50%+","Structural. Budget plus continued tROAS tuning.",chip("part","In progress")],
+ ["Add \"Functional Art\" and \"Space Optimisation\" / vertical radiator trends; RAL factory finishes","New asset groups and search themes",chip("part","September")],
+ ["AI Max Search Electric in Learning — no tweaks for 7 days","Frozen. No changes until it stabilises.",chip("done","Done")],
+ ["Enable Customer Match for lookalike audiences","Account now eligible. Upload past-buyer list.",chip("part","This month")],
+ ["Cast iron negative blocking core terms","Identified and removed",chip("done","Fixed")],
+])
+
++ """
+<p class="note">Google's figures come from their own live account view and a different window to my exports
+(mine end 10 August). Quoted as their assessment, not restated as my numbers.</p>""")
+
+# ---- 7 SEO ------------------------------------------------------------
+sec("seo","SEO","Deliberately deprioritised this quarter",
+    "SEO", """
+<div class="callout callout-warn">
+  <div class="callout-h">Straight answer: I did not do much here, on purpose</div>
+  <p>Paid media brings most of the revenue and it was in bad shape. It got the quarter. SEO improved over the
+  same period, but the step change began in autumn 2025, before I started — <b>I am not claiming credit for
+  it.</b> Paid media is 100% mine. This is not.</p>
+</div>
+
+""" + table(["Metric","Now","Same window LY","Change"],[
+ ["Organic clicks","5,828","3,575","+63%"],
+ ["Impressions","764,599","880,914","−13%"],
+ ["CTR","0.76%","0.41%","+85%"],
+ ["Avg position (impression-weighted)","12.1","28.0","+15.8 places"],
+ ["Organic sessions (GA4)","5,583","2,898","+93%"],
+],"num") + """
+<p class="note">Fewer impressions, better positions, higher CTR. The right shape — but largely momentum from
+work that predates me.</p>
+
+<h3>What is actually mine to do next</h3>
+""" + table(["Opportunity","Evidence","When"],[
+ ["<b>Titles and meta on pages that already rank</b>","Column radiators: 0.71% CTR at position 8.2. Cast iron: 0.50% at 6.7. Ahrefs shows 89 pages where Google rewrites our title.",chip("part","September")],
+ ["<b>Blog recovery</b>","Blog clicks −23% YoY. BTU calculator guide alone lost 294 clicks.",chip("watch","Post-peak")],
+ ["<b>Cast iron hub</b>","\"cast iron radiators\" — 4,500 searches/month, we rank 29, on the column radiators page.",chip("part","September")],
+])
++ """
+<p class="note">No developer or budget needed for the first one. It is the highest-return SEO work available
+and it is entirely within my control.</p>""")
+
+# ---- 8 ESCALATION -----------------------------------------------------
+sec("escalation","Escalation","Costing us money, outside my remit",
+    "Escalation register", """
+<p class="lede">Things I can see that I cannot fix. Owner column blank on purpose — to fill in together.</p>
+
+""" + table(["Issue","Cost","Owner","Agreed"],[
+ ["<b>Mobile converts at a third of desktop</b>","78.5% of sessions at £5.05/session vs £17.43 desktop. Largest value gap in the business.","Liam + dev","&nbsp;"],
+ ["<b>Discounting 13.3% of gross, 16.6% in Aug</b>","£55,669 over the period — comparable to the entire media budget. Every 1pt = £4,196.","Owner","&nbsp;"],
+ ["<b>Search campaigns capped by budget</b>","22–29% of impressions lost to budget. Google's rep flags the same. Cheapest growth before peak.","Owner","&nbsp;"],
+ ["<b>Gross margin unknown</b>","Efficiency judgements rest on an inferred 29.8%.","Owner","&nbsp;"],
+ ["<b>612 pages with broken JavaScript</b>","Crawl errors; risks rendering and measurement.","Liam + dev","&nbsp;"],
+ ["<b>Product feed eligibility</b>","Cast iron SKUs were ineligible to serve — Windsor £2,167, Oxford £2,320, Mayfair £1,470.",chip("done","Mine"),chip("done","Owned")],
+ ["<b>Titles rewritten by Google, 89 pages</b>","Good rankings, poor CTR.",chip("done","Mine"),chip("done","Owned")],
+ ["<b>986 unattributable sessions (2.2%)</b>","Up from 186 LY. 41% engagement vs 69% site average — tracking fault.",chip("done","Mine"),chip("done","Owned")],
+]) + """
+<p class="note">Three of eight are mine and marked as such — including the product feed, which I own end to end.</p>""")
+
+# ---- 9 NEXT 90 --------------------------------------------------------
+sec("next","Next 90","Priorities and asks",
+    "Next 90 days", """
+<h3>New channels</h3>
+""" + table(["Channel","Rationale","Live by"],[
+ ["<b>Pinterest Ads</b>","High-intent interiors audience, visual product, competitors not crowding it.","Oct"],
+ ["<b>AWIN affiliate</b>","Cost-per-sale. The only channel where we pay after the sale, not before the click.","Oct"],
+ ["<b>RunRagged influencers</b> (The VIP Suite)","Direct relationship with the owner — starts warm, not cold.","Sept"],
+]) + """
+<p class="note">Google and Meta carry 93% of paid traffic. These three widen that and change the risk shape.</p>
+
+<h3>Paid media plan</h3>
+""" + table(["","Priority"],[
+ ["<b>Aug</b>","Fix Bing cost per session (pacing, budget caps). Freeze AI Max Electric for 7 days per Google's advice. Upload Customer Match list."],
+ ["<b>Sept</b>","Peak budgets set. Pinterest built. \"Functional Art\" / vertical / RAL asset groups added per Google's market data. Cast iron hub live."],
+ ["<b>Oct–Dec</b>","<b>Peak. Budget and monitoring only.</b> AWIN launches. No structural changes."],
+ ["<b>Jan</b>","Post-peak rebuild. Technical debt with dev."],
+]) + """
+<h3>What I need from you</h3>
+""" + table(["Ask","Why","When"],[
+ ["<b>Peak budget envelope</b>","Search campaigns lose 22–29% of impressions to budget. Google's rep flags the Column campaign as limited by budget with significant uncaptured demand. Cheapest growth available.",chip("crit","Mid-Sept")],
+ ["<b>Gross margin by category</b>","Every efficiency judgement rests on an inferred 29.8%.",chip("crit","This week")],
+ ["<b>A decision on discounting</b>","£55,669 given away vs £82,238 media spend. Not mine to set.",chip("crit","This week")],
+ ["<b>Agreement on this scorecard</b>","If you want to measure me on something else, better to know now than in January.",chip("warn","Today")],
+]) + """
+<h3>From Liam and Flora</h3>
+""" + table(["Who","Ask"],[
+ ["<b>Liam</b>","Mobile experience — a phone session is worth a third of a desktop one. Plus 612 pages with broken JS. Half a day to scope."],
+ ["<b>Flora</b>","A day a week: daily flash entry, weekly search-term pulls, feed health check. Procedures written first."],
+]) + """
+<h3>Month 6 targets — all within my control</h3>
+""" + table(["Measure","Now","Target"],[
+ ["Search CTR","8.15%","<b>9%+</b>"],
+ ["Blended cost per session","£2.73","<b>£2.50 or better</b>"],
+ ["Bing cost per session","£5.23","<b>Under £3.50</b>"],
+ ["Google spend with query visibility","24.4%","<b>40%+</b>"],
+ ["Impressions lost to budget on Search","22–29%","<b>Under 10%</b>"],
+ ["Live acquisition channels","3","<b>6</b>"],
+ ["Escalations with a named owner","3 of 8","<b>8 of 8</b>"],
+],"num"))
+
+# ---- 10 COMMERCIAL ----------------------------------------------------
+sec("commercial","Commercial","Reported, shared ownership",
+    "Commercial outcome", """
+<div class="kpis">
+""" + kpi("Net sales","£365,233","vs £220,623 LY &nbsp;<b class='up'>+66%</b>") + kpi("Media spend","£82,238","vs £40,896 LY &nbsp;+101%") + kpi("Blended ROAS","4.44x","vs 5.39x LY") + kpi("Orders","1,061","vs 668 LY &nbsp;<b class='up'>+59%</b>") + kpi("AOV","£344","vs £330 LY &nbsp;<b class='up'>+4%</b>") + kpi("Discount","13.3%","of gross · 16.6% in Aug","crit") + """
+</div>
+
+<p>Reported without commentary. These move with price, stock, range, site and season as much as with media.</p>
+
+<p class="note">Two points of context. Last July the Google account was near dormant — LY spend that month
+was £2,412 against £18,889 — so 5.39x LY ROAS is a near-zero denominator, not a standard we held. And on
+31 July I excluded past purchasers from all PMax to force new-customer acquisition, logging at the time that
+ROAS would fall short term; it went 4.48x → 4.23x while AOV rose £338 → £388.</p>
+
+<div class="callout callout-crit">
+  <div class="callout-h">The one commercial number worth acting on</div>
+  <p>£82,238 on media. <b>£55,669 given away in discount.</b> One is reviewed daily. The other has never been
+  on an agenda. Half of all orders use a coupon. Not mine to set — it is in the escalation register.</p>
 </div>
 
 <h3>Reconciliation notes</h3>
-<ul class="bul">
-  <li>Flash channel components total £84,099 against a stated media spend of £82,238 — a 2.3% variance I am correcting.</li>
-  <li>GA4 sessions are not platform clicks; tracking loss and attribution differ. Trends are sound, absolute values differ by source.</li>
-  <li>Meta-reported ROAS is platform-attributed and materially inflated. Used for relative ranking between ad sets only, never as a business number.</li>
-  <li>The Google campaign export lists currently-existing campaigns only.</li>
-  <li>Gross margin of 29.8% is inferred from the 3.36x break-even ROAS in the change journal, not given.</li>
-</ul>""")
+""" + table(["Note",""],[
+ ["Flash channel components total £84,099 against a stated media spend of £82,238","2.3% variance, being corrected"],
+ ["GA4 sessions are not platform clicks","Tracking loss and attribution differ; trends sound, absolutes vary by source"],
+ ["Meta-reported ROAS is platform-attributed","Used for relative ad-set ranking only, never as a business number"],
+ ["Google campaign export lists current campaigns only","Legacy campaigns removed from the account do not appear"],
+ ["Gross margin 29.8% is inferred","Derived from the 3.36x break-even ROAS in the change journal"],
+ ["Google rep figures use a different window","Their live account view; my exports end 10 August"],
+]))
 
 # ---------------------------------------------------------------- assemble
-nav = "".join(f'<button class="tab" data-go="{sid}" role="tab" aria-selected="{"true" if i==0 else "false"}" '
-              f'id="tab-{sid}" aria-controls="p-{sid}">{n}</button>'
-              for i,(sid,n,q,t,b) in enumerate(SECTIONS))
-panels = "".join(
-    f'<section class="panel{" on" if i==0 else ""}" id="p-{sid}" role="tabpanel" aria-labelledby="tab-{sid}"'
-    f'{"" if i==0 else " hidden"}><p class="eyebrow">{html.escape(q)}</p><h2>{t}</h2>{b}</section>'
-    for i,(sid,n,q,t,b) in enumerate(SECTIONS))
+nav="".join(f'<button class="tab" data-go="{sid}" role="tab" aria-selected="{"true" if i==0 else "false"}" '
+            f'id="tab-{sid}" aria-controls="p-{sid}">{n}</button>'
+            for i,(sid,n,q,t,b) in enumerate(SECTIONS))
+panels="".join(f'<section class="panel{" on" if i==0 else ""}" id="p-{sid}" role="tabpanel" '
+               f'aria-labelledby="tab-{sid}"{"" if i==0 else " hidden"}>'
+               f'<p class="eyebrow">{html.escape(q)}</p><h2>{t}</h2>{b}</section>'
+               for i,(sid,n,q,t,b) in enumerate(SECTIONS))
 
-DOC = f"""<title>LRD — Traffic &amp; Acquisition Review</title>
-<style>{E.CSS if hasattr(E,'CSS') else ''}</style>
+DOC=f"""<title>LRD — Traffic &amp; Acquisition Review</title>
+<style>{E.CSS}</style>
 <div class="wrap">
 <header class="masthead">
-  <p class="kicker">Lincs Rads Direct · Paid media &amp; organic acquisition</p>
+  <p class="kicker">Lincs Rads Direct · Paid media &amp; acquisition</p>
   <h1>Traffic &amp; acquisition review</h1>
-  <p class="sub">Three months of demand acquisition: what I spent, where I sent it, what it cost, and whether
-  the people it brought were the right ones. Commercial outcomes are reported at the end as shared ownership.</p>
+  <p class="sub">Three months of demand acquisition: budget allocation, cost of traffic, coverage and click
+  quality. Commercial outcomes reported at the end as shared ownership.</p>
   <div class="meta">
     <span>Period <b>1 Jun – 10 Aug 2026</b></span>
     <span>Started <b>1 Jun</b></span>
     <span>Handover <b>25 Jun</b></span>
-    <span>Sessions <b>{S26:,}</b></span>
-    <span>Paid spend <b>£{TC:,.0f}</b></span>
+    <span>Paid sessions <b>{P26:,}</b></span>
+    <span>Search CTR <b>8.15%</b></span>
   </div>
 </header>
 <nav class="tabs" role="tablist" aria-label="Sections">{nav}</nav>
 {panels}
 <footer>
-  Sources: GA4 traffic acquisition (source/medium × device, both years) · Google Ads campaign &amp; search
-  terms exports · Microsoft Advertising campaign exports · Meta Ads Manager ad-set export · Google Search
-  Console pages · Ahrefs project 9919884 · LRD Daily Flash · Master Change Journal · Paid Media Takeover
-  Checklist.<br>
-  Comparison window 1 Jun – 10 Aug 2026 against 1 Jun – 10 Aug 2025 throughout. Reconciliation caveats in Commercial.
+  Sources: Google Ads campaign, search terms &amp; change history exports · Microsoft Advertising exports ·
+  Meta Ads Manager ad-set export · GA4 traffic acquisition by source/medium and device · Google Search
+  Console · Ahrefs project 9919884 · LRD Daily Flash · Master Change Journal · Paid Media Takeover Checklist ·
+  Google account team review, August 2026.<br>
+  All comparisons 1 Jun – 10 Aug 2026 against the same window in 2025.
 </footer>
 </div>
-<script>{E.JS if hasattr(E,'JS') else ''}</script>"""
-
+<script>{E.JS}</script>"""
 open(OUT,"w").write(DOC)
 print(f"wrote {OUT} ({len(DOC):,} bytes, {len(SECTIONS)} sections)")
