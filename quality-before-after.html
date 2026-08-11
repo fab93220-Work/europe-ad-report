@@ -1,0 +1,245 @@
+<title>LRD — Traffic Quality, Before vs After</title>
+<style>
+:root{
+  --bg:#F7F6F4; --surface:#FFFFFF; --surface-2:#F1EFEB;
+  --ink:#1C1E20; --ink-2:#4A4742; --ink-3:#787269;
+  --rule:#DFDBD3; --rule-2:#EDEAE4;
+  --brass:#8C6A3F; --brass-2:#A98254; --brass-soft:#F0E7DA;
+  --good:#3F6B52; --good-soft:#E4EDE7;
+  --warn:#A8762C; --warn-soft:#F6ECDA;
+  --crit:#9B3B31; --crit-soft:#F7E5E2;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16181A; --surface:#1E2124; --surface-2:#25292C;
+  --ink:#EDEAE4; --ink-2:#B9B3AA; --ink-3:#8B857C;
+  --rule:#32373B; --rule-2:#282C30;
+  --brass:#C79A5F; --brass-2:#D8B183; --brass-soft:#33291D;
+  --good:#7FB294; --good-soft:#1D2A23;
+  --warn:#D7A65B; --warn-soft:#2E2517;
+  --crit:#D9776A; --crit-soft:#301E1B;
+}}
+:root[data-theme="dark"]{
+  --bg:#16181A; --surface:#1E2124; --surface-2:#25292C;
+  --ink:#EDEAE4; --ink-2:#B9B3AA; --ink-3:#8B857C;
+  --rule:#32373B; --rule-2:#282C30;
+  --brass:#C79A5F; --brass-2:#D8B183; --brass-soft:#33291D;
+  --good:#7FB294; --good-soft:#1D2A23;
+  --warn:#D7A65B; --warn-soft:#2E2517;
+  --crit:#D9776A; --crit-soft:#301E1B;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:15.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1020px;margin:0 auto;padding:34px 22px 96px}
+
+header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:6px}
+.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--brass);margin:0 0 10px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,40px);line-height:1.12;
+  margin:0 0 10px;letter-spacing:-.012em;text-wrap:balance}
+.sub{color:var(--ink-2);margin:0;font-size:15px;max-width:64ch}
+.meta{display:flex;flex-wrap:wrap;gap:7px 20px;margin-top:15px;font-family:var(--mono);
+  font-size:11.5px;color:var(--ink-3);letter-spacing:.02em}
+.meta b{color:var(--ink-2);font-weight:500}
+
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--rule);
+  margin:0 0 30px;padding:9px 0;display:flex;gap:3px;overflow-x:auto;scrollbar-width:thin}
+.tab{flex:0 0 auto;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--ink-3);
+  background:none;border:1px solid transparent;border-radius:5px;padding:6px 9px;cursor:pointer;
+  white-space:nowrap;transition:color .13s,background .13s}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-selected="true"]{color:var(--brass);background:var(--brass-soft);border-color:var(--brass)}
+.tab:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+.panel{animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.panel{animation:none}}
+.eyebrow{font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.03em;color:var(--ink-3);
+  margin:0 0 9px;padding-left:11px;border-left:2px solid var(--brass);max-width:74ch}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(23px,3.4vw,31px);line-height:1.16;
+  margin:0 0 20px;letter-spacing:-.011em;text-wrap:balance}
+h3{font-family:var(--serif);font-weight:600;font-size:18.5px;margin:38px 0 13px;letter-spacing:-.006em}
+h3:first-of-type{margin-top:30px}
+p{margin:0 0 14px;max-width:74ch}
+.lede{font-size:16.8px;line-height:1.58;color:var(--ink-2);max-width:70ch;margin-bottom:22px}
+.note{font-size:13.4px;color:var(--ink-3);line-height:1.58;max-width:76ch;margin-top:11px}
+b,strong{font-weight:640;color:var(--ink)}
+i{font-style:italic}
+a.jump{color:var(--brass);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+code{font-family:var(--mono);font-size:.87em;background:var(--surface-2);padding:1px 5px;
+  border-radius:3px;color:var(--ink-2);word-break:break-word}
+.up{color:var(--good)} .dn{color:var(--crit)}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:11px;margin:22px 0 8px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:7px;padding:13px 14px;
+  border-top:2.5px solid var(--brass)}
+.kpi.warn{border-top-color:var(--warn)} .kpi.crit{border-top-color:var(--crit)}
+.kpi-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px}
+.kpi-v{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi-s{font-size:12.2px;color:var(--ink-3);margin-top:4px;line-height:1.42}
+
+.chart{width:100%;height:auto;display:block;margin:6px 0 2px;overflow:visible}
+.grid{stroke:var(--rule-2);stroke-width:1}
+.ax{font-family:var(--mono);font-size:10.5px;fill:var(--ink-3)}
+.ax-r{text-anchor:end} .ax-c{text-anchor:middle} .ax-e{text-anchor:end}
+.bar-a{fill:var(--brass)} .bar-b{fill:var(--rule)}
+.seg-a{fill:var(--brass)} .seg-b{fill:var(--brass-2);opacity:.62} .seg-c{fill:var(--ink-3);opacity:.5}
+.seg-t{font-family:var(--mono);font-size:11px;fill:#fff;text-anchor:middle;font-weight:600}
+.line{fill:none;stroke:var(--brass);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.area{fill:var(--brass);opacity:.09}
+.dot{fill:var(--brass)} .dot-end{fill:var(--brass);stroke:var(--bg);stroke-width:2}
+.thresh{stroke:var(--crit);stroke-width:1.3;stroke-dasharray:4 3}
+.thresh-t{fill:var(--crit);font-size:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 4px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3)}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.sw-a{background:var(--brass)} .sw-b{background:var(--brass-2);opacity:.62} .sw-c{background:var(--ink-3);opacity:.5}
+
+.tw{overflow-x:auto;margin:14px 0;border:1px solid var(--rule);border-radius:7px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:13.4px;min-width:520px}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  text-align:left;padding:10px 13px;border-bottom:1px solid var(--rule);font-weight:500;
+  background:var(--surface-2);white-space:nowrap}
+td{padding:10px 13px;border-bottom:1px solid var(--rule-2);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+tbody tr:last-child{background:var(--surface-2)}
+table.num td{font-variant-numeric:tabular-nums}
+table.num td:not(:first-child){font-family:var(--mono);font-size:12.6px;white-space:nowrap}
+
+.chip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;
+  padding:2px 7px;border-radius:3px;white-space:nowrap;text-transform:uppercase}
+.chip-done{background:var(--good-soft);color:var(--good)}
+.chip-part{background:var(--brass-soft);color:var(--brass)}
+.chip-watch{background:var(--warn-soft);color:var(--warn)}
+.chip-crit{background:var(--crit-soft);color:var(--crit)}
+
+.callout{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--brass);
+  border-radius:6px;padding:16px 18px;margin:20px 0}
+.callout-warn{border-left-color:var(--warn)} .callout-crit{border-left-color:var(--crit)}
+.callout-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--brass);margin-bottom:8px;font-weight:600}
+.callout-warn .callout-h{color:var(--warn)} .callout-crit .callout-h{color:var(--crit)}
+.callout p{margin:0 0 10px;font-size:14.6px}.callout p:last-child{margin-bottom:0}
+
+.qa{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  border-radius:7px;overflow:hidden;margin:16px 0}
+.qa-row{display:grid;grid-template-columns:minmax(150px,.33fr) 1fr;gap:18px;background:var(--surface);padding:15px 17px}
+.qa-q{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--brass);line-height:1.3}
+.qa-a{font-size:14.4px;color:var(--ink-2);line-height:1.56}
+@media(max-width:640px){.qa-row{grid-template-columns:1fr;gap:7px}}
+
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px;margin:18px 0}
+.tri-card{background:var(--surface);border:1px solid var(--rule);border-radius:7px;padding:15px 16px;
+  border-top:3px solid var(--brass)}
+.tri-crit{border-top-color:var(--crit)} .tri-warn{border-top-color:var(--warn)}
+.tri-b{border-top-color:var(--warn)} .tri-c{border-top-color:var(--good)}
+.tri-h{font-family:var(--serif);font-size:16.5px;font-weight:600;margin-bottom:8px;line-height:1.25}
+.tri-card p{font-size:13.8px;margin:0 0 9px;color:var(--ink-2)}
+.tri-f{font-family:var(--mono);font-size:11.2px;color:var(--ink-3);border-top:1px solid var(--rule-2);
+  padding-top:9px;margin-bottom:0!important;line-height:1.45}
+
+ul.bul{margin:12px 0;padding-left:0;list-style:none;max-width:76ch}
+ul.bul li{position:relative;padding-left:19px;margin-bottom:9px;font-size:14.6px;line-height:1.56}
+ul.bul li::before{content:"";position:absolute;left:3px;top:9px;width:5px;height:5px;
+  background:var(--brass);border-radius:1px}
+ol.steps{margin:12px 0;padding-left:0;list-style:none;counter-reset:s;max-width:76ch}
+ol.steps li{position:relative;padding-left:31px;margin-bottom:11px;font-size:14.6px;line-height:1.56;counter-increment:s}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:20px;height:20px;
+  background:var(--brass-soft);color:var(--brass);border-radius:3px;font-family:var(--mono);
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-family:var(--mono);
+  font-size:11px;color:var(--ink-3);line-height:1.7}
+
+.hero{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--brass);
+ border-radius:7px;padding:20px 22px;margin:22px 0}
+.hero h3{margin-top:0}
+</style>
+<div class="wrap">
+<header class="masthead">
+  <p class="kicker">Lincs Rads Direct · Working draft</p>
+  <h1>Traffic quality: before vs after</h1>
+  <p class="sub">Value per session by channel, this period against the same window last year. A test of
+  whether the traffic I bought was worth more per visit, not just larger in volume.</p>
+  <div class="meta">
+    <span>1 Jun – 10 Aug <b>2026 vs 2025</b></span>
+    <span>Source <b>GA4 traffic acquisition</b></span>
+    <span>Sessions <b>45,377</b> vs 29,661</span>
+  </div>
+</header>
+
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Site revenue/session</div><div class="kpi-v">£7.43</div><div class="kpi-s">vs £7.39 LY &nbsp;<b class='up'>+1%</b></div></div>
+<div class="kpi warn"><div class="kpi-l">Paid revenue/session</div><div class="kpi-v">£4.72</div><div class="kpi-s">vs £5.35 LY &nbsp;<b class='dn'>−12%</b></div></div>
+<div class="kpi "><div class="kpi-l">Best paid channel</div><div class="kpi-v">£10.71</div><div class="kpi-s">Microsoft Ads, up 6%</div></div>
+<div class="kpi crit"><div class="kpi-l">Weakest paid channel</div><div class="kpi-v">£1.20</div><div class="kpi-s">Meta Ads, down 26%</div></div>
+</div>
+
+<h2>Revenue per session, by channel</h2>
+<div class="tw"><table class="num"><thead><tr><th>Channel</th><th>Before<br>1 Jun–10 Aug 25</th><th>After<br>1 Jun–10 Aug 26</th><th>Change</th><th>Sessions before</th><th>Sessions after</th><th>Volume</th><th>Verdict</th></tr></thead><tbody><tr><td><b>Google Ads</b></td><td>£10.17</td><td>£6.37</td><td><b class='dn'>-37%</b></td><td>7,777</td><td>17,171</td><td><b class='up'>+121%</b></td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Microsoft Ads</b></td><td>£10.08</td><td>£10.71</td><td><b class='up'>+6%</b></td><td>798</td><td>2,051</td><td><b class='up'>+157%</b></td><td><span class="chip chip-done">Improved</span></td></tr><tr><td><b>Meta Ads</b></td><td>£1.61</td><td>£1.20</td><td><b class='dn'>-26%</b></td><td>11,030</td><td>11,530</td><td><b class='up'>+5%</b></td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Organic search</b></td><td>£9.18</td><td>£13.40</td><td><b class='up'>+46%</b></td><td>2,898</td><td>5,583</td><td><b class='up'>+93%</b></td><td><span class="chip chip-done">Improved</span></td></tr><tr><td><b>Direct</b></td><td>£17.19</td><td>£20.42</td><td><b class='up'>+19%</b></td><td>4,632</td><td>4,811</td><td><b class='up'>+4%</b></td><td><span class="chip chip-done">Improved</span></td></tr><tr><td><b>Referral / social</b></td><td>£2.34</td><td>£3.84</td><td><b class='up'>+64%</b></td><td>2,329</td><td>3,096</td><td><b class='up'>+33%</b></td><td><span class="chip chip-done">Improved</span></td></tr><tr><td><b>AI assistants</b></td><td>£52.64</td><td>£13.17</td><td><b class='dn'>-75%</b></td><td>11</td><td>149</td><td><b class='up'>+1255%</b></td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Other</b></td><td>£10.99</td><td>£5.14</td><td><b class='dn'>-53%</b></td><td>186</td><td>986</td><td><b class='up'>+430%</b></td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Paid total</b></td><td><b>£5.35</b></td><td><b>£4.72</b></td><td><b class='dn'>-12%</b></td><td><b>19,605</b></td><td><b>30,752</b></td><td><b class='up'>+57%</b></td><td><span class="chip chip-crit">Declined</span></td></tr><tr><td><b>Site total</b></td><td><b>£7.39</b></td><td><b>£7.43</b></td><td><b class='up'>+1%</b></td><td><b>29,661</b></td><td><b>45,377</b></td><td><b class='up'>+53%</b></td><td><span class="chip chip-done">Flat</span></td></tr></tbody></table></div>
+
+<div class="hero">
+  <h3>What this says, plainly</h3>
+  <p><b>Site revenue per session is flat (+1%) on 53% more traffic.</b> That is the headline: we grew volume
+  by half without diluting the average value of a visit. Holding value per session while scaling that hard
+  is the harder of the two things to do.</p>
+  <p>Underneath it, paid fell 12% and organic rose 46%. Microsoft is the strongest paid channel at
+  <b>£10.71</b> per session and improving. Meta is the weakest at <b>£1.20</b> — roughly one ninth of
+  Microsoft — which is the clearest possible justification for moving budget out of it.</p>
+</div>
+
+<h2>Why Google's number fell — it is mostly device mix</h2>
+<p>Google Ads revenue per session dropped 37%, from £10.17 to £6.37. Most of that is not traffic quality.
+It is that we bought a lot more mobile, and mobile monetises at a third of desktop <i>on this site</i>.</p>
+
+<div class="tw"><table class="num"><thead><tr><th>Device</th><th>Share before</th><th>Share after</th><th>RPS before</th><th>RPS after</th><th>Change</th><th>Eng. before</th><th>Eng. after</th><th>Change</th></tr></thead><tbody><tr><td><b>Mobile</b></td><td>63.3%</td><td>80.5%</td><td>£8.77</td><td>£4.57</td><td><b class='dn'>-48%</b></td><td>79.1%</td><td>74.0%</td><td><b class='dn'>-6%</b></td></tr><tr><td><b>Desktop</b></td><td>34.4%</td><td>18.0%</td><td>£12.34</td><td>£14.53</td><td><b class='up'>+18%</b></td><td>88.0%</td><td>78.2%</td><td><b class='dn'>-11%</b></td></tr><tr><td><b>Tablet</b></td><td>2.3%</td><td>1.5%</td><td>£16.16</td><td>£5.20</td><td><b class='dn'>-68%</b></td><td>86.0%</td><td>74.7%</td><td><b class='dn'>-13%</b></td></tr></tbody></table></div>
+
+<div class="tw"><table class="num"><thead><tr><th>Google Ads revenue per session</th><th>Value</th><th>Read</th></tr></thead><tbody><tr><td>Actual, last year</td><td>£10.17</td><td>63% of sessions were mobile</td></tr><tr><td>Actual, this year</td><td>£6.37</td><td>81% of sessions were mobile</td></tr><tr><td><b>This year, held at last year's device mix</b></td><td><b>£8.01</b></td><td><b>−21% rather than −37%</b></td></tr><tr><td>Device mix effect</td><td>£1.64 of the £3.80 fall</td><td><span class="chip chip-watch">43% of the decline is mix, not quality</span></td></tr></tbody></table></div>
+
+<div class="hero">
+  <h3>The part that matters: engagement and monetisation moved independently</h3>
+  <p>On Google Ads <b>desktop</b>, engagement rate <i>fell</i> 88.0% → 78.2%, yet revenue per session
+  <i>rose</i> £12.34 → £14.53. On <b>mobile</b>, engagement fell by a similar proportion (79.1% → 74.0%) but
+  revenue per session <b>halved</b>, £8.77 → £4.57.</p>
+  <p>The same change in engagement produced opposite outcomes on the two devices. That means the difference
+  is not in the traffic — it is in what happens to that traffic after it lands. A 6-point drop in engagement
+  cannot explain a 48% fall in revenue per session.</p>
+  <p><b>This is the cleanest evidence yet for where the boundary sits.</b> Engagement — did the right person
+  arrive and take an interest — is mine, and it moved a few points. Monetisation — did the site turn that
+  interest into an order — is not mine, and on mobile it fell by half.</p>
+</div>
+
+<h2>Value per session, paid channels</h2>
+<svg viewBox="0 0 680 250" class="chart" role="img"><line x1="58" y1="14.0" x2="668" y2="14.0" class="grid"/><text x="50" y="18.0" class="ax ax-r">£12</text><line x1="58" y1="64.5" x2="668" y2="64.5" class="grid"/><text x="50" y="68.5" class="ax ax-r">£9</text><line x1="58" y1="115.0" x2="668" y2="115.0" class="grid"/><text x="50" y="119.0" class="ax ax-r">£6</text><line x1="58" y1="165.5" x2="668" y2="165.5" class="grid"/><text x="50" y="169.5" class="ax ax-r">£3</text><line x1="58" y1="216.0" x2="668" y2="216.0" class="grid"/><text x="50" y="220.0" class="ax ax-r">£0</text><rect x="96.6" y="108.7" width="60.0" height="107.3" rx="2" class="bar-a"><title>Google: £6.37</title></rect><rect x="159.7" y="44.8" width="60.0" height="171.2" rx="2" class="bar-b"><title>Google: £10.17</title></rect><text x="159.7" y="239" class="ax ax-c">Google</text><rect x="300.0" y="35.6" width="60.0" height="180.4" rx="2" class="bar-a"><title>Microsoft: £10.71</title></rect><rect x="363.0" y="46.3" width="60.0" height="169.7" rx="2" class="bar-b"><title>Microsoft: £10.08</title></rect><text x="363.0" y="239" class="ax ax-c">Microsoft</text><rect x="503.3" y="195.8" width="60.0" height="20.2" rx="2" class="bar-a"><title>Meta: £1.20</title></rect><rect x="566.3" y="188.8" width="60.0" height="27.2" rx="2" class="bar-b"><title>Meta: £1.61</title></rect><text x="566.3" y="239" class="ax ax-c">Meta</text></svg>
+<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
+<p class="note">Chart shows £ per session. Microsoft delivers nearly nine times the value per session of Meta,
+on a fifth of the volume.</p>
+
+<h2>What is missing: orders per session</h2>
+<div class="callout callout-warn">
+  <div class="callout-h">The better metric, and why I cannot build it yet</div>
+  <p>Revenue per session mixes two things: <b>how often a session buys</b> (mine) and <b>how much it spends
+  when it does</b> (not mine — that is price, range and merchandising). Orders per session strips the second
+  out and is the cleaner measure of traffic quality.</p>
+  <p>The GA4 export I have carries sessions, revenue and engagement, but no transactions dimension — so
+  orders per session is not calculable from it.</p>
+</div>
+
+<div class="tw"><table class=""><thead><tr><th>To complete this table, export</th><th>Where</th><th>Notes</th></tr></thead><tbody><tr><td><b>Sessions + Ecommerce purchases by Session source / medium</b></td><td>GA4 → Reports → Acquisition → Traffic acquisition. Use the pencil icon to add <i>Ecommerce purchases</i> (or <i>Key events</i> if purchase is the only key event).</td><td>Run twice: 1 Jun–10 Aug 2026 and 1 Jun–10 Aug 2025</td></tr><tr><td><b>Same, split by device</b></td><td>GA4 → Explore → Free form. Rows: Session source/medium + Device category. Metrics: Sessions, Ecommerce purchases, Purchase revenue.</td><td>Separates the mobile effect from the channel effect</td></tr></tbody></table></div>
+<p class="note">With those two, this page becomes orders per session by channel and device, before and after —
+which is the number I would actually want to be judged on.</p>
+
+<h2>Two caveats on the figures above</h2>
+<div class="tw"><table class=""><thead><tr><th>Caveat</th><th>Detail</th></tr></thead><tbody><tr><td><b>GA4 captured less revenue this year</b></td><td>£337,185 of £365,233 (92.3%) against £219,219 of £220,623 (99.4%) last year. Roughly £28,000 of revenue is now unattributed to any channel, up from £1,400. That understates every channel's revenue per session this year and is a tracking problem worth fixing.</td></tr><tr><td><b>Last-click attribution</b></td><td>GA4 credits the last non-direct source. Meta typically loses out to search under this model — its £1.20 is a floor, not a full picture. Direct at £20.42 per session is partly other channels' work arriving uncredited.</td></tr></tbody></table></div>
+
+<footer>
+  Working draft, separate from the main review pack. GA4 traffic acquisition by session source/medium and
+  device, 1 Jun – 10 Aug 2026 and the same window 2025. Revenue is GA4-attributed and does not reconcile
+  exactly to the daily flash — see caveats.
+</footer>
+</div>

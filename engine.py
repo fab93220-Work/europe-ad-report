@@ -27,7 +27,7 @@ GROSS=sum(m[7] for m in MONTHS); DISC=sum(m[8] for m in MONTHS); RET=sum(m[9] fo
 CONTRIB = NET*MARGIN - SPEND
 
 # ---------------------------------------------------------------- svg helpers
-def grouped_bars(data, w=680, h=250, pad_l=58, pad_b=34, pad_t=14):
+def grouped_bars(data, w=680, h=250, pad_l=58, pad_b=34, pad_t=14, axis_fmt=None, tip_fmt=None):
     """data: [(label, [(value,cls),...]), ...]"""
     mx = max(v for _, vs in data for v, _ in vs) * 1.12
     iw, ih = w - pad_l - 12, h - pad_b - pad_t
@@ -36,14 +36,16 @@ def grouped_bars(data, w=680, h=250, pad_l=58, pad_b=34, pad_t=14):
     for i in range(5):
         y = pad_t + ih * i / 4; val = mx * (1 - i / 4)
         s.append(f'<line x1="{pad_l}" y1="{y:.1f}" x2="{w-12}" y2="{y:.1f}" class="grid"/>')
-        s.append(f'<text x="{pad_l-8}" y="{y+4:.1f}" class="ax ax-r">£{val/1000:.0f}k</text>')
+        lab = axis_fmt(val) if axis_fmt else f"£{val/1000:.0f}k"
+        s.append(f'<text x="{pad_l-8}" y="{y+4:.1f}" class="ax ax-r">{lab}</text>')
     for i, (lab, vals) in enumerate(data):
         k = len(vals); bw = gw * 0.62 / k
         x0 = pad_l + gw * i + gw * 0.19
         for j, (v, cls) in enumerate(vals):
             bh = ih * v / mx
             s.append(f'<rect x="{x0+j*bw:.1f}" y="{pad_t+ih-bh:.1f}" width="{bw-3:.1f}" '
-                     f'height="{bh:.1f}" rx="2" class="{cls}"><title>{lab}: £{v:,.0f}</title></rect>')
+                     f'height="{bh:.1f}" rx="2" class="{cls}">'
+                     f'<title>{lab}: {tip_fmt(v) if tip_fmt else f"£{v:,.0f}"}</title></rect>')
         s.append(f'<text x="{pad_l+gw*i+gw/2:.1f}" y="{h-11}" class="ax ax-c">{lab}</text>')
     s.append('</svg>')
     return "".join(s)
