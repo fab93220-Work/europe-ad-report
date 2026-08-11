@@ -73,11 +73,11 @@ DOC = f"""<title>LRD — Traffic Quality, Before vs After</title>
 <header class="masthead">
   <p class="kicker">Lincs Rads Direct · Working draft</p>
   <h1>Traffic quality: before vs after</h1>
-  <p class="sub">Value per session by channel, this period against the same window last year. A test of
-  whether the traffic I bought was worth more per visit, not just larger in volume.</p>
+  <p class="sub">Value and order rate per session, this period against the same window last year.
+  A test of whether the traffic I bought converted as well as it used to, not just whether there was more of it.</p>
   <div class="meta">
     <span>1 Jun – 10 Aug <b>2026 vs 2025</b></span>
-    <span>Source <b>GA4 traffic acquisition</b></span>
+    <span>Sources <b>GA4 + order export</b></span>
     <span>Sessions <b>{ts26:,}</b> vs {ts25:,}</span>
   </div>
 </header>
@@ -135,22 +135,54 @@ It is that we bought a lot more mobile, and mobile monetises at a third of deskt
 <p class="note">Chart shows £ per session. Microsoft delivers nearly nine times the value per session of Meta,
 on a fifth of the volume.</p>
 
-<h2>What is missing: orders per session</h2>
-<div class="callout callout-warn">
-  <div class="callout-h">The better metric, and why I cannot build it yet</div>
-  <p>Revenue per session mixes two things: <b>how often a session buys</b> (mine) and <b>how much it spends
-  when it does</b> (not mine — that is price, range and merchandising). Orders per session strips the second
-  out and is the cleaner measure of traffic quality.</p>
-  <p>The GA4 export I have carries sessions, revenue and engagement, but no transactions dimension — so
-  orders per session is not calculable from it.</p>
+<h2>Orders per session, and order quality</h2>
+<p>From the order export, same windows. Orders per session strips out average order value and is the cleaner
+read on whether the traffic converted — <b>site-wide, because order-level channel data is not reliable
+enough to split.</b></p>
+
+<div class="kpis">
+{kpi("Orders per session","2.37%","vs 2.31% LY &nbsp;<b class='up'>+2.6%</b>")}
+{kpi("Coupon usage","53.4%","vs 69.3% LY &nbsp;<b class='up'>−16pts</b>")}
+{kpi("Refund rate","4.1%","vs 5.5% LY &nbsp;<b class='up'>improved</b>")}
 </div>
 
-{table(["To complete this table, export","Where","Notes"],[
- ["<b>Sessions + Ecommerce purchases by Session source / medium</b>","GA4 → Reports → Acquisition → Traffic acquisition. Use the pencil icon to add <i>Ecommerce purchases</i> (or <i>Key events</i> if purchase is the only key event).","Run twice: 1 Jun–10 Aug 2026 and 1 Jun–10 Aug 2025"],
+{table(["Measure","Before<br>1 Jun–10 Aug 25","After<br>1 Jun–10 Aug 26","Change","Read"],[
+ ["<b>Orders</b>","684","1,074",delta(1074,684),"Volume nearly doubled"],
+ ["<b>Orders per session</b>","2.31%","2.37%",delta(0.0237,0.0231),chip("done","Held while scaling 53%")],
+ ["<b>AOV</b>","£319","£327",delta(327,319),chip("done","Up slightly")],
+ ["<b>Items per order</b>","3.42","3.34",delta(3.34,3.42),"Marginally smaller baskets"],
+ ["<b>Orders using a coupon</b>","69.3%","53.4%",delta(0.534,0.693),chip("done","Biggest margin win here")],
+ ["<b>New customers</b>","69.6%","69.6%","0%","Unchanged"],
+ ["<b>Refund rate</b>","5.5%","4.1%",delta(0.041,0.055),chip("done","Improved")],
+],"num")}
+
+<div class="hero">
+  <h3>The two that matter</h3>
+  <p><b>Orders per session held at 2.37% while sessions grew 53%.</b> That is the answer to "did you just buy
+  a load of junk traffic". Doubling volume normally dilutes conversion; it did not here.</p>
+  <p><b>Coupon usage fell from 69.3% of orders to 53.4%</b> — sixteen percentage points fewer orders needing a
+  discount to close. On roughly 1,074 orders that is a material margin improvement, and it happened while
+  order volume grew. Worth more to the bottom line than most things on this page.</p>
+</div>
+
+<div class="callout callout-warn">
+  <div class="callout-h">One result that did not go as intended</div>
+  <p>On 31 July I excluded past purchasers from all PMax campaigns specifically to push new-customer
+  acquisition. New-customer share since: <b>68.4%</b>, against 69.9% in the period before it. It has not
+  moved the number in the first ten days.</p>
+  <p>AOV over the same window rose from £321 to £359, so the change has not been costly — but the stated
+  objective has not been met yet. Ten days and 158 orders is too small to call it either way. I will report
+  it properly at 30 days rather than quietly drop it.</p>
+</div>
+
+<h2>Still missing: orders per session by channel</h2>
+{table(["To complete it","Where","Notes"],[
+ ["<b>Sessions + Ecommerce purchases by Session source / medium</b>","GA4 → Reports → Acquisition → Traffic acquisition. Pencil icon to add <i>Ecommerce purchases</i> (or <i>Key events</i> if purchase is the only key event).","Run twice: 1 Jun–10 Aug 2026 and the same window 2025"],
  ["<b>Same, split by device</b>","GA4 → Explore → Free form. Rows: Session source/medium + Device category. Metrics: Sessions, Ecommerce purchases, Purchase revenue.","Separates the mobile effect from the channel effect"],
+ ["<b>Order export with a SKU column</b>","WooCommerce order export, add SKU / product ID per line item.","Would let me join orders to the profitability file and produce margin weighted by units actually sold. Product names alone only match 4.8% of units."],
 ])}
-<p class="note">With those two, this page becomes orders per session by channel and device, before and after —
-which is the number I would actually want to be judged on.</p>
+<p class="note">With the first two, the channel table above becomes orders per session rather than revenue per
+session — which removes AOV from the measure entirely and is the number I would actually want to be judged on.</p>
 
 <h2>Two caveats on the figures above</h2>
 {table(["Caveat","Detail"],[

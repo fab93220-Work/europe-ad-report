@@ -164,11 +164,11 @@ footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-fa
 <header class="masthead">
   <p class="kicker">Lincs Rads Direct · Working draft</p>
   <h1>Traffic quality: before vs after</h1>
-  <p class="sub">Value per session by channel, this period against the same window last year. A test of
-  whether the traffic I bought was worth more per visit, not just larger in volume.</p>
+  <p class="sub">Value and order rate per session, this period against the same window last year.
+  A test of whether the traffic I bought converted as well as it used to, not just whether there was more of it.</p>
   <div class="meta">
     <span>1 Jun – 10 Aug <b>2026 vs 2025</b></span>
-    <span>Source <b>GA4 traffic acquisition</b></span>
+    <span>Sources <b>GA4 + order export</b></span>
     <span>Sessions <b>45,377</b> vs 29,661</span>
   </div>
 </header>
@@ -220,19 +220,42 @@ It is that we bought a lot more mobile, and mobile monetises at a third of deskt
 <p class="note">Chart shows £ per session. Microsoft delivers nearly nine times the value per session of Meta,
 on a fifth of the volume.</p>
 
-<h2>What is missing: orders per session</h2>
-<div class="callout callout-warn">
-  <div class="callout-h">The better metric, and why I cannot build it yet</div>
-  <p>Revenue per session mixes two things: <b>how often a session buys</b> (mine) and <b>how much it spends
-  when it does</b> (not mine — that is price, range and merchandising). Orders per session strips the second
-  out and is the cleaner measure of traffic quality.</p>
-  <p>The GA4 export I have carries sessions, revenue and engagement, but no transactions dimension — so
-  orders per session is not calculable from it.</p>
+<h2>Orders per session, and order quality</h2>
+<p>From the order export, same windows. Orders per session strips out average order value and is the cleaner
+read on whether the traffic converted — <b>site-wide, because order-level channel data is not reliable
+enough to split.</b></p>
+
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Orders per session</div><div class="kpi-v">2.37%</div><div class="kpi-s">vs 2.31% LY &nbsp;<b class='up'>+2.6%</b></div></div>
+<div class="kpi "><div class="kpi-l">Coupon usage</div><div class="kpi-v">53.4%</div><div class="kpi-s">vs 69.3% LY &nbsp;<b class='up'>−16pts</b></div></div>
+<div class="kpi "><div class="kpi-l">Refund rate</div><div class="kpi-v">4.1%</div><div class="kpi-s">vs 5.5% LY &nbsp;<b class='up'>improved</b></div></div>
 </div>
 
-<div class="tw"><table class=""><thead><tr><th>To complete this table, export</th><th>Where</th><th>Notes</th></tr></thead><tbody><tr><td><b>Sessions + Ecommerce purchases by Session source / medium</b></td><td>GA4 → Reports → Acquisition → Traffic acquisition. Use the pencil icon to add <i>Ecommerce purchases</i> (or <i>Key events</i> if purchase is the only key event).</td><td>Run twice: 1 Jun–10 Aug 2026 and 1 Jun–10 Aug 2025</td></tr><tr><td><b>Same, split by device</b></td><td>GA4 → Explore → Free form. Rows: Session source/medium + Device category. Metrics: Sessions, Ecommerce purchases, Purchase revenue.</td><td>Separates the mobile effect from the channel effect</td></tr></tbody></table></div>
-<p class="note">With those two, this page becomes orders per session by channel and device, before and after —
-which is the number I would actually want to be judged on.</p>
+<div class="tw"><table class="num"><thead><tr><th>Measure</th><th>Before<br>1 Jun–10 Aug 25</th><th>After<br>1 Jun–10 Aug 26</th><th>Change</th><th>Read</th></tr></thead><tbody><tr><td><b>Orders</b></td><td>684</td><td>1,074</td><td><b class='up'>+57%</b></td><td>Volume nearly doubled</td></tr><tr><td><b>Orders per session</b></td><td>2.31%</td><td>2.37%</td><td><b class='up'>+3%</b></td><td><span class="chip chip-done">Held while scaling 53%</span></td></tr><tr><td><b>AOV</b></td><td>£319</td><td>£327</td><td><b class='up'>+3%</b></td><td><span class="chip chip-done">Up slightly</span></td></tr><tr><td><b>Items per order</b></td><td>3.42</td><td>3.34</td><td><b class='dn'>-2%</b></td><td>Marginally smaller baskets</td></tr><tr><td><b>Orders using a coupon</b></td><td>69.3%</td><td>53.4%</td><td><b class='dn'>-23%</b></td><td><span class="chip chip-done">Biggest margin win here</span></td></tr><tr><td><b>New customers</b></td><td>69.6%</td><td>69.6%</td><td>0%</td><td>Unchanged</td></tr><tr><td><b>Refund rate</b></td><td>5.5%</td><td>4.1%</td><td><b class='dn'>-25%</b></td><td><span class="chip chip-done">Improved</span></td></tr></tbody></table></div>
+
+<div class="hero">
+  <h3>The two that matter</h3>
+  <p><b>Orders per session held at 2.37% while sessions grew 53%.</b> That is the answer to "did you just buy
+  a load of junk traffic". Doubling volume normally dilutes conversion; it did not here.</p>
+  <p><b>Coupon usage fell from 69.3% of orders to 53.4%</b> — sixteen percentage points fewer orders needing a
+  discount to close. On roughly 1,074 orders that is a material margin improvement, and it happened while
+  order volume grew. Worth more to the bottom line than most things on this page.</p>
+</div>
+
+<div class="callout callout-warn">
+  <div class="callout-h">One result that did not go as intended</div>
+  <p>On 31 July I excluded past purchasers from all PMax campaigns specifically to push new-customer
+  acquisition. New-customer share since: <b>68.4%</b>, against 69.9% in the period before it. It has not
+  moved the number in the first ten days.</p>
+  <p>AOV over the same window rose from £321 to £359, so the change has not been costly — but the stated
+  objective has not been met yet. Ten days and 158 orders is too small to call it either way. I will report
+  it properly at 30 days rather than quietly drop it.</p>
+</div>
+
+<h2>Still missing: orders per session by channel</h2>
+<div class="tw"><table class=""><thead><tr><th>To complete it</th><th>Where</th><th>Notes</th></tr></thead><tbody><tr><td><b>Sessions + Ecommerce purchases by Session source / medium</b></td><td>GA4 → Reports → Acquisition → Traffic acquisition. Pencil icon to add <i>Ecommerce purchases</i> (or <i>Key events</i> if purchase is the only key event).</td><td>Run twice: 1 Jun–10 Aug 2026 and the same window 2025</td></tr><tr><td><b>Same, split by device</b></td><td>GA4 → Explore → Free form. Rows: Session source/medium + Device category. Metrics: Sessions, Ecommerce purchases, Purchase revenue.</td><td>Separates the mobile effect from the channel effect</td></tr><tr><td><b>Order export with a SKU column</b></td><td>WooCommerce order export, add SKU / product ID per line item.</td><td>Would let me join orders to the profitability file and produce margin weighted by units actually sold. Product names alone only match 4.8% of units.</td></tr></tbody></table></div>
+<p class="note">With the first two, the channel table above becomes orders per session rather than revenue per
+session — which removes AOV from the measure entirely and is the number I would actually want to be judged on.</p>
 
 <h2>Two caveats on the figures above</h2>
 <div class="tw"><table class=""><thead><tr><th>Caveat</th><th>Detail</th></tr></thead><tbody><tr><td><b>GA4 captured less revenue this year</b></td><td>£337,185 of £365,233 (92.3%) against £219,219 of £220,623 (99.4%) last year. Roughly £28,000 of revenue is now unattributed to any channel, up from £1,400. That understates every channel's revenue per session this year and is a tracking problem worth fixing.</td></tr><tr><td><b>Last-click attribution</b></td><td>GA4 credits the last non-direct source. Meta typically loses out to search under this model — its £1.20 is a floor, not a full picture. Direct at £20.42 per session is partly other channels' work arriving uncredited.</td></tr></tbody></table></div>
