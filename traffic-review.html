@@ -1,0 +1,506 @@
+<title>LRD — Traffic &amp; Acquisition Review</title>
+<style>
+:root{
+  --bg:#F7F6F4; --surface:#FFFFFF; --surface-2:#F1EFEB;
+  --ink:#1C1E20; --ink-2:#4A4742; --ink-3:#787269;
+  --rule:#DFDBD3; --rule-2:#EDEAE4;
+  --brass:#8C6A3F; --brass-2:#A98254; --brass-soft:#F0E7DA;
+  --good:#3F6B52; --good-soft:#E4EDE7;
+  --warn:#A8762C; --warn-soft:#F6ECDA;
+  --crit:#9B3B31; --crit-soft:#F7E5E2;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16181A; --surface:#1E2124; --surface-2:#25292C;
+  --ink:#EDEAE4; --ink-2:#B9B3AA; --ink-3:#8B857C;
+  --rule:#32373B; --rule-2:#282C30;
+  --brass:#C79A5F; --brass-2:#D8B183; --brass-soft:#33291D;
+  --good:#7FB294; --good-soft:#1D2A23;
+  --warn:#D7A65B; --warn-soft:#2E2517;
+  --crit:#D9776A; --crit-soft:#301E1B;
+}}
+:root[data-theme="dark"]{
+  --bg:#16181A; --surface:#1E2124; --surface-2:#25292C;
+  --ink:#EDEAE4; --ink-2:#B9B3AA; --ink-3:#8B857C;
+  --rule:#32373B; --rule-2:#282C30;
+  --brass:#C79A5F; --brass-2:#D8B183; --brass-soft:#33291D;
+  --good:#7FB294; --good-soft:#1D2A23;
+  --warn:#D7A65B; --warn-soft:#2E2517;
+  --crit:#D9776A; --crit-soft:#301E1B;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:15.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1020px;margin:0 auto;padding:34px 22px 96px}
+
+header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:6px}
+.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--brass);margin:0 0 10px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,40px);line-height:1.12;
+  margin:0 0 10px;letter-spacing:-.012em;text-wrap:balance}
+.sub{color:var(--ink-2);margin:0;font-size:15px;max-width:64ch}
+.meta{display:flex;flex-wrap:wrap;gap:7px 20px;margin-top:15px;font-family:var(--mono);
+  font-size:11.5px;color:var(--ink-3);letter-spacing:.02em}
+.meta b{color:var(--ink-2);font-weight:500}
+
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--rule);
+  margin:0 0 30px;padding:9px 0;display:flex;gap:3px;overflow-x:auto;scrollbar-width:thin}
+.tab{flex:0 0 auto;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--ink-3);
+  background:none;border:1px solid transparent;border-radius:5px;padding:6px 9px;cursor:pointer;
+  white-space:nowrap;transition:color .13s,background .13s}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-selected="true"]{color:var(--brass);background:var(--brass-soft);border-color:var(--brass)}
+.tab:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+.panel{animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.panel{animation:none}}
+.eyebrow{font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.03em;color:var(--ink-3);
+  margin:0 0 9px;padding-left:11px;border-left:2px solid var(--brass);max-width:74ch}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(23px,3.4vw,31px);line-height:1.16;
+  margin:0 0 20px;letter-spacing:-.011em;text-wrap:balance}
+h3{font-family:var(--serif);font-weight:600;font-size:18.5px;margin:38px 0 13px;letter-spacing:-.006em}
+h3:first-of-type{margin-top:30px}
+p{margin:0 0 14px;max-width:74ch}
+.lede{font-size:16.8px;line-height:1.58;color:var(--ink-2);max-width:70ch;margin-bottom:22px}
+.note{font-size:13.4px;color:var(--ink-3);line-height:1.58;max-width:76ch;margin-top:11px}
+b,strong{font-weight:640;color:var(--ink)}
+i{font-style:italic}
+a.jump{color:var(--brass);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+code{font-family:var(--mono);font-size:.87em;background:var(--surface-2);padding:1px 5px;
+  border-radius:3px;color:var(--ink-2);word-break:break-word}
+.up{color:var(--good)} .dn{color:var(--crit)}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:11px;margin:22px 0 8px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:7px;padding:13px 14px;
+  border-top:2.5px solid var(--brass)}
+.kpi.warn{border-top-color:var(--warn)} .kpi.crit{border-top-color:var(--crit)}
+.kpi-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px}
+.kpi-v{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi-s{font-size:12.2px;color:var(--ink-3);margin-top:4px;line-height:1.42}
+
+.chart{width:100%;height:auto;display:block;margin:6px 0 2px;overflow:visible}
+.grid{stroke:var(--rule-2);stroke-width:1}
+.ax{font-family:var(--mono);font-size:10.5px;fill:var(--ink-3)}
+.ax-r{text-anchor:end} .ax-c{text-anchor:middle} .ax-e{text-anchor:end}
+.bar-a{fill:var(--brass)} .bar-b{fill:var(--rule)}
+.seg-a{fill:var(--brass)} .seg-b{fill:var(--brass-2);opacity:.62} .seg-c{fill:var(--ink-3);opacity:.5}
+.seg-t{font-family:var(--mono);font-size:11px;fill:#fff;text-anchor:middle;font-weight:600}
+.line{fill:none;stroke:var(--brass);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.area{fill:var(--brass);opacity:.09}
+.dot{fill:var(--brass)} .dot-end{fill:var(--brass);stroke:var(--bg);stroke-width:2}
+.thresh{stroke:var(--crit);stroke-width:1.3;stroke-dasharray:4 3}
+.thresh-t{fill:var(--crit);font-size:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 4px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3)}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.sw-a{background:var(--brass)} .sw-b{background:var(--brass-2);opacity:.62} .sw-c{background:var(--ink-3);opacity:.5}
+
+.tw{overflow-x:auto;margin:14px 0;border:1px solid var(--rule);border-radius:7px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:13.4px;min-width:520px}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  text-align:left;padding:10px 13px;border-bottom:1px solid var(--rule);font-weight:500;
+  background:var(--surface-2);white-space:nowrap}
+td{padding:10px 13px;border-bottom:1px solid var(--rule-2);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+tbody tr:last-child{background:var(--surface-2)}
+table.num td{font-variant-numeric:tabular-nums}
+table.num td:not(:first-child){font-family:var(--mono);font-size:12.6px;white-space:nowrap}
+
+.chip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;
+  padding:2px 7px;border-radius:3px;white-space:nowrap;text-transform:uppercase}
+.chip-done{background:var(--good-soft);color:var(--good)}
+.chip-part{background:var(--brass-soft);color:var(--brass)}
+.chip-watch{background:var(--warn-soft);color:var(--warn)}
+.chip-crit{background:var(--crit-soft);color:var(--crit)}
+
+.callout{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--brass);
+  border-radius:6px;padding:16px 18px;margin:20px 0}
+.callout-warn{border-left-color:var(--warn)} .callout-crit{border-left-color:var(--crit)}
+.callout-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--brass);margin-bottom:8px;font-weight:600}
+.callout-warn .callout-h{color:var(--warn)} .callout-crit .callout-h{color:var(--crit)}
+.callout p{margin:0 0 10px;font-size:14.6px}.callout p:last-child{margin-bottom:0}
+
+.qa{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  border-radius:7px;overflow:hidden;margin:16px 0}
+.qa-row{display:grid;grid-template-columns:minmax(150px,.33fr) 1fr;gap:18px;background:var(--surface);padding:15px 17px}
+.qa-q{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--brass);line-height:1.3}
+.qa-a{font-size:14.4px;color:var(--ink-2);line-height:1.56}
+@media(max-width:640px){.qa-row{grid-template-columns:1fr;gap:7px}}
+
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px;margin:18px 0}
+.tri-card{background:var(--surface);border:1px solid var(--rule);border-radius:7px;padding:15px 16px;
+  border-top:3px solid var(--brass)}
+.tri-crit{border-top-color:var(--crit)} .tri-warn{border-top-color:var(--warn)}
+.tri-b{border-top-color:var(--warn)} .tri-c{border-top-color:var(--good)}
+.tri-h{font-family:var(--serif);font-size:16.5px;font-weight:600;margin-bottom:8px;line-height:1.25}
+.tri-card p{font-size:13.8px;margin:0 0 9px;color:var(--ink-2)}
+.tri-f{font-family:var(--mono);font-size:11.2px;color:var(--ink-3);border-top:1px solid var(--rule-2);
+  padding-top:9px;margin-bottom:0!important;line-height:1.45}
+
+ul.bul{margin:12px 0;padding-left:0;list-style:none;max-width:76ch}
+ul.bul li{position:relative;padding-left:19px;margin-bottom:9px;font-size:14.6px;line-height:1.56}
+ul.bul li::before{content:"";position:absolute;left:3px;top:9px;width:5px;height:5px;
+  background:var(--brass);border-radius:1px}
+ol.steps{margin:12px 0;padding-left:0;list-style:none;counter-reset:s;max-width:76ch}
+ol.steps li{position:relative;padding-left:31px;margin-bottom:11px;font-size:14.6px;line-height:1.56;counter-increment:s}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:20px;height:20px;
+  background:var(--brass-soft);color:var(--brass);border-radius:3px;font-family:var(--mono);
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-family:var(--mono);
+  font-size:11px;color:var(--ink-3);line-height:1.7}
+</style>
+<div class="wrap">
+<header class="masthead">
+  <p class="kicker">Lincs Rads Direct · Paid media &amp; organic acquisition</p>
+  <h1>Traffic &amp; acquisition review</h1>
+  <p class="sub">Three months of demand acquisition: what I spent, where I sent it, what it cost, and whether
+  the people it brought were the right ones. Commercial outcomes are reported at the end as shared ownership.</p>
+  <div class="meta">
+    <span>Period <b>1 Jun – 10 Aug 2026</b></span>
+    <span>Started <b>1 Jun</b></span>
+    <span>Handover <b>25 Jun</b></span>
+    <span>Sessions <b>45,377</b></span>
+    <span>Paid spend <b>£84,099</b></span>
+  </div>
+</header>
+<nav class="tabs" role="tablist" aria-label="Sections"><button class="tab" data-go="scorecard" role="tab" aria-selected="true" id="tab-scorecard" aria-controls="p-scorecard">Scorecard</button><button class="tab" data-go="mix" role="tab" aria-selected="false" id="tab-mix" aria-controls="p-mix">Media mix</button><button class="tab" data-go="cost" role="tab" aria-selected="false" id="tab-cost" aria-controls="p-cost">Cost of traffic</button><button class="tab" data-go="google" role="tab" aria-selected="false" id="tab-google" aria-controls="p-google">Google Ads</button><button class="tab" data-go="quality" role="tab" aria-selected="false" id="tab-quality" aria-controls="p-quality">Traffic quality</button><button class="tab" data-go="seo" role="tab" aria-selected="false" id="tab-seo" aria-controls="p-seo">SEO</button><button class="tab" data-go="device" role="tab" aria-selected="false" id="tab-device" aria-controls="p-device">Device</button><button class="tab" data-go="escalation" role="tab" aria-selected="false" id="tab-escalation" aria-controls="p-escalation">Escalation</button><button class="tab" data-go="next" role="tab" aria-selected="false" id="tab-next" aria-controls="p-next">Next 90</button><button class="tab" data-go="commercial" role="tab" aria-selected="false" id="tab-commercial" aria-controls="p-commercial">Commercial</button></nav>
+<section class="panel on" id="p-scorecard" role="tabpanel" aria-labelledby="tab-scorecard"><p class="eyebrow">What I control: where the budget goes, what it buys, and how relevant the traffic is</p><h2>My scorecard</h2>
+<p class="lede">This is the part of the business I actually hold the levers on: how much we spend, which
+platforms and campaigns it goes to, what it costs to bring someone to the door, and whether the person who
+arrives is relevant. Everything in this section is a direct result of a decision I made.</p>
+
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Sessions delivered</div><div class="kpi-v">45,377</div><div class="kpi-s">vs 29,661 LY &nbsp;<b class='up'>+53%</b></div></div>
+<div class="kpi "><div class="kpi-l">Paid sessions</div><div class="kpi-v">30,752</div><div class="kpi-s">vs 19,605 LY &nbsp;<b class='up'>+57%</b></div></div>
+<div class="kpi "><div class="kpi-l">Organic sessions</div><div class="kpi-v">5,583</div><div class="kpi-s">vs 2,898 LY &nbsp;<b class='up'>+93%</b></div></div>
+<div class="kpi warn"><div class="kpi-l">Cost per session</div><div class="kpi-v">£2.73</div><div class="kpi-s">vs £2.11 LY &nbsp;<b class='dn'>+30%</b></div></div>
+<div class="kpi "><div class="kpi-l">Brand impression share</div><div class="kpi-v">96.6%</div><div class="kpi-s">only 2.5% lost to rank</div></div>
+<div class="kpi "><div class="kpi-l">Organic avg position</div><div class="kpi-v">12.1</div><div class="kpi-s">from 28.0 LY &nbsp;<b class='up'>+15.8 places</b></div></div>
+</div>
+
+<h3>The scorecard, in full</h3>
+<div class="tw"><table class=""><thead><tr><th>What I control</th><th>This period</th><th>Last year</th><th>Read</th></tr></thead><tbody><tr><td><b>Paid sessions delivered</b></td><td>30,752</td><td>19,605</td><td><span class="chip chip-done">+57%</span> More people brought to the door</td></tr><tr><td><b>Media budget allocation</b></td><td>G 56% / M 37% / B 7%</td><td>G 40% / M 56% / B 4%</td><td><span class="chip chip-done">Reallocated</span> Deliberate shift out of Meta into Search</td></tr><tr><td><b>Cost per session</b></td><td>£2.73</td><td>£2.11</td><td><span class="chip chip-watch">+30%</span> Rose while scaling 57%. See Cost of traffic.</td></tr><tr><td><b>Brand impression share</b></td><td>96.6%</td><td>not protected</td><td><span class="chip chip-done">Locked</span> Competitors cannot take our name cheaply</td></tr><tr><td><b>Spend in controllable formats</b></td><td>24.4% Search + Shopping</td><td>—</td><td><span class="chip chip-part">In progress</span> 75% still in PMax, which reports no queries</td></tr><tr><td><b>Account rebuilt</b></td><td>97% of Aug spend</td><td>13% in June</td><td><span class="chip chip-done">Near complete</span> Share of spend in campaigns I built</td></tr><tr><td><b>Waste controls</b></td><td>111 negatives, 4 lists</td><td>none</td><td><span class="chip chip-done">Built</span> Mirrored on Microsoft, +166 rows</td></tr><tr><td><b>Organic avg position</b></td><td>12.1</td><td>28.0</td><td><span class="chip chip-done">+15.8</span> Impression-weighted across 987 pages</td></tr><tr><td><b>Organic CTR</b></td><td>0.76%</td><td>0.41%</td><td><span class="chip chip-done">+85%</span> On 13% fewer impressions</td></tr><tr><td><b>Changes logged with rationale</b></td><td>90+</td><td>0</td><td><span class="chip chip-done">Auditable</span> Every change has a before, after and reason</td></tr></tbody></table></div>
+
+<div class="callout">
+  <div class="callout-h">What this section deliberately does not contain</div>
+  <p>Conversion rate, average order value and revenue are not here. Not because they don't matter — they
+  matter more than anything — but because they are the product of my work <i>and</i> price, stock, range,
+  site build and season. I report them in <a href="#commercial" class="jump" data-go="commercial">Commercial
+  outcome</a> without claiming or dodging them. Where I can see something outside my remit costing us money,
+  it goes in the <a href="#escalation" class="jump" data-go="escalation">Escalation register</a> with a name
+  against it.</p>
+</div></section><section class="panel" id="p-mix" role="tabpanel" aria-labelledby="tab-mix" hidden><p class="eyebrow">Traffic share between paid and organic, and the changes within the paid mix</p><h2>Where the traffic came from</h2>
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Total sessions</div><div class="kpi-v">45,377</div><div class="kpi-s"><b class='up'>+53%</b> YoY</div></div>
+<div class="kpi "><div class="kpi-l">Paid share</div><div class="kpi-v">67.8%</div><div class="kpi-s">vs 66.1% LY — broadly held</div></div>
+<div class="kpi "><div class="kpi-l">Organic share</div><div class="kpi-v">12.3%</div><div class="kpi-s">vs 9.8% LY &nbsp;<b class='up'>growing</b></div></div>
+</div>
+
+<h3>Sessions by channel</h3>
+<svg viewBox="0 0 680 250" class="chart" role="img"><line x1="58" y1="14.0" x2="668" y2="14.0" class="grid"/><text x="50" y="18.0" class="ax ax-r">£19k</text><line x1="58" y1="64.5" x2="668" y2="64.5" class="grid"/><text x="50" y="68.5" class="ax ax-r">£14k</text><line x1="58" y1="115.0" x2="668" y2="115.0" class="grid"/><text x="50" y="119.0" class="ax ax-r">£10k</text><line x1="58" y1="165.5" x2="668" y2="165.5" class="grid"/><text x="50" y="169.5" class="ax ax-r">£5k</text><line x1="58" y1="216.0" x2="668" y2="216.0" class="grid"/><text x="50" y="220.0" class="ax ax-r">£0k</text><rect x="77.3" y="35.6" width="28.5" height="180.4" rx="2" class="bar-a"><title>Google: £17,171</title></rect><rect x="108.8" y="134.3" width="28.5" height="81.7" rx="2" class="bar-b"><title>Google: £7,777</title></rect><text x="108.8" y="239" class="ax ax-c">Google</text><rect x="179.0" y="94.9" width="28.5" height="121.1" rx="2" class="bar-a"><title>Meta: £11,530</title></rect><rect x="210.5" y="100.1" width="28.5" height="115.9" rx="2" class="bar-b"><title>Meta: £11,030</title></rect><text x="210.5" y="239" class="ax ax-c">Meta</text><rect x="280.7" y="157.4" width="28.5" height="58.6" rx="2" class="bar-a"><title>Organic: £5,583</title></rect><rect x="312.2" y="185.6" width="28.5" height="30.4" rx="2" class="bar-b"><title>Organic: £2,898</title></rect><text x="312.2" y="239" class="ax ax-c">Organic</text><rect x="382.3" y="165.5" width="28.5" height="50.5" rx="2" class="bar-a"><title>Direct: £4,811</title></rect><rect x="413.8" y="167.3" width="28.5" height="48.7" rx="2" class="bar-b"><title>Direct: £4,632</title></rect><text x="413.8" y="239" class="ax ax-c">Direct</text><rect x="484.0" y="183.5" width="28.5" height="32.5" rx="2" class="bar-a"><title>Referral: £3,096</title></rect><rect x="515.5" y="191.5" width="28.5" height="24.5" rx="2" class="bar-b"><title>Referral: £2,329</title></rect><text x="515.5" y="239" class="ax ax-c">Referral</text><rect x="585.7" y="194.5" width="28.5" height="21.5" rx="2" class="bar-a"><title>Bing: £2,051</title></rect><rect x="617.2" y="207.6" width="28.5" height="8.4" rx="2" class="bar-b"><title>Bing: £798</title></rect><text x="617.2" y="239" class="ax ax-c">Bing</text></svg>
+<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
+
+<div class="tw"><table class="num"><thead><tr><th>Channel</th><th>Sessions</th><th>Share</th><th>LY</th><th>LY share</th><th>YoY</th><th>Eng. rate</th><th>LY</th></tr></thead><tbody><tr><td><b>Paid – Google</b></td><td>17,171</td><td>37.8%</td><td>7,777</td><td>26.2%</td><td><b class='up'>+121%</b></td><td>75%</td><td>82%</td></tr><tr><td><b>Paid – Meta</b></td><td>11,530</td><td>25.4%</td><td>11,030</td><td>37.2%</td><td><b class='up'>+5%</b></td><td>64%</td><td>70%</td></tr><tr><td><b>Organic</b></td><td>5,583</td><td>12.3%</td><td>2,898</td><td>9.8%</td><td><b class='up'>+93%</b></td><td>69%</td><td>72%</td></tr><tr><td><b>Direct</b></td><td>4,811</td><td>10.6%</td><td>4,632</td><td>15.6%</td><td><b class='up'>+4%</b></td><td>65%</td><td>64%</td></tr><tr><td><b>Referral</b></td><td>3,096</td><td>6.8%</td><td>2,329</td><td>7.9%</td><td><b class='up'>+33%</b></td><td>80%</td><td>75%</td></tr><tr><td><b>Paid – Bing</b></td><td>2,051</td><td>4.5%</td><td>798</td><td>2.7%</td><td><b class='up'>+157%</b></td><td>74%</td><td>80%</td></tr><tr><td><b>Other</b></td><td>986</td><td>2.2%</td><td>186</td><td>0.6%</td><td><b class='up'>+430%</b></td><td>41%</td><td>34%</td></tr><tr><td><b>AI assistants</b></td><td>149</td><td>0.3%</td><td>11</td><td>0.0%</td><td><b class='up'>+1255%</b></td><td>62%</td><td>64%</td></tr><tr><td><b>Total</b></td><td><b>45,377</b></td><td>100%</td><td><b>29,661</b></td><td>100%</td><td><b class='up'>+53%</b></td><td></td><td></td></tr></tbody></table></div>
+
+<h3>The shift inside paid</h3>
+<svg viewBox="0 0 680 126" class="chart" role="img"><text x="84" y="37" class="ax ax-r">This year</text><rect x="96.0" y="16" width="287.0" height="34" class="seg-a"><title>Google: £17,171 (56%)</title></rect><text x="239.5" y="37" class="seg-t">56%</text><rect x="383.0" y="16" width="192.7" height="34" class="seg-b"><title>Meta: £11,530 (37%)</title></rect><text x="479.4" y="37" class="seg-t">37%</text><rect x="575.7" y="16" width="34.3" height="34" class="seg-c"><title>Bing: £2,051 (7%)</title></rect><text x="619.0" y="37" class="ax">£31k</text><text x="84" y="97" class="ax ax-r">Last year</text><rect x="96.0" y="76" width="130.0" height="34" class="seg-a"><title>Google: £7,777 (40%)</title></rect><text x="161.0" y="97" class="seg-t">40%</text><rect x="226.0" y="76" width="184.4" height="34" class="seg-b"><title>Meta: £11,030 (56%)</title></rect><text x="318.2" y="97" class="seg-t">56%</text><rect x="410.3" y="76" width="13.3" height="34" class="seg-c"><title>Bing: £798 (4%)</title></rect><text x="432.7" y="97" class="ax">£20k</text></svg>
+<div class="legend"><span class="lg"><i class="sw sw-a"></i>Google</span><span class="lg"><i class="sw sw-b"></i>Meta</span><span class="lg"><i class="sw sw-c"></i>Bing</span></div>
+
+<p><b>This is the single clearest thing I did.</b> Last year Meta was the majority of paid traffic at 56%.
+Today Google is, at 56%, and Meta is 37%. That was not drift — it was a series of deliberate budget
+decisions: retiring five Meta ad sets that were burning money, and pushing the freed budget into search,
+where intent already exists.</p>
+
+<h3>Paid versus organic</h3>
+<div class="tw"><table class="num"><thead><tr><th></th><th>Sessions</th><th>Share of all traffic</th><th>LY sessions</th><th>LY share</th><th>YoY</th></tr></thead><tbody><tr><td><b>Paid</b></td><td>30,752</td><td>67.8%</td><td>19,605</td><td>66.1%</td><td><b class='up'>+57%</b></td></tr><tr><td><b>Organic</b></td><td>5,583</td><td>12.3%</td><td>2,898</td><td>9.8%</td><td><b class='up'>+93%</b></td></tr><tr><td><b>Direct + referral</b></td><td>7,907</td><td>17.4%</td><td>6,961</td><td>23.5%</td><td><b class='up'>+14%</b></td></tr></tbody></table></div>
+<p class="note">Organic grew faster than paid (+93% vs +57%) and now makes up a larger share of the mix than
+last year. That is the healthier direction of travel: it is the only channel where the traffic keeps arriving
+after you stop paying.</p>
+
+<div class="callout">
+  <div class="callout-h">One to watch — AI assistants</div>
+  <p>Sessions from ChatGPT, Gemini, Perplexity and Copilot went from <b>11 to 149</b>. Still tiny, but it is
+  the fastest-growing source on the site by a distance, and it is not something we are doing anything to earn
+  yet. Worth a proper look before it stops being tiny.</p>
+</div></section><section class="panel" id="p-cost" role="tabpanel" aria-labelledby="tab-cost" hidden><p class="eyebrow">Spend and the efficiency of what it bought</p><h2>What the traffic cost</h2>
+<p class="lede">Cost per session is the cleanest measure of my half of the job. It is what we paid to get a
+person onto the site, before anything about price, product or the site itself comes into play.</p>
+
+<div class="kpis">
+<div class="kpi warn"><div class="kpi-l">Blended cost per session</div><div class="kpi-v">£2.73</div><div class="kpi-s">vs £2.11 LY</div></div>
+<div class="kpi "><div class="kpi-l">Cheapest channel</div><div class="kpi-v">Meta £2.47</div><div class="kpi-s">then Google £2.62</div></div>
+<div class="kpi crit"><div class="kpi-l">Most expensive</div><div class="kpi-v">Bing £5.23</div><div class="kpi-s">2x Google — needs fixing</div></div>
+</div>
+
+<div class="tw"><table class="num"><thead><tr><th>Channel</th><th>Spend</th><th>LY spend</th><th>Sessions</th><th>LY sessions</th><th>Cost/session</th><th>LY</th><th>Change</th><th>Volume</th></tr></thead><tbody><tr><td><b>Google</b></td><td>£44,934</td><td>£14,937</td><td>17,171</td><td>7,777</td><td><b>£2.62</b></td><td>£1.92</td><td><b class='dn'>+36%</b></td><td><b class='up'>+121%</b></td></tr><tr><td><b>Bing</b></td><td>£10,729</td><td>£2,552</td><td>2,051</td><td>798</td><td><b>£5.23</b></td><td>£3.20</td><td><b class='dn'>+64%</b></td><td><b class='up'>+157%</b></td></tr><tr><td><b>Meta</b></td><td>£28,436</td><td>£23,837</td><td>11,530</td><td>11,030</td><td><b>£2.47</b></td><td>£2.16</td><td><b class='dn'>+14%</b></td><td><b class='up'>+5%</b></td></tr><tr><td><b>Blended</b></td><td><b>£84,099</b></td><td><b>£41,326</b></td><td><b>30,752</b></td><td><b>19,605</b></td><td><b>£2.73</b></td><td><b>£2.11</b></td><td><b class='dn'>+30%</b></td><td><b class='up'>+57%</b></td></tr></tbody></table></div>
+
+<div class="callout callout-warn">
+  <div class="callout-h">Being straight about this one</div>
+  <p>Cost per session rose <b>30%</b>. I am not going to dress that up. But the mechanism
+  matters: we bought <b>57% more traffic</b>, and in an auction you do not buy 57% more volume at
+  the same price — you move up the demand curve. The relevant question is not "did it get more expensive"
+  but "was the extra volume worth what it cost", and that is answered by the impression share data in
+  <a href="#google" class="jump" data-go="google">Google Ads</a>: our best Search campaigns are still losing
+  a fifth to a third of available impressions purely to budget, which means cheap growth is still on the
+  table.</p>
+</div>
+
+<h3>Bing is the outlier</h3>
+<p>Bing costs <b>£5.23 a session against Google's £2.62</b> — twice as much for the same job, in a market
+where Bing clicks are normally cheaper, not dearer. Spend went from £2,552 to £10,729 on my watch, so this
+is mine to answer for. The Microsoft campaigns spent much of July and August heavily constrained by budget
+(lost impression share to budget hit 88% on some days for PMax Column and 90% for Cast Iron), which forces
+the bidding into the most expensive slots. Fixing the pacing there is the single clearest efficiency job I
+have in the next 30 days.</p>
+
+<h3>Meta: fewer clicks, cheaper impressions</h3>
+<div class="tw"><table class="num"><thead><tr><th>Metric</th><th>This year</th><th>Last year</th><th>Change</th></tr></thead><tbody><tr><td>Spend</td><td>£28,454</td><td>£23,787</td><td><b class='dn'>+19.6%</b></td></tr><tr><td>Impressions</td><td>3,839,972</td><td>2,889,732</td><td><b class='up'>+32.9%</b></td></tr><tr><td>Link clicks</td><td>25,548</td><td>26,097</td><td><b class='dn'>−2.1%</b></td></tr><tr><td>CPM</td><td>£7.41</td><td>£8.23</td><td><b class='up'>−10.0%</b></td></tr><tr><td>Cost per link click</td><td>£1.11</td><td>£0.91</td><td><b class='dn'>+22%</b></td></tr></tbody></table></div>
+<p class="note">Meta bought more reach more cheaply but converted less of it into clicks. That is the honest
+read and it is the weakest part of my paid performance. What offsets it is what was removed — see below.</p>
+
+<h3>What I retired on Meta</h3>
+<p>Five ad sets that spent <b>£12,451</b> in the same window last year are now at zero:</p>
+<div class="tw"><table class="num"><thead><tr><th>Ad set</th><th>LY spend</th><th>Status</th></tr></thead><tbody><tr><td>LA Competition Winners – April Sale</td><td>£5,100</td><td><span class="chip chip-crit">Retired</span></td></tr><tr><td>Prospecting – Feb Sale FAC</td><td>£4,868</td><td><span class="chip chip-crit">Retired</span></td></tr><tr><td>Prospecting – Creative Testing</td><td>£1,160</td><td><span class="chip chip-crit">Retired</span></td></tr><tr><td>Best Sellers DPA</td><td>£984</td><td><span class="chip chip-crit">Retired</span></td></tr><tr><td>Prospecting – May UGC</td><td>£339</td><td><span class="chip chip-crit">Retired</span></td></tr></tbody></table></div>
+<p class="note">The takeover checklist estimated cold prospecting was losing around £14k a quarter. The
+£12,451 retired here is the same money, and it now sits in Instant Experience and BOFU Prospecting instead.</p></section><section class="panel" id="p-google" role="tabpanel" aria-labelledby="tab-google" hidden><p class="eyebrow">Where the impressions were won and lost, and why</p><h2>Google Ads — coverage and control</h2>
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Live campaigns</div><div class="kpi-v">8</div><div class="kpi-s">all rebuilt and renamed</div></div>
+<div class="kpi "><div class="kpi-l">Blended CPC</div><div class="kpi-v">£1.41</div><div class="kpi-s">across my campaigns</div></div>
+<div class="kpi "><div class="kpi-l">Brand impression share</div><div class="kpi-v">96.6%</div><div class="kpi-s">2.5% lost to rank</div></div>
+<div class="kpi "><div class="kpi-l">Spend in my campaigns</div><div class="kpi-v">97%</div><div class="kpi-s">August — from 13% in June</div></div>
+<div class="kpi "><div class="kpi-l">Non-brand share of spend</div><div class="kpi-v">97.4%</div><div class="kpi-s">we buy demand, not our own name</div></div>
+<div class="kpi crit"><div class="kpi-l">Spend with query visibility</div><div class="kpi-v">24.4%</div><div class="kpi-s">the rest is PMax</div></div>
+</div>
+
+<h3>How much of the account is now mine</h3>
+<svg viewBox="0 0 680 230" class="chart" role="img"><line x1="44" y1="14.0" x2="666" y2="14.0" class="grid"/><text x="36" y="18.0" class="ax ax-r">100%</text><line x1="44" y1="74.0" x2="666" y2="74.0" class="grid"/><text x="36" y="78.0" class="ax ax-r">67%</text><line x1="44" y1="134.0" x2="666" y2="134.0" class="grid"/><text x="36" y="138.0" class="ax ax-r">33%</text><line x1="44" y1="194.0" x2="666" y2="194.0" class="grid"/><text x="36" y="198.0" class="ax ax-r">0%</text><path d="M44.0,194.0 L44.0,170.6 L355.0,75.2 L666.0,19.4 L666.0,194.0 Z" class="area"/><path d="M44.0,170.6 L355.0,75.2 L666.0,19.4" class="line"/><circle cx="44.0" cy="170.6" r="2.8" class="dot"><title>June: 13%</title></circle><circle cx="355.0" cy="75.2" r="2.8" class="dot"><title>July: 66%</title></circle><circle cx="666.0" cy="19.4" r="4.2" class="dot dot-end"><title>Aug 1–10: 97%</title></circle><text x="44.0" y="218" class="ax ax-c">June</text><text x="355.0" y="218" class="ax ax-c">July</text><text x="666.0" y="218" class="ax ax-c">Aug 1–10</text></svg>
+<p class="note">Share of Google spend running through campaigns I built or restructured: <b>13% in June,
+66% in July, 97% in August</b>. The June figure is right — I started on 1 June but did not take the account
+over until the 25th, so most of that month's spend was still the inherited setup. Caveat worth stating: the
+Google export lists currently-existing campaigns only, so the gap is legacy campaigns since removed.</p>
+
+<h3>Campaign by campaign</h3>
+<div class="tw"><table class="num"><thead><tr><th>Campaign</th><th>Type</th><th>Spend</th><th>Clicks</th><th>CPC</th><th>Impr. share</th><th>Lost to BUDGET</th><th>Lost to RANK</th></tr></thead><tbody><tr><td><b>GGL | PMax | ALL (excl. Col/Cast)</b></td><td>PMax</td><td>£8,992</td><td>8,592</td><td>£1.05</td><td>9.6%</td><td><span class="chip chip-done">4.5%</span></td><td>73.3%</td></tr><tr><td><b>GGL | PMax | Column</b></td><td>PMax</td><td>£7,648</td><td>3,315</td><td>£2.31</td><td>25.0%</td><td><span class="chip chip-done">5.7%</span></td><td>65.6%</td></tr><tr><td><b>GGL | AI Max Search | Column</b></td><td>Search</td><td>£1,743</td><td>631</td><td>£2.76</td><td>3.7%</td><td><span class="chip chip-crit">29.1%</span></td><td>51.6%</td></tr><tr><td><b>GGL | PMax | Cast Iron</b></td><td>PMax</td><td>£1,345</td><td>1,860</td><td>£0.72</td><td>13.4%</td><td><span class="chip chip-watch">11.2%</span></td><td>48.9%</td></tr><tr><td><b>GGL | Search | Brand</b></td><td>Search</td><td>£1,190</td><td>731</td><td>£1.63</td><td>96.6%</td><td><span class="chip chip-done">0.9%</span></td><td>2.5%</td></tr><tr><td><b>GGL | AI Max Search | Electric</b></td><td>Search</td><td>£393</td><td>151</td><td>£2.60</td><td>2.0%</td><td><span class="chip chip-crit">22.0%</span></td><td>35.8%</td></tr><tr><td><b>GGL | AI Max Search | Cast Iron</b></td><td>Search</td><td>£262</td><td>49</td><td>£5.35</td><td>1.8%</td><td><span class="chip chip-crit">23.9%</span></td><td>53.4%</td></tr><tr><td><b>GGL | PMax | Electric</b></td><td>PMax</td><td>£244</td><td>163</td><td>£1.50</td><td>16.2%</td><td><span class="chip chip-watch">13.1%</span></td><td>68.2%</td></tr></tbody></table></div>
+
+<div class="callout callout-crit">
+  <div class="callout-h">The most important number on this page</div>
+  <p>Impression share lost splits into two very different things. <b>Lost to rank</b> is mine — it means my
+  bids, quality or relevance were not good enough. <b>Lost to budget</b> is not mine — it means the campaign
+  was capable of showing and we chose not to fund it.</p>
+  <p>Our three best Search campaigns are losing <b>29.1%, 23.9% and 22.0%</b> of available impressions to
+  budget. That is demand we are already qualified to win, at a price we already know, going to competitors
+  because the budget runs out. Going into peak, that is the cheapest growth available to us — and it needs a
+  decision from you, not a change from me.</p>
+</div>
+
+<h3>Why I moved budget out of Performance Max</h3>
+<svg viewBox="0 0 680 66" class="chart" role="img"><text x="84" y="37" class="ax ax-r">Google spend</text><rect x="96.0" y="16" width="386.5" height="34" class="seg-b"><title>Performance Max: £34,337 (75%)</title></rect><text x="289.3" y="37" class="seg-t">75%</text><rect x="482.5" y="16" width="108.2" height="34" class="seg-a"><title>Search: £9,611 (21%)</title></rect><text x="536.6" y="37" class="seg-t">21%</text><rect x="590.7" y="16" width="17.5" height="34" class="seg-c"><title>Shopping: £1,551 (3%)</title></rect><rect x="608.2" y="16" width="1.8" height="34" class="seg-c"><title>Display: £160 (0%)</title></rect><text x="619.0" y="37" class="ax">£46k</text></svg>
+<p><b>75% of Google spend runs through Performance Max, and Google publishes no search term
+data for it at all.</b> Across the whole period I can see <b>4,243 named search terms totalling £1,907</b> —
+about 4% of spend. For the other three quarters I am told the total and nothing else.</p>
+<p>That is why budget has been moving into Search. It is not only that Search performs better — it is that
+Search is a format where I can see the query, judge whether it was relevant, and add a negative if it was
+not. Moving money from PMax to Search converts spend I cannot control into spend I can. If you want me
+accountable for traffic quality, this is the mechanism that makes it possible.</p>
+
+<h3>Brand versus non-brand</h3>
+<div class="tw"><table class="num"><thead><tr><th></th><th>Spend</th><th>Share of Google spend</th><th>Clicks</th><th>CPC</th><th>CTR</th></tr></thead><tbody><tr><td><b>Brand</b></td><td>£1,190</td><td>2.6%</td><td>731</td><td>£1.63</td><td>38.7%</td></tr><tr><td><b>Non-brand</b></td><td>£44,468</td><td>97.4%</td><td>—</td><td>—</td><td>—</td></tr></tbody></table></div>
+<p class="note">Brand costs us £1,190 to hold 96.6% impression share and defend the name. Everything else —
+97.4% of the budget — goes on people who have never heard of us. That is the right shape: we are buying
+incremental demand, not paying to appear in front of customers who were already coming.</p></section><section class="panel" id="p-quality" role="tabpanel" aria-labelledby="tab-quality" hidden><p class="eyebrow">Whether the people I brought were the right people</p><h2>Was the traffic any good?</h2>
+<p class="lede">Engagement rate is the fairest quality measure I have. It captures whether the person I paid
+for stayed and did something — which is my responsibility — and stops short of whether they bought, which
+depends on price, stock and the site.</p>
+
+<div class="kpis">
+<div class="kpi warn"><div class="kpi-l">Paid Google engagement</div><div class="kpi-v">74.8%</div><div class="kpi-s">vs 82.3% LY</div></div>
+<div class="kpi warn"><div class="kpi-l">Paid Bing engagement</div><div class="kpi-v">74.5%</div><div class="kpi-s">vs 80.2% LY</div></div>
+<div class="kpi warn"><div class="kpi-l">Paid Meta engagement</div><div class="kpi-v">63.5%</div><div class="kpi-s">vs 69.6% LY</div></div>
+<div class="kpi "><div class="kpi-l">Organic engagement</div><div class="kpi-v">68.8%</div><div class="kpi-s">vs 71.5% LY</div></div>
+<div class="kpi "><div class="kpi-l">Negatives applied</div><div class="kpi-v">111</div><div class="kpi-s">across 4 shared lists</div></div>
+<div class="kpi "><div class="kpi-l">Search terms reviewed</div><div class="kpi-v">4,243</div><div class="kpi-s">51 added, 30 excluded</div></div>
+</div>
+
+<h3>Engagement rate by channel</h3>
+<svg viewBox="0 0 680 250" class="chart" role="img"><line x1="58" y1="14.0" x2="668" y2="14.0" class="grid"/><text x="50" y="18.0" class="ax ax-r">£0k</text><line x1="58" y1="64.5" x2="668" y2="64.5" class="grid"/><text x="50" y="68.5" class="ax ax-r">£0k</text><line x1="58" y1="115.0" x2="668" y2="115.0" class="grid"/><text x="50" y="119.0" class="ax ax-r">£0k</text><line x1="58" y1="165.5" x2="668" y2="165.5" class="grid"/><text x="50" y="169.5" class="ax ax-r">£0k</text><line x1="58" y1="216.0" x2="668" y2="216.0" class="grid"/><text x="50" y="220.0" class="ax ax-r">£0k</text><rect x="77.3" y="52.1" width="28.5" height="163.9" rx="2" class="bar-a"><title>Google: £75</title></rect><rect x="108.8" y="35.6" width="28.5" height="180.4" rx="2" class="bar-b"><title>Google: £82</title></rect><text x="108.8" y="239" class="ax ax-c">Google</text><rect x="179.0" y="76.8" width="28.5" height="139.2" rx="2" class="bar-a"><title>Meta: £64</title></rect><rect x="210.5" y="63.5" width="28.5" height="152.5" rx="2" class="bar-b"><title>Meta: £70</title></rect><text x="210.5" y="239" class="ax ax-c">Meta</text><rect x="280.7" y="65.2" width="28.5" height="150.8" rx="2" class="bar-a"><title>Organic: £69</title></rect><rect x="312.2" y="59.3" width="28.5" height="156.7" rx="2" class="bar-b"><title>Organic: £72</title></rect><text x="312.2" y="239" class="ax ax-c">Organic</text><rect x="382.3" y="73.1" width="28.5" height="142.9" rx="2" class="bar-a"><title>Direct: £65</title></rect><rect x="413.8" y="75.7" width="28.5" height="140.3" rx="2" class="bar-b"><title>Direct: £64</title></rect><text x="413.8" y="239" class="ax ax-c">Direct</text><rect x="484.0" y="41.6" width="28.5" height="174.4" rx="2" class="bar-a"><title>Referral: £80</title></rect><rect x="515.5" y="52.3" width="28.5" height="163.7" rx="2" class="bar-b"><title>Referral: £75</title></rect><text x="515.5" y="239" class="ax ax-c">Referral</text><rect x="585.7" y="52.7" width="28.5" height="163.3" rx="2" class="bar-a"><title>Bing: £74</title></rect><rect x="617.2" y="40.2" width="28.5" height="175.8" rx="2" class="bar-b"><title>Bing: £80</title></rect><text x="617.2" y="239" class="ax ax-c">Bing</text></svg>
+<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
+
+<div class="callout callout-warn">
+  <div class="callout-h">Engagement is down and I want to be the one who says so</div>
+  <p>Paid Google engagement fell from 82.3% to 74.8%. Every paid channel softened. The mechanism is
+  scale: at 7,777 sessions you are buying only the most obviously relevant traffic; at 17,171 you are
+  reaching further out. Some dilution is the price of growth and I would expect it.</p>
+  <p>What I would not accept is dilution I cannot see. Three quarters of Google spend is in a format that
+  reports no queries, so for most of the budget I am judging relevance from engagement rate alone rather
+  than from the search terms themselves. Getting more spend into Search fixes that, and it is why the number
+  matters more than it looks.</p>
+</div>
+
+<h3>Waste controls built</h3>
+<div class="tw"><table class=""><thead><tr><th>Control</th><th>Scale</th><th>Where</th></tr></thead><tbody><tr><td>Repair / DIY / informational negatives</td><td>38 keywords</td><td>Google + mirrored on Microsoft</td></tr><tr><td>Second-hand & reclaimed negatives</td><td>20 keywords</td><td>Google + Microsoft</td></tr><tr><td>Competitor & other brands negatives</td><td>24 keywords</td><td>Google + Microsoft</td></tr><tr><td>Parts / accessories / non-product negatives</td><td>29 keywords</td><td>Google + Microsoft</td></tr><tr><td>Microsoft cast iron & column negatives</td><td>166 rows</td><td>Microsoft</td></tr><tr><td>Microsoft product exclusions</td><td>701 rows</td><td>Microsoft PMax Cast Iron</td></tr><tr><td>Brand exclusion list (ID 11160977849)</td><td>all PMax campaigns</td><td>Google</td></tr></tbody></table></div>
+<p class="note">None of this existed at takeover. The brand exclusion list is the one that matters most: it
+stops Performance Max serving on our own name and claiming credit for conversions we would have won anyway.</p></section><section class="panel" id="p-seo" role="tabpanel" aria-labelledby="tab-seo" hidden><p class="eyebrow">Slower to move and less directly controllable, but mine to direct</p><h2>Organic search</h2>
+<p class="lede">Less immediate control here than in paid — I can direct the work but rankings move on
+Google's timetable, not mine. Google Search Console, same window, both years.</p>
+
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Organic clicks</div><div class="kpi-v">5,828</div><div class="kpi-s">vs 3,575 LY &nbsp;<b class='up'>+63%</b></div></div>
+<div class="kpi "><div class="kpi-l">Avg position</div><div class="kpi-v">12.1</div><div class="kpi-s">from 28.0 &nbsp;<b class='up'>+15.8 places</b></div></div>
+<div class="kpi "><div class="kpi-l">CTR</div><div class="kpi-v">0.76%</div><div class="kpi-s">vs 0.41% &nbsp;<b class='up'>+85%</b></div></div>
+<div class="kpi "><div class="kpi-l">Impressions</div><div class="kpi-v">764,599</div><div class="kpi-s">vs 880,914 &nbsp;<b class='dn'>−13%</b></div></div>
+<div class="kpi "><div class="kpi-l">Pages ranking</div><div class="kpi-v">987</div><div class="kpi-s">vs 977 LY</div></div>
+<div class="kpi "><div class="kpi-l">Rank tracker</div><div class="kpi-v">492 kw</div><div class="kpi-s">baseline now established</div></div>
+</div>
+
+<div class="callout">
+  <div class="callout-h">Read the impression drop the right way</div>
+  <p>Impressions fell 13% while clicks rose 63%. That is not a loss — it is the shape you want. We stopped
+  appearing on page four for things nobody clicks, and started appearing on page one for things people buy.
+  Average position went from 28.0 to 12.1 and CTR nearly doubled. Fewer, better impressions.</p>
+</div>
+
+<h3>Biggest page movements</h3>
+<div class="tw"><table class="num"><thead><tr><th>Page</th><th>Clicks LY</th><th>Clicks now</th><th>Position LY</th><th>Now</th></tr></thead><tbody><tr><td><code>/</code> (homepage)</td><td>563</td><td><b>1,673</b></td><td>29.5</td><td><b>7.6</b></td></tr><tr><td><code>/product-category/column-radiators/</code></td><td>111</td><td><b>635</b></td><td>22.3</td><td><b>8.2</b></td></tr><tr><td><code>/product-category/antique-brass/</code></td><td>0</td><td><b>164</b></td><td>—</td><td><b>6.5</b></td></tr><tr><td><code>/blog/…landlords-central-heating…</code></td><td>0</td><td><b>147</b></td><td>—</td><td><b>5.4</b></td></tr><tr><td><code>/product-category/traditional-radiators/</code></td><td>2</td><td><b>59</b></td><td>25.3</td><td><b>8.8</b></td></tr><tr><td><code>/product-category/cream-radiators/</code></td><td>64</td><td><b>120</b></td><td>7.3</td><td><b>4.4</b></td></tr><tr><td><code>/product-category/heat-pump-compatible-radiators/</code></td><td>500</td><td><b>540</b></td><td>9.4</td><td><b>6.1</b></td></tr></tbody></table></div>
+
+<h3>By page type</h3>
+<div class="tw"><table class="num"><thead><tr><th>Page type</th><th>Clicks</th><th>LY</th><th>Change</th></tr></thead><tbody><tr><td>Homepage</td><td>1,802</td><td>632</td><td><b class='up'>+185%</b></td></tr><tr><td>Category pages</td><td>2,065</td><td>1,050</td><td><b class='up'>+97%</b></td></tr><tr><td>Product pages</td><td>875</td><td>566</td><td><b class='up'>+55%</b></td></tr><tr><td>Blog</td><td>949</td><td>1,226</td><td><b class='dn'>−23%</b></td></tr><tr><td>Other</td><td>137</td><td>101</td><td><b class='up'>+36%</b></td></tr></tbody></table></div>
+<p class="note"><b>Blog is the weak spot and it is mine.</b> Down 23%, with the BTU calculator guide alone
+losing 294 clicks. Commercial pages grew strongly, which is the right priority order, but the informational
+content has been left to drift while I rebuilt the ad accounts. It goes on the plan.</p>
+
+<div class="callout callout-crit">
+  <div class="callout-h">The biggest SEO opportunity is CTR, not rankings</div>
+  <p>We hold good positions and get too few clicks from them. The column radiators category sits at position
+  <b>8.2</b> and takes <b>635 clicks from 89,900 impressions — a 0.71% CTR</b>. The cast iron category sits at
+  position <b>6.7</b> with a <b>0.50% CTR</b>. At those positions you would normally expect several times
+  that.</p>
+  <p>Ahrefs shows <b>89 pages where our page title and the title Google displays do not match</b> — Google is
+  rewriting our titles because they are not earning the click. Rewriting titles and meta descriptions on the
+  pages that already rank is the highest-return SEO work available, and it needs no developer and no
+  budget. It is the first thing I will do in September.</p>
+</div></section><section class="panel" id="p-device" role="tabpanel" aria-labelledby="tab-device" hidden><p class="eyebrow">The mobile question, finally answered</p><h2>Mobile versus desktop</h2>
+<p class="lede">You asked about mobile at the last review and I could not answer it. I can now.</p>
+
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Mobile share of sessions</div><div class="kpi-v">78.5%</div><div class="kpi-s">35,613 sessions</div></div>
+<div class="kpi warn"><div class="kpi-l">Mobile share of revenue</div><div class="kpi-v">53.4%</div><div class="kpi-s">£179,888</div></div>
+<div class="kpi crit"><div class="kpi-l">Mobile revenue/session</div><div class="kpi-v">£5.05</div><div class="kpi-s">vs desktop £17.43</div></div>
+</div>
+
+<div class="tw"><table class="num"><thead><tr><th>Device</th><th>Sessions</th><th>Share</th><th>Engagement</th><th>Revenue</th><th>Rev/session</th><th>LY rev/session</th></tr></thead><tbody><tr><td><b>Mobile</b></td><td>35,613</td><td>78.5%</td><td>68.7%</td><td>£179,888</td><td>£5.05</td><td>£4.31</td></tr><tr><td><b>Desktop</b></td><td>8,739</td><td>19.3%</td><td>73.0%</td><td>£152,285</td><td>£17.43</td><td>£19.93</td></tr><tr><td><b>Tablet</b></td><td>1,025</td><td>2.3%</td><td>77.7%</td><td>£5,012</td><td>£4.89</td><td>£6.45</td></tr></tbody></table></div>
+
+<div class="callout callout-crit">
+  <div class="callout-h">Four out of five visitors are on a phone. They generate half the revenue.</div>
+  <p>A desktop session is worth <b>£17.43</b>. A mobile session is worth <b>£5.05</b> — three and a half times
+  less. On paid Google specifically it is £14.53 desktop against £4.57 mobile.</p>
+  <p>I can shift budget toward desktop at the margin, and I will where it is sensible. But 78.5% of the
+  market is on a phone and we cannot buy our way around that — the traffic is where the traffic is. The gap
+  between £5.05 and £17.43 is not a media problem. It is what happens to a phone user once they land.</p>
+  <p>This is the clearest example of the boundary I want to agree with you. Finding it, sizing it and
+  bringing it to you is my job. Fixing the mobile experience is not — that is Liam and a developer. It is
+  logged in the <a href="#escalation" class="jump" data-go="escalation">escalation register</a> as the
+  highest-value item on it.</p>
+</div>
+
+<p class="note">One honest note in the other direction: mobile revenue per session actually <b>improved</b>
+year on year, from £4.31 to £5.05 (+17%), while desktop fell from £19.93 to £17.43 (−13%). So mobile is
+getting better, not worse. The gap is still the gap.</p></section><section class="panel" id="p-escalation" role="tabpanel" aria-labelledby="tab-escalation" hidden><p class="eyebrow">Things costing us money that sit outside my remit</p><h2>Escalation register</h2>
+<p class="lede">Things I can see from where I sit that are costing us money, and that I cannot fix myself.
+Each one needs an owner. I have left the owner column blank on purpose — I would like to fill it in with you
+in the meeting rather than assume.</p>
+
+<div class="tw"><table class=""><thead><tr><th>Issue</th><th>What it is costing</th><th>Suggested owner</th><th>Raised</th><th>Owner agreed</th></tr></thead><tbody><tr><td><b>Mobile converts at a third of desktop</b></td><td>78.5% of sessions at £5.05/session vs £17.43 desktop. The single largest value gap in the business.</td><td>Liam + dev</td><td>11 Aug</td><td>&nbsp;</td></tr><tr><td><b>Cast iron SKUs ineligible in the product feed</b></td><td>Windsor £2,167, Oxford £2,320, Mayfair £1,470, Victorian £924–1,116 all marked "Not eligible — excluded product or listing group". Two campaigns built to sell products that cannot serve.</td><td>Product data — <i>unowned</i></td><td>11 Aug</td><td>&nbsp;</td></tr><tr><td><b>Discounting at 13.3% of gross, 16.6% in August</b></td><td>£55,669 over the period — comparable to the entire media budget, with none of the scrutiny. Every 1pt = £4,196.</td><td>Owner / commercial</td><td>11 Aug</td><td>&nbsp;</td></tr><tr><td><b>Search campaigns capped by budget</b></td><td>Best Search campaigns losing 22–29% of impressions to budget, not rank. Cheapest available growth before peak.</td><td>Owner — budget decision</td><td>11 Aug</td><td>&nbsp;</td></tr><tr><td><b>Titles rewritten by Google on 89 pages</b></td><td>Good rankings, poor CTR. Column radiators 0.71% CTR at position 8.2.</td><td>Me — Sept</td><td>11 Aug</td><td><span class="chip chip-done">Mine</span></td></tr><tr><td><b>612 pages with broken JavaScript</b></td><td>Flagged as errors in crawl. Risks rendering and anything measurement-dependent.</td><td>Liam + dev</td><td>11 Aug</td><td>&nbsp;</td></tr><tr><td><b>986 unattributable sessions (2.2%)</b></td><td>Up from 186 LY. Engagement 41% vs 69% site average — points at a tracking or redirect fault.</td><td>Me — investigating</td><td>11 Aug</td><td><span class="chip chip-done">Mine</span></td></tr><tr><td><b>Gross margin unknown</b></td><td>Every efficiency judgement rests on an inferred 29.8%. With the real number by category I can tell you which categories are worth buying traffic for.</td><td>Owner</td><td>11 Aug</td><td>&nbsp;</td></tr></tbody></table></div>
+<div class="callout">
+  <div class="callout-h">Why this section exists</div>
+  <p>Not to push work onto other people. It is so that things I can see but cannot fix have somewhere to go
+  other than my own head — and so that in three months nobody has to reconstruct who knew what and when.
+  Two of the eight are mine and marked as such.</p>
+</div></section><section class="panel" id="p-next" role="tabpanel" aria-labelledby="tab-next" hidden><p class="eyebrow">Priorities, and what I need from you</p><h2>The next 90 days</h2>
+<p class="lede">Framed around peak. Everything structural finishes before October; October to December is
+monitoring and budget only.</p>
+
+<h3>New channels to stand up</h3>
+<div class="tw"><table class=""><thead><tr><th>Initiative</th><th>What it is</th><th>Timing</th><th>Status</th></tr></thead><tbody><tr><td><b>Influencer partnership — RunRagged</b></td><td>Partnership via The VIP Suite. I know the owner directly, so this starts warm rather than cold.</td><td>Sept — first activity before peak</td><td><span class="chip chip-part">To scope</span></td></tr><tr><td><b>Pinterest Ads</b></td><td>Set up and live. Strong fit: high-intent interiors audience, visual product, and a channel our competitors are not crowding.</td><td>Sept build, live for Oct</td><td><span class="chip chip-part">To build</span></td></tr><tr><td><b>AWIN affiliate programme</b></td><td>Affiliate marketing on a cost-per-sale basis — the only channel here where we pay after the sale rather than before it.</td><td>Oct launch</td><td><span class="chip chip-part">To build</span></td></tr></tbody></table></div>
+<p class="note">All three widen the acquisition mix beyond Google and Meta, which currently carry 93% of paid
+traffic between them. Affiliate in particular changes the risk shape: we pay on results, not on clicks.</p>
+
+<h3>Month by month</h3>
+<div class="tw"><table class=""><thead><tr><th></th><th>Paid</th><th>SEO</th><th>Measurement</th></tr></thead><tbody><tr><td><b>Aug</b></td><td>Fix Bing cost per session — pacing and budget caps. Decision on PMax Cast Iron.</td><td>Title and meta rewrites on the pages that already rank.</td><td>Close the 986 unattributed sessions.</td></tr><tr><td><b>Sept</b></td><td>Pinterest built. RunRagged scoped. Peak budgets agreed and set.</td><td>Cast iron hub. Blog recovery started.</td><td>Device-level reporting standing. First clean brand vs non-brand read.</td></tr><tr><td><b>Oct–Dec</b></td><td><b>Peak — monitoring and budget only.</b> AWIN launches. No structural changes.</td><td>Colour variant pages ship.</td><td>Monthly pack in this format, automated.</td></tr><tr><td><b>Jan</b></td><td>Post-peak rebuild on what peak taught us.</td><td>Technical debt with dev.</td><td>Re-baseline. First true YoY ranking comparison.</td></tr></tbody></table></div>
+
+<h3>What I need from you</h3>
+<div class="tw"><table class=""><thead><tr><th>Ask</th><th>Why it matters</th><th>When</th></tr></thead><tbody><tr><td><b>A peak budget envelope</b></td><td>Our best Search campaigns lose 22–29% of impressions to budget. I need to know the ceiling to plan against, and this is the cheapest growth on the table.</td><td><span class="chip chip-crit">By mid-Sept</span></td></tr><tr><td><b>Blended gross margin by category</b></td><td>Every efficiency judgement I make rests on an inferred 29.8%. With the real number I can tell you which categories to buy traffic for and which to stop.</td><td><span class="chip chip-crit">This week</span></td></tr><tr><td><b>An owner for product feed data</b></td><td>Cast iron broke because nobody owns feed eligibility. Name someone and I will build a weekly check around them.</td><td><span class="chip chip-warn">This month</span></td></tr><tr><td><b>Agreement on what I am measured on</b></td><td>The scorecard in this pack. If you want to hold me to something else, I would rather know now than in January.</td><td><span class="chip chip-warn">Today</span></td></tr></tbody></table></div>
+
+<h3>What I need from Liam and Flora</h3>
+<div class="tw"><table class=""><thead><tr><th>Who</th><th>Ask</th></tr></thead><tbody><tr><td><b>Liam</b></td><td>Mobile experience is the biggest value gap in the business — a phone session is worth a third of a desktop one. Plus 612 pages with broken JavaScript. Half a day to scope, then an estimate.</td></tr><tr><td><b>Flora</b></td><td>About a day a week: daily flash entry, weekly search-term pulls, and a weekly feed health check. I will write the procedures first so it is a clean handover.</td></tr></tbody></table></div>
+
+<h3>What success looks like by month 6</h3>
+<div class="tw"><table class=""><thead><tr><th>Measure — all within my control</th><th>Today</th><th>Month 6</th></tr></thead><tbody><tr><td>Cost per session, blended</td><td>£2.73</td><td><b>£2.50 or better</b></td></tr><tr><td>Bing cost per session</td><td>£5.23</td><td><b>Under £3.50</b></td></tr><tr><td>Google spend with query visibility</td><td>24.4%</td><td><b>40%+</b></td></tr><tr><td>Paid Google engagement rate</td><td>74.8%</td><td><b>Back above 78%</b></td></tr><tr><td>Impressions lost to budget on Search</td><td>22–29%</td><td><b>Under 10%</b></td></tr><tr><td>Organic clicks</td><td>5,828</td><td><b>9,000+</b> through peak</td></tr><tr><td>Organic CTR</td><td>0.76%</td><td><b>1.2%+</b></td></tr><tr><td>Blog clicks</td><td>949</td><td><b>Back above 1,226</b> (LY level)</td></tr><tr><td>Live acquisition channels</td><td>3</td><td><b>6</b> — plus Pinterest, affiliate, influencer</td></tr><tr><td>Escalations with a named owner</td><td>0 of 8</td><td><b>8 of 8</b></td></tr></tbody></table></div></section><section class="panel" id="p-commercial" role="tabpanel" aria-labelledby="tab-commercial" hidden><p class="eyebrow">Sales, spend and ROAS — reported, shared ownership</p><h2>Commercial outcome</h2>
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Net sales</div><div class="kpi-v">£365,233</div><div class="kpi-s">vs £220,623 LY &nbsp;<b class='up'>+66%</b></div></div>
+<div class="kpi "><div class="kpi-l">Media spend</div><div class="kpi-v">£82,238</div><div class="kpi-s">vs £40,896 LY &nbsp;+101%</div></div>
+<div class="kpi "><div class="kpi-l">Blended ROAS</div><div class="kpi-v">4.44x</div><div class="kpi-s">vs 5.39x LY</div></div>
+<div class="kpi "><div class="kpi-l">Orders</div><div class="kpi-v">1,061</div><div class="kpi-s">vs 668 LY &nbsp;<b class='up'>+59%</b></div></div>
+<div class="kpi "><div class="kpi-l">AOV</div><div class="kpi-v">£344</div><div class="kpi-s">vs £330 LY &nbsp;<b class='up'>+4%</b></div></div>
+<div class="kpi "><div class="kpi-l">Discount</div><div class="kpi-v">13.3% of gross</div><div class="kpi-s">16.6% in August</div></div>
+</div>
+
+<p>Reported without commentary or defence. These numbers move with price, stock, range, the site and the
+season as much as with media, so I do not present them as a scorecard for my work — but they are the
+business's numbers and they should be in front of you every month.</p>
+
+<p class="note">Two points of context rather than argument. Last July the Google account was close to
+dormant — LY spend that month was £2,412 against £18,889 this year — so the 5.39x LY ROAS is the arithmetic
+of a near-zero denominator rather than a standard we previously held. And on 31 July I excluded past
+purchasers from all PMax campaigns to force new-customer acquisition, logging at the time that ROAS and
+conversion rate would fall short term; ROAS went 4.48x to 4.23x while AOV rose from £338 to £388.</p>
+
+<div class="callout">
+  <div class="callout-h">The one commercial number I would act on</div>
+  <p>We spent <b>£82,238</b> on media and gave away <b>£55,669</b> in discount. One of those is reviewed
+  daily; the other has never been on an agenda. At 13.3% of gross rising to 16.6% in August, and with half
+  of all orders using a coupon, discounting is the largest single lever on profit in the business — and it
+  is worth more than any efficiency I can find in the ad accounts. It is not mine to set. It is in the
+  escalation register.</p>
+</div>
+
+<h3>Reconciliation notes</h3>
+<ul class="bul">
+  <li>Flash channel components total £84,099 against a stated media spend of £82,238 — a 2.3% variance I am correcting.</li>
+  <li>GA4 sessions are not platform clicks; tracking loss and attribution differ. Trends are sound, absolute values differ by source.</li>
+  <li>Meta-reported ROAS is platform-attributed and materially inflated. Used for relative ranking between ad sets only, never as a business number.</li>
+  <li>The Google campaign export lists currently-existing campaigns only.</li>
+  <li>Gross margin of 29.8% is inferred from the 3.36x break-even ROAS in the change journal, not given.</li>
+</ul></section>
+<footer>
+  Sources: GA4 traffic acquisition (source/medium × device, both years) · Google Ads campaign &amp; search
+  terms exports · Microsoft Advertising campaign exports · Meta Ads Manager ad-set export · Google Search
+  Console pages · Ahrefs project 9919884 · LRD Daily Flash · Master Change Journal · Paid Media Takeover
+  Checklist.<br>
+  Comparison window 1 Jun – 10 Aug 2026 against 1 Jun – 10 Aug 2025 throughout. Reconciliation caveats in Commercial.
+</footer>
+</div>
+<script>
+const tabs=[...document.querySelectorAll('.tab')];
+function go(id){
+  tabs.forEach(t=>{const on=t.dataset.go===id;t.setAttribute('aria-selected',on?'true':'false');});
+  document.querySelectorAll('.panel').forEach(p=>{
+    const on=p.id==='p-'+id; p.classList.toggle('on',on); p.hidden=!on;});
+  const t=document.getElementById('tab-'+id); if(t) t.scrollIntoView({block:'nearest',inline:'center'});
+  window.scrollTo({top:0,behavior:'instant'});
+}
+tabs.forEach(t=>t.addEventListener('click',()=>go(t.dataset.go)));
+document.querySelectorAll('a.jump').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();go(a.dataset.go);}));
+document.addEventListener('keydown',e=>{
+  if(e.target.classList.contains('tab')){
+    const i=tabs.indexOf(e.target);
+    if(e.key==='ArrowRight'&&i<tabs.length-1){tabs[i+1].focus();go(tabs[i+1].dataset.go);}
+    if(e.key==='ArrowLeft'&&i>0){tabs[i-1].focus();go(tabs[i-1].dataset.go);}
+  }});
+</script>
