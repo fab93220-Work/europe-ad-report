@@ -1,0 +1,648 @@
+<title>Lincs Rads Direct — 90 Day Review</title>
+<style>
+:root{
+  --bg:#F7F6F4; --surface:#FFFFFF; --surface-2:#F1EFEB;
+  --ink:#1C1E20; --ink-2:#4A4742; --ink-3:#787269;
+  --rule:#DFDBD3; --rule-2:#EDEAE4;
+  --brass:#8C6A3F; --brass-2:#A98254; --brass-soft:#F0E7DA;
+  --good:#3F6B52; --good-soft:#E4EDE7;
+  --warn:#A8762C; --warn-soft:#F6ECDA;
+  --crit:#9B3B31; --crit-soft:#F7E5E2;
+  --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#16181A; --surface:#1E2124; --surface-2:#25292C;
+  --ink:#EDEAE4; --ink-2:#B9B3AA; --ink-3:#8B857C;
+  --rule:#32373B; --rule-2:#282C30;
+  --brass:#C79A5F; --brass-2:#D8B183; --brass-soft:#33291D;
+  --good:#7FB294; --good-soft:#1D2A23;
+  --warn:#D7A65B; --warn-soft:#2E2517;
+  --crit:#D9776A; --crit-soft:#301E1B;
+}}
+:root[data-theme="dark"]{
+  --bg:#16181A; --surface:#1E2124; --surface-2:#25292C;
+  --ink:#EDEAE4; --ink-2:#B9B3AA; --ink-3:#8B857C;
+  --rule:#32373B; --rule-2:#282C30;
+  --brass:#C79A5F; --brass-2:#D8B183; --brass-soft:#33291D;
+  --good:#7FB294; --good-soft:#1D2A23;
+  --warn:#D7A65B; --warn-soft:#2E2517;
+  --crit:#D9776A; --crit-soft:#301E1B;
+}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+  font-size:15.5px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1020px;margin:0 auto;padding:34px 22px 96px}
+
+header.masthead{border-bottom:2px solid var(--ink);padding-bottom:18px;margin-bottom:6px}
+.kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--brass);margin:0 0 10px}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(27px,4.4vw,40px);line-height:1.12;
+  margin:0 0 10px;letter-spacing:-.012em;text-wrap:balance}
+.sub{color:var(--ink-2);margin:0;font-size:15px;max-width:64ch}
+.meta{display:flex;flex-wrap:wrap;gap:7px 20px;margin-top:15px;font-family:var(--mono);
+  font-size:11.5px;color:var(--ink-3);letter-spacing:.02em}
+.meta b{color:var(--ink-2);font-weight:500}
+
+nav.tabs{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--rule);
+  margin:0 0 30px;padding:9px 0;display:flex;gap:3px;overflow-x:auto;scrollbar-width:thin}
+.tab{flex:0 0 auto;font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--ink-3);
+  background:none;border:1px solid transparent;border-radius:5px;padding:6px 9px;cursor:pointer;
+  white-space:nowrap;transition:color .13s,background .13s}
+.tab:hover{color:var(--ink);background:var(--surface-2)}
+.tab[aria-selected="true"]{color:var(--brass);background:var(--brass-soft);border-color:var(--brass)}
+.tab:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+
+.panel{animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.panel{animation:none}}
+.eyebrow{font-family:var(--mono);font-size:11px;line-height:1.5;letter-spacing:.03em;color:var(--ink-3);
+  margin:0 0 9px;padding-left:11px;border-left:2px solid var(--brass);max-width:74ch}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(23px,3.4vw,31px);line-height:1.16;
+  margin:0 0 20px;letter-spacing:-.011em;text-wrap:balance}
+h3{font-family:var(--serif);font-weight:600;font-size:18.5px;margin:38px 0 13px;letter-spacing:-.006em}
+h3:first-of-type{margin-top:30px}
+p{margin:0 0 14px;max-width:74ch}
+.lede{font-size:16.8px;line-height:1.58;color:var(--ink-2);max-width:70ch;margin-bottom:22px}
+.note{font-size:13.4px;color:var(--ink-3);line-height:1.58;max-width:76ch;margin-top:11px}
+b,strong{font-weight:640;color:var(--ink)}
+i{font-style:italic}
+a.jump{color:var(--brass);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+code{font-family:var(--mono);font-size:.87em;background:var(--surface-2);padding:1px 5px;
+  border-radius:3px;color:var(--ink-2);word-break:break-word}
+.up{color:var(--good)} .dn{color:var(--crit)}
+
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(272px,1fr));gap:11px;margin:22px 0 8px}
+.kpi{background:var(--surface);border:1px solid var(--rule);border-radius:7px;padding:13px 14px;
+  border-top:2.5px solid var(--brass)}
+.kpi.warn{border-top-color:var(--warn)} .kpi.crit{border-top-color:var(--crit)}
+.kpi-l{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:6px}
+.kpi-v{font-family:var(--mono);font-size:24px;font-weight:600;letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.kpi-s{font-size:12.2px;color:var(--ink-3);margin-top:4px;line-height:1.42}
+
+.chart{width:100%;height:auto;display:block;margin:6px 0 2px;overflow:visible}
+.grid{stroke:var(--rule-2);stroke-width:1}
+.ax{font-family:var(--mono);font-size:10.5px;fill:var(--ink-3)}
+.ax-r{text-anchor:end} .ax-c{text-anchor:middle} .ax-e{text-anchor:end}
+.bar-a{fill:var(--brass)} .bar-b{fill:var(--rule)}
+.seg-a{fill:var(--brass)} .seg-b{fill:var(--brass-2);opacity:.62} .seg-c{fill:var(--ink-3);opacity:.5}
+.seg-t{font-family:var(--mono);font-size:11px;fill:#fff;text-anchor:middle;font-weight:600}
+.line{fill:none;stroke:var(--brass);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.area{fill:var(--brass);opacity:.09}
+.dot{fill:var(--brass)} .dot-end{fill:var(--brass);stroke:var(--bg);stroke-width:2}
+.thresh{stroke:var(--crit);stroke-width:1.3;stroke-dasharray:4 3}
+.thresh-t{fill:var(--crit);font-size:10px}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin:2px 0 4px}
+.lg{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-3)}
+.sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.sw-a{background:var(--brass)} .sw-b{background:var(--brass-2);opacity:.62} .sw-c{background:var(--ink-3);opacity:.5}
+
+.tw{overflow-x:auto;margin:14px 0;border:1px solid var(--rule);border-radius:7px;background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:13.4px;min-width:520px}
+th{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);
+  text-align:left;padding:10px 13px;border-bottom:1px solid var(--rule);font-weight:500;
+  background:var(--surface-2);white-space:nowrap}
+td{padding:10px 13px;border-bottom:1px solid var(--rule-2);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+tbody tr:last-child{background:var(--surface-2)}
+table.num td{font-variant-numeric:tabular-nums}
+table.num td:not(:first-child){font-family:var(--mono);font-size:12.6px;white-space:nowrap}
+
+.chip{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.05em;
+  padding:2px 7px;border-radius:3px;white-space:nowrap;text-transform:uppercase}
+.chip-done{background:var(--good-soft);color:var(--good)}
+.chip-part{background:var(--brass-soft);color:var(--brass)}
+.chip-watch{background:var(--warn-soft);color:var(--warn)}
+.chip-crit{background:var(--crit-soft);color:var(--crit)}
+
+.callout{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--brass);
+  border-radius:6px;padding:16px 18px;margin:20px 0}
+.callout-warn{border-left-color:var(--warn)} .callout-crit{border-left-color:var(--crit)}
+.callout-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--brass);margin-bottom:8px;font-weight:600}
+.callout-warn .callout-h{color:var(--warn)} .callout-crit .callout-h{color:var(--crit)}
+.callout p{margin:0 0 10px;font-size:14.6px}.callout p:last-child{margin-bottom:0}
+
+.qa{display:flex;flex-direction:column;gap:1px;background:var(--rule);border:1px solid var(--rule);
+  border-radius:7px;overflow:hidden;margin:16px 0}
+.qa-row{display:grid;grid-template-columns:minmax(150px,.33fr) 1fr;gap:18px;background:var(--surface);padding:15px 17px}
+.qa-q{font-family:var(--serif);font-size:16px;font-weight:600;color:var(--brass);line-height:1.3}
+.qa-a{font-size:14.4px;color:var(--ink-2);line-height:1.56}
+@media(max-width:640px){.qa-row{grid-template-columns:1fr;gap:7px}}
+
+.tri{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:12px;margin:18px 0}
+.tri-card{background:var(--surface);border:1px solid var(--rule);border-radius:7px;padding:15px 16px;
+  border-top:3px solid var(--brass)}
+.tri-crit{border-top-color:var(--crit)} .tri-warn{border-top-color:var(--warn)}
+.tri-b{border-top-color:var(--warn)} .tri-c{border-top-color:var(--good)}
+.tri-h{font-family:var(--serif);font-size:16.5px;font-weight:600;margin-bottom:8px;line-height:1.25}
+.tri-card p{font-size:13.8px;margin:0 0 9px;color:var(--ink-2)}
+.tri-f{font-family:var(--mono);font-size:11.2px;color:var(--ink-3);border-top:1px solid var(--rule-2);
+  padding-top:9px;margin-bottom:0!important;line-height:1.45}
+
+ul.bul{margin:12px 0;padding-left:0;list-style:none;max-width:76ch}
+ul.bul li{position:relative;padding-left:19px;margin-bottom:9px;font-size:14.6px;line-height:1.56}
+ul.bul li::before{content:"";position:absolute;left:3px;top:9px;width:5px;height:5px;
+  background:var(--brass);border-radius:1px}
+ol.steps{margin:12px 0;padding-left:0;list-style:none;counter-reset:s;max-width:76ch}
+ol.steps li{position:relative;padding-left:31px;margin-bottom:11px;font-size:14.6px;line-height:1.56;counter-increment:s}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:20px;height:20px;
+  background:var(--brass-soft);color:var(--brass);border-radius:3px;font-family:var(--mono);
+  font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);font-family:var(--mono);
+  font-size:11px;color:var(--ink-3);line-height:1.7}
+</style>
+<div class="wrap">
+<header class="masthead">
+  <p class="kicker">Lincs Rads Direct · Paid media, SEO &amp; site</p>
+  <h1>90-day review</h1>
+  <p class="sub">Everything on your list, answered from the daily flash, the change journal, the takeover checklist,
+  GA4 and Ahrefs. Where the data does not support an answer, it says so rather than estimating.</p>
+  <div class="meta">
+    <span>Period <b>1 Jun – 10 Aug 2026</b></span>
+    <span>Trading days <b>71</b></span>
+    <span>Net sales <b>£365,233</b></span>
+    <span>Sources <b>6</b></span>
+    <span>Logged changes <b>90+</b></span>
+  </div>
+</header>
+<nav class="tabs" role="tablist" aria-label="Review sections"><button class="tab" data-go="summary" role="tab" aria-selected="true" id="tab-summary" aria-controls="p-summary">Summary</button><button class="tab" data-go="baseline" role="tab" aria-selected="false" id="tab-baseline" aria-controls="p-baseline">Baseline</button><button class="tab" data-go="trading" role="tab" aria-selected="false" id="tab-trading" aria-controls="p-trading">Trading</button><button class="tab" data-go="profit" role="tab" aria-selected="false" id="tab-profit" aria-controls="p-profit">Profit</button><button class="tab" data-go="google" role="tab" aria-selected="false" id="tab-google" aria-controls="p-google">Google Ads</button><button class="tab" data-go="seo" role="tab" aria-selected="false" id="tab-seo" aria-controls="p-seo">SEO</button><button class="tab" data-go="cro" role="tab" aria-selected="false" id="tab-cro" aria-controls="p-cro">Site &amp; CRO</button><button class="tab" data-go="castiron" role="tab" aria-selected="false" id="tab-castiron" aria-controls="p-castiron">Cast Iron</button><button class="tab" data-go="changes" role="tab" aria-selected="false" id="tab-changes" aria-controls="p-changes">Changes</button><button class="tab" data-go="workload" role="tab" aria-selected="false" id="tab-workload" aria-controls="p-workload">Workload</button><button class="tab" data-go="next90" role="tab" aria-selected="false" id="tab-next90" aria-controls="p-next90">Next 90</button><button class="tab" data-go="gaps" role="tab" aria-selected="false" id="tab-gaps" aria-controls="p-gaps">Gaps</button></nav>
+<section class="panel on" id="p-summary" role="tabpanel" aria-labelledby="tab-summary"><p class="eyebrow">What have we learned? Where are we better? Where are we still weak? What are we doing next?</p><h2>The 90 days in one page</h2>
+<p class="lede">Sales are up 66% year on year. That growth is real, it is not a reporting artefact, and it
+was bought with 101% more media. The efficiency question your message raises is the right one — but the
+answer is not where I expected it to be, and it is not ROAS.</p>
+
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Net sales</div><div class="kpi-v">£365,233</div><div class="kpi-s">vs £220,623 LY &nbsp;<b class='up'>+66%</b></div></div>
+<div class="kpi "><div class="kpi-l">Orders</div><div class="kpi-v">1,061</div><div class="kpi-s">vs 668 LY &nbsp;<b class='up'>+59%</b></div></div>
+<div class="kpi "><div class="kpi-l">AOV</div><div class="kpi-v">£344</div><div class="kpi-s">vs £330 LY &nbsp;<b class='up'>+4%</b></div></div>
+<div class="kpi warn"><div class="kpi-l">Media spend</div><div class="kpi-v">£82,238</div><div class="kpi-s">vs £40,896 LY &nbsp;<b class='dn'>+101%</b></div></div>
+<div class="kpi warn"><div class="kpi-l">Blended ROAS</div><div class="kpi-v">4.44x</div><div class="kpi-s">vs 5.39x LY &nbsp;<b class='dn'>-18%</b></div></div>
+<div class="kpi crit"><div class="kpi-l">Contribution after media</div><div class="kpi-v">£26,601</div><div class="kpi-s">7.3% of net sales</div></div>
+</div>
+
+<h3>The four answers</h3>
+
+<div class="qa">
+  <div class="qa-row"><div class="qa-q">What have we learned?</div><div class="qa-a">
+  That the profit leak is <b>discounting, not media efficiency</b>. We gave away <b>£55,669</b> in discount over the
+  period — 13.3% of gross sales, rising to 16.6% in August. Media cost
+  £82,238. Discount is comparable in size to the entire advertising budget, and it has had none of the scrutiny.</div></div>
+
+  <div class="qa-row"><div class="qa-q">Where are we better?</div><div class="qa-a">
+  Sales, orders and AOV are all up double digits. The account is no longer an agency black box: brand is protected,
+  PMax can no longer harvest branded conversions, spend has moved out of broad PMax into Search, and every change since
+  31 July is logged with a before, an after and a reason. Bing cost data is visible instead of £22,860 of revenue with no cost attached.</div></div>
+
+  <div class="qa-row"><div class="qa-q">Where are we still weak?</div><div class="qa-a">
+  Contribution after media is <b>7.3%</b> of net sales and falling — 8.8%
+  in June, 6.1% in July, 6.1% in August. Cast iron is our
+  biggest opportunity and it is currently broken in the feed, on the site and in search at the same time. And
+  35% of site sessions land on pages that produced no revenue at all.</div></div>
+
+  <div class="qa-row"><div class="qa-q">What are we doing next?</div><div class="qa-a">
+  Three things before peak: fix cast iron end to end, put a floor under discounting, and get the account season-ready
+  by the end of September. Detail in <a href="#next90" class="jump" data-go="next90">Next 90 days</a>.</div></div>
+</div>
+
+<div class="callout callout-crit">
+  <div class="callout-h">The one thing to take away</div>
+  <p>Every one percentage point we take off the discount rate is worth <b>£4,196</b> over a period like this
+  one — against a total contribution after media of <b>£26,601</b>. Moving discount from
+  13.3% to 10% would add roughly <b>£13,712</b>, which is more than half the
+  contribution the entire trading period generated. No plausible ROAS improvement comes close to that.</p>
+</div>
+
+<div class="callout">
+  <div class="callout-h">On the ROAS drop, before anyone else raises it</div>
+  <p>Blended ROAS fell from 5.39x to 4.44x. Two things about that comparison. First, last
+  July the accounts were close to dormant — LY Google spend that month was £2,412 against £18,889 this year — so the
+  5.39x is the arithmetic of a near-zero denominator, not a standard we were previously hitting.
+  Second, at a daily level the highest-spending third of days still returns <b>4.44x</b> against 4.57x for the middle
+  third. Efficiency bends slightly as we scale; it does not fall over. That is the evidence that says we can spend
+  into October rather than throttle back.</p>
+</div></section><section class="panel" id="p-baseline" role="tabpanel" aria-labelledby="tab-baseline" hidden><p class="eyebrow">What&#x27;s been done so far</p><h2>The account I inherited</h2>
+<p class="lede">Recorded in the takeover checklist dated 9 June, before any changes were made. This is the baseline
+everything below is measured against.</p>
+
+<div class="tw"><table class=""><thead><tr><th>Finding at takeover</th><th>Why it mattered</th><th>Status now</th></tr></thead><tbody><tr><td>PMax running at <b>2.38x</b> vs Paid Search <b>3.09x</b></td><td>Budget concentrated in the weaker of the two formats</td><td><span class="chip chip-done">Reallocated</span></td></tr><tr><td>Brand keywords <b>not excluded</b> from PMax</td><td>PMax harvesting branded conversions and claiming the credit — the single biggest ROAS distortion available</td><td><span class="chip chip-done">Fixed 31 Jul</span></td></tr><tr><td>No confirmed brand protection campaign</td><td>Competitors free to bid on our name</td><td><span class="chip chip-done">Live, budget +33%</span></td></tr><tr><td><b>£22,860</b> Bing-attributed revenue with no cost data in GA4</td><td>Flying blind on an entire channel</td><td><span class="chip chip-done">Cost data visible</span></td></tr><tr><td>Meta cold prospecting losing an estimated <b>£14k/quarter</b></td><td>Straight cash burn</td><td><span class="chip chip-done">Prospecting paused</span></td></tr><tr><td>Billing on the agency's card; editor not admin access</td><td>Access could be revoked instantly</td><td><span class="chip chip-done">Transferred</span></td></tr><tr><td>Bing suspected to be an unmodified Google import</td><td>Overpaying — Bing CPCs run 30–50% cheaper</td><td><span class="chip chip-part">Rebid, still tuning</span></td></tr><tr><td>Meta CAPI / server-side tracking unverified</td><td>iOS users invisible to optimisation</td><td><span class="chip chip-watch">Open — see Gaps</span></td></tr></tbody></table></div>
+<p class="note">The checklist ran to 24 line items across Google, Bing and Meta. Every critical and high-priority item
+is closed or in flight. The two that remain open are named in <a href="#gaps" class="jump" data-go="gaps">Gaps &amp; asks</a>
+rather than left implicit.</p></section><section class="panel" id="p-trading" role="tabpanel" aria-labelledby="tab-trading" hidden><p class="eyebrow">Sales vs last year · Spend · ROAS · Orders · CVR · AOV · Organic · Paid</p><h2>Trading and reporting</h2>
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Net sales vs LY</div><div class="kpi-v">+66%</div><div class="kpi-s">£365,233 vs £220,623</div></div>
+<div class="kpi "><div class="kpi-l">Orders vs LY</div><div class="kpi-v">+59%</div><div class="kpi-s">1,061 vs 668</div></div>
+<div class="kpi "><div class="kpi-l">AOV vs LY</div><div class="kpi-v">+4%</div><div class="kpi-s">£344 vs £330</div></div>
+<div class="kpi "><div class="kpi-l">Site CVR</div><div class="kpi-v">2.33%</div><div class="kpi-s">wk 30 Jul–5 Aug, 4,511 sessions</div></div>
+<div class="kpi "><div class="kpi-l">vs target</div><div class="kpi-v">on plan</div><div class="kpi-s">Jul +0.5% · Aug MTD +7.2%</div></div>
+<div class="kpi "><div class="kpi-l">Organic sessions</div><div class="kpi-v">+192%</div><div class="kpi-s">Jul YoY, Ahrefs estimate</div></div>
+</div>
+
+<h3>Net sales against last year</h3>
+<svg viewBox="0 0 680 250" class="chart" role="img"><line x1="58" y1="14.0" x2="668" y2="14.0" class="grid"/><text x="50" y="18.0" class="ax ax-r">£180k</text><line x1="58" y1="64.5" x2="668" y2="64.5" class="grid"/><text x="50" y="68.5" class="ax ax-r">£135k</text><line x1="58" y1="115.0" x2="668" y2="115.0" class="grid"/><text x="50" y="119.0" class="ax ax-r">£90k</text><line x1="58" y1="165.5" x2="668" y2="165.5" class="grid"/><text x="50" y="169.5" class="ax ax-r">£45k</text><line x1="58" y1="216.0" x2="668" y2="216.0" class="grid"/><text x="50" y="220.0" class="ax ax-r">£0k</text><rect x="96.6" y="35.6" width="60.0" height="180.4" rx="2" class="bar-a"><title>Jun: £160,895</title></rect><rect x="159.7" y="119.7" width="60.0" height="96.3" rx="2" class="bar-b"><title>Jun: £85,875</title></rect><text x="159.7" y="239" class="ax ax-c">Jun</text><rect x="300.0" y="47.0" width="60.0" height="169.0" rx="2" class="bar-a"><title>Jul: £150,781</title></rect><rect x="363.0" y="106.2" width="60.0" height="109.8" rx="2" class="bar-b"><title>Jul: £97,932</title></rect><text x="363.0" y="239" class="ax ax-c">Jul</text><rect x="503.3" y="156.0" width="60.0" height="60.0" rx="2" class="bar-a"><title>Aug*: £53,557</title></rect><rect x="566.3" y="174.7" width="60.0" height="41.3" rx="2" class="bar-b"><title>Aug*: £36,816</title></rect><text x="566.3" y="239" class="ax ax-c">Aug*</text></svg>
+<div class="legend"><span class="lg"><i class="sw sw-a"></i>This year</span><span class="lg"><i class="sw sw-b"></i>Last year</span></div>
+
+<h3>Month by month</h3>
+<div class="tw"><table class="num"><thead><tr><th></th><th>Net sales</th><th>LY</th><th>YoY</th><th>Orders</th><th>Orders YoY</th><th>AOV</th><th>Media</th><th>ROAS</th><th>Discount</th></tr></thead><tbody><tr><td><b>Jun</b></td><td>£160,895</td><td>£85,875</td><td><b class='up'>+87%</b></td><td>458</td><td><b class='up'>+70%</b></td><td>£351</td><td>£33,812</td><td>4.76x</td><td>13.5%</td></tr><tr><td><b>Jul</b></td><td>£150,781</td><td>£97,932</td><td><b class='up'>+54%</b></td><td>465</td><td><b class='up'>+60%</b></td><td>£324</td><td>£35,754</td><td>4.22x</td><td>11.8%</td></tr><tr><td><b>Aug*</b></td><td>£53,557</td><td>£36,816</td><td><b class='up'>+45%</b></td><td>138</td><td><b class='up'>+29%</b></td><td>£388</td><td>£12,672</td><td>4.23x</td><td>16.6%</td></tr><tr><td><b>Total</b></td><td><b>£365,233</b></td><td><b>£220,623</b></td><td><b class='up'>+66%</b></td><td><b>1,061</b></td><td><b class='up'>+59%</b></td><td><b>£344</b></td><td><b>£82,238</b></td><td><b>4.44x</b></td><td><b>13.3%</b></td></tr></tbody></table></div>
+<p class="note">*August is 1–10 only. June had no sales target set; July finished +0.5% against target and August is
++7.2% month to date. Net sales = gross less discount, per the flash's own columns; returns are reported separately.
+The August column carries a £1,328 variance against that identity, equal to the month's returns figure — a data-entry
+issue in the flash I am correcting, flagged here rather than smoothed over.</p>
+
+<h3>Weekly ROAS against break-even</h3>
+<svg viewBox="0 0 680 230" class="chart" role="img"><line x1="44" y1="14.0" x2="666" y2="14.0" class="grid"/><text x="36" y="18.0" class="ax ax-r">8.0x</text><line x1="44" y1="74.0" x2="666" y2="74.0" class="grid"/><text x="36" y="78.0" class="ax ax-r">6.0x</text><line x1="44" y1="134.0" x2="666" y2="134.0" class="grid"/><text x="36" y="138.0" class="ax ax-r">4.0x</text><line x1="44" y1="194.0" x2="666" y2="194.0" class="grid"/><text x="36" y="198.0" class="ax ax-r">2.0x</text><line x1="44" y1="153.2" x2="666" y2="153.2" class="thresh"/><text x="664" y="146.2" class="ax ax-e thresh-t">break-even 3.36x</text><path d="M44.0,194.0 L44.0,130.4 L100.5,83.9 L157.1,106.7 L213.6,129.2 L270.2,90.2 L326.7,131.9 L383.3,132.2 L439.8,116.0 L496.4,123.8 L552.9,141.2 L609.5,131.6 L666.0,116.6 L666.0,194.0 Z" class="area"/><path d="M44.0,130.4 L100.5,83.9 L157.1,106.7 L213.6,129.2 L270.2,90.2 L326.7,131.9 L383.3,132.2 L439.8,116.0 L496.4,123.8 L552.9,141.2 L609.5,131.6 L666.0,116.6" class="line"/><circle cx="44.0" cy="130.4" r="2.8" class="dot"><title>Jun W1: 4.1x</title></circle><circle cx="100.5" cy="83.9" r="2.8" class="dot"><title>Jun W2: 5.7x</title></circle><circle cx="157.1" cy="106.7" r="2.8" class="dot"><title>Jun W3: 4.9x</title></circle><circle cx="213.6" cy="129.2" r="2.8" class="dot"><title>Jun W4: 4.2x</title></circle><circle cx="270.2" cy="90.2" r="2.8" class="dot"><title>Jun W5: 5.5x</title></circle><circle cx="326.7" cy="131.9" r="2.8" class="dot"><title>Jul W1: 4.1x</title></circle><circle cx="383.3" cy="132.2" r="2.8" class="dot"><title>Jul W2: 4.1x</title></circle><circle cx="439.8" cy="116.0" r="2.8" class="dot"><title>Jul W3: 4.6x</title></circle><circle cx="496.4" cy="123.8" r="2.8" class="dot"><title>Jul W4: 4.3x</title></circle><circle cx="552.9" cy="141.2" r="2.8" class="dot"><title>Jul W5: 3.8x</title></circle><circle cx="609.5" cy="131.6" r="2.8" class="dot"><title>Aug W1: 4.1x</title></circle><circle cx="666.0" cy="116.6" r="4.2" class="dot dot-end"><title>Aug W2: 4.6x</title></circle><text x="44.0" y="218" class="ax ax-c">Jun W1</text><text x="100.5" y="218" class="ax ax-c">Jun W2</text><text x="157.1" y="218" class="ax ax-c">Jun W3</text><text x="213.6" y="218" class="ax ax-c">Jun W4</text><text x="270.2" y="218" class="ax ax-c">Jun W5</text><text x="326.7" y="218" class="ax ax-c">Jul W1</text><text x="383.3" y="218" class="ax ax-c">Jul W2</text><text x="439.8" y="218" class="ax ax-c">Jul W3</text><text x="496.4" y="218" class="ax ax-c">Jul W4</text><text x="552.9" y="218" class="ax ax-c">Jul W5</text><text x="609.5" y="218" class="ax ax-c">Aug W1</text><text x="666.0" y="218" class="ax ax-c">Aug W2</text></svg>
+<p class="note">Break-even sits at 3.36x on the margin assumption carried in the change journal. We have been
+above it every week. The proportion of individual days finishing below break-even is worth watching: 27% in June,
+23% in July, <b>40% in the first ten days of August</b>. That is the number I would hold myself to next month.</p>
+
+<h3>Where the money went, this year and last</h3>
+<svg viewBox="0 0 680 132" class="chart" role="img"><text x="84" y="37" class="ax ax-r">This year</text><rect x="96.0" y="16" width="274.6" height="34" class="seg-a"><title>Google: £44,934 (53%)</title></rect><text x="233.3" y="37" class="seg-t">53%</text><rect x="370.6" y="16" width="173.8" height="34" class="seg-b"><title>Meta: £28,436 (34%)</title></rect><text x="457.5" y="37" class="seg-t">34%</text><rect x="544.4" y="16" width="65.6" height="34" class="seg-c"><title>Bing: £10,729 (13%)</title></rect><text x="577.2" y="37" class="seg-t">13%</text><text x="619.0" y="37" class="ax">£84k</text><text x="84" y="97" class="ax ax-r">Last year</text><rect x="96.0" y="76" width="91.3" height="34" class="seg-a"><title>Google: £14,937 (36%)</title></rect><text x="141.6" y="97" class="seg-t">36%</text><rect x="187.3" y="76" width="145.7" height="34" class="seg-b"><title>Meta: £23,837 (58%)</title></rect><text x="260.1" y="97" class="seg-t">58%</text><rect x="333.0" y="76" width="15.6" height="34" class="seg-c"><title>Bing: £2,552 (6%)</title></rect><text x="357.6" y="97" class="ax">£41k</text></svg>
+<div class="legend"><span class="lg"><i class="sw sw-a"></i>Google</span><span class="lg"><i class="sw sw-b"></i>Meta</span><span class="lg"><i class="sw sw-c"></i>Bing</span></div>
+<p class="note">Last year Meta took 58% of the budget. This year Google does, at 55%, with Meta down to 35%. That shift
+is deliberate and it is the main reason order volume grew faster than spend.</p>
+
+<h3>Organic sessions, 15 months</h3>
+<svg viewBox="0 0 680 230" class="chart" role="img"><line x1="44" y1="14.0" x2="666" y2="14.0" class="grid"/><text x="36" y="18.0" class="ax ax-r">15,000</text><line x1="44" y1="74.0" x2="666" y2="74.0" class="grid"/><text x="36" y="78.0" class="ax ax-r">10,000</text><line x1="44" y1="134.0" x2="666" y2="134.0" class="grid"/><text x="36" y="138.0" class="ax ax-r">5,000</text><line x1="44" y1="194.0" x2="666" y2="194.0" class="grid"/><text x="36" y="198.0" class="ax ax-r">0</text><path d="M44.0,194.0 L44.0,169.6 L88.4,166.3 L132.9,158.5 L177.3,147.1 L221.7,139.5 L266.1,102.0 L310.6,119.6 L355.0,117.8 L399.4,99.8 L443.9,111.9 L488.3,126.4 L532.7,130.1 L577.1,120.0 L621.6,113.1 L666.0,120.3 L666.0,194.0 Z" class="area"/><path d="M44.0,169.6 L88.4,166.3 L132.9,158.5 L177.3,147.1 L221.7,139.5 L266.1,102.0 L310.6,119.6 L355.0,117.8 L399.4,99.8 L443.9,111.9 L488.3,126.4 L532.7,130.1 L577.1,120.0 L621.6,113.1 L666.0,120.3" class="line"/><circle cx="44.0" cy="169.6" r="2.8" class="dot"><title>Jun 25: 2,035</title></circle><circle cx="88.4" cy="166.3" r="2.8" class="dot"><title>Jul 25: 2,305</title></circle><circle cx="132.9" cy="158.5" r="2.8" class="dot"><title>Aug 25: 2,957</title></circle><circle cx="177.3" cy="147.1" r="2.8" class="dot"><title>Sep 25: 3,910</title></circle><circle cx="221.7" cy="139.5" r="2.8" class="dot"><title>Oct 25: 4,540</title></circle><circle cx="266.1" cy="102.0" r="2.8" class="dot"><title>Nov 25: 7,667</title></circle><circle cx="310.6" cy="119.6" r="2.8" class="dot"><title>Dec 25: 6,199</title></circle><circle cx="355.0" cy="117.8" r="2.8" class="dot"><title>Jan 26: 6,348</title></circle><circle cx="399.4" cy="99.8" r="2.8" class="dot"><title>Feb 26: 7,854</title></circle><circle cx="443.9" cy="111.9" r="2.8" class="dot"><title>Mar 26: 6,838</title></circle><circle cx="488.3" cy="126.4" r="2.8" class="dot"><title>Apr 26: 5,631</title></circle><circle cx="532.7" cy="130.1" r="2.8" class="dot"><title>May 26: 5,322</title></circle><circle cx="577.1" cy="120.0" r="2.8" class="dot"><title>Jun 26: 6,168</title></circle><circle cx="621.6" cy="113.1" r="2.8" class="dot"><title>Jul 26: 6,739</title></circle><circle cx="666.0" cy="120.3" r="4.2" class="dot dot-end"><title>Aug 26: 6,139</title></circle><text x="44.0" y="218" class="ax ax-c">Jun 25</text><text x="88.4" y="218" class="ax ax-c">Jul 25</text><text x="132.9" y="218" class="ax ax-c">Aug 25</text><text x="177.3" y="218" class="ax ax-c">Sep 25</text><text x="221.7" y="218" class="ax ax-c">Oct 25</text><text x="266.1" y="218" class="ax ax-c">Nov 25</text><text x="310.6" y="218" class="ax ax-c">Dec 25</text><text x="355.0" y="218" class="ax ax-c">Jan 26</text><text x="399.4" y="218" class="ax ax-c">Feb 26</text><text x="443.9" y="218" class="ax ax-c">Mar 26</text><text x="488.3" y="218" class="ax ax-c">Apr 26</text><text x="532.7" y="218" class="ax ax-c">May 26</text><text x="577.1" y="218" class="ax ax-c">Jun 26</text><text x="621.6" y="218" class="ax ax-c">Jul 26</text><text x="666.0" y="218" class="ax ax-c">Aug 26</text></svg>
+<p class="note"><b>Read this one carefully.</b> Organic is up 192% year on year, but the step change happened in autumn
+2025, before I arrived. From May 2026 — my first full month — to the July peak, organic grew 5,322 → 6,739, or
+<b>+27%</b>. That 27% is the honest number for this period. The 192% is real but it is not mine to claim.</p></section><section class="panel" id="p-profit" role="tabpanel" aria-labelledby="tab-profit" hidden><p class="eyebrow">Protect sales growth, but improve profit — I don&#x27;t want sales dropping just so reports look cleaner</p><h2>Where the profit actually goes</h2>
+<div class="callout callout-crit">
+  <div class="callout-h">This is the section I would spend the meeting on</div>
+  <p>You asked me to improve profit without sacrificing growth. I went looking in the media accounts and found the
+  answer somewhere else. Over the period we spent <b>£82,238</b> on media and gave away <b>£55,669</b>
+  in discount. One of those two numbers gets reviewed daily. The other has never been on an agenda.</p>
+</div>
+
+<div class="kpis">
+<div class="kpi crit"><div class="kpi-l">Discount given away</div><div class="kpi-v">£55,669</div><div class="kpi-s">13.3% of gross sales</div></div>
+<div class="kpi warn"><div class="kpi-l">Media spend</div><div class="kpi-v">£82,238</div><div class="kpi-s">22.5% of net sales</div></div>
+<div class="kpi crit"><div class="kpi-l">Contribution after media</div><div class="kpi-v">£26,601</div><div class="kpi-s">7.3% of net sales</div></div>
+<div class="kpi "><div class="kpi-l">Worth 1pt of discount</div><div class="kpi-v">£4,196</div><div class="kpi-s">over a period this size</div></div>
+<div class="kpi "><div class="kpi-l">Orders using a coupon</div><div class="kpi-v">56% → 49%</div><div class="kpi-s">June → July</div></div>
+<div class="kpi warn"><div class="kpi-l">Returns</div><div class="kpi-v">£11,348</div><div class="kpi-s">2.7% of gross · Jul spiked to 4.4%</div></div>
+</div>
+
+<h3>The contribution walk</h3>
+<div class="tw"><table class="num"><thead><tr><th></th><th>Gross</th><th>Discount</th><th>Disc %</th><th>Net</th><th>Gross profit</th><th>Media</th><th>Contribution</th><th>% of net</th></tr></thead><tbody><tr><td><b>Jun</b></td><td>£185,919</td><td>£25,028</td><td><b>13.5%</b></td><td>£160,895</td><td>£47,947</td><td>£33,812</td><td><b>£14,135</b></td><td><b>8.8%</b></td></tr><tr><td><b>Jul</b></td><td>£171,029</td><td>£20,250</td><td><b>11.8%</b></td><td>£150,781</td><td>£44,933</td><td>£35,754</td><td><b>£9,179</b></td><td><b>6.1%</b></td></tr><tr><td><b>Aug*</b></td><td>£62,620</td><td>£10,391</td><td><b>16.6%</b></td><td>£53,557</td><td>£15,960</td><td>£12,672</td><td><b>£3,288</b></td><td><b>6.1%</b></td></tr><tr><td><b>Total</b></td><td><b>£419,568</b></td><td><b>£55,669</b></td><td><b>13.3%</b></td><td><b>£365,233</b></td><td><b>£108,839</b></td><td><b>£82,238</b></td><td><b>£26,601</b></td><td><b>7.3%</b></td></tr></tbody></table></div>
+
+<div class="callout callout-warn">
+  <div class="callout-h">Assumption you need to confirm</div>
+  <p>Gross margin of <b>29.8%</b> is inferred, not given — it is the margin implied by the 3.36x
+  break-even ROAS carried in the change journal. Every contribution figure above moves with it. <b>If you give me the
+  real blended gross margin by product category, I will rebuild this properly</b> — and it changes which categories we
+  should be buying traffic for. This is my single most valuable ask from you.</p>
+</div>
+
+<h3>What the discount data says</h3>
+<ul class="bul">
+  <li>Discount as a share of gross: June 13.5%, July 11.8%,
+      <b>August 16.6%</b>. The trend is the wrong way and August is the worst month on record in this set.</li>
+  <li><b>56% of June orders and 49% of July orders used a coupon.</b> At that rate a discount is not a promotion, it is
+      the price. We are running a permanent sale and calling it a promotion.</li>
+  <li>July returns jumped to <b>4.4%</b> of gross from 1.4% in June — £7,449 in one month. Worth understanding before
+      peak, when volumes triple.</li>
+  <li>AOV is rising (£351 → £388) at the same time as the
+      discount rate. We are selling bigger baskets and discounting them harder.</li>
+</ul>
+
+<h3>What I would do about it</h3>
+<ol class="steps">
+  <li><b>Put a floor under the discount rate.</b> Target 10% of gross by the end of October. Worth roughly
+      £13,712 on a period like this one.</li>
+  <li><b>Stop stacking.</b> Audit which codes are live, where they are surfaced, and whether paid traffic is landing on
+      pages that advertise a code the customer had not asked for.</li>
+  <li><b>Shift from blanket codes to threshold codes</b> — spend-based rather than sitewide, so the discount buys AOV
+      instead of just costing margin.</li>
+  <li><b>Protect peak.</b> Going into October at a 16.6% discount rate on triple the volume
+      is the single largest profit risk in the next 90 days.</li>
+</ol>
+<p class="note">To be explicit about scope: pricing and promotions are not mine to set. I am flagging the number, not
+proposing to change it unilaterally. If you want me to own it, I will.</p></section><section class="panel" id="p-google" role="tabpanel" aria-labelledby="tab-google" hidden><p class="eyebrow">What&#x27;s changed · Brand vs non-brand · PMax · ROAS · Spend · What&#x27;s still testing · Anything to amend or reverse</p><h2>Google Ads</h2>
+<h3>What changed</h3>
+<ul class="bul">
+  <li><b>Brand protected.</b> A negative brand list (ID 11160977849) is applied to every PMax campaign. PMax can no
+      longer serve on brand queries and take credit for conversions we would have won anyway. This was the biggest
+      single distortion in the inherited account.</li>
+  <li><b>Account structure rebuilt.</b> Six campaigns renamed to a <code>GGL |</code> convention, matched by
+      <code>MSFT |</code> on Microsoft. Towel merged into the catch-all. Listing groups subdivided by price band.</li>
+  <li><b>New: AI Max Search | Cast Iron</b>, built 3 August — four ad groups, 32 broad keywords, 46 negatives, UK only.</li>
+  <li><b>Negatives at account level.</b> Four shared lists, 111 keywords: repair/DIY and informational (38),
+      second-hand and reclaimed (20), competitor and other brands (24), parts/accessories and non-product (29).
+      Mirrored on Microsoft. A further 166 negative rows on Microsoft cast iron and column.</li>
+  <li><b>Budget moved out of broad PMax into Search.</b> PMax All cut 40% to £120/day; AI Max Search Column raised 300%
+      to £80/day as the best-performing Search campaign.</li>
+</ul>
+
+<h3>Brand vs non-brand — an honest answer</h3>
+<p>The controls are in place and the reporting split is now possible for the first time. What I do not yet have is a
+clean brand vs non-brand performance read, because the brand exclusions only went live on 31 July and the pre-31-July
+data is contaminated by exactly the cannibalisation the exclusions were built to stop. <b>Comparing the two periods
+would produce a number that looks precise and means nothing.</b> First clean read is late September, once there is a
+full month of uncontaminated data. I would rather tell you that than hand you a chart I do not believe.</p>
+
+<h3>Still testing</h3>
+<div class="tw"><table class=""><thead><tr><th>Test</th><th>Started</th><th>What I am watching</th><th>Call by</th></tr></thead><tbody><tr><td>AI Max on Search | Brand</td><td>31 Jul</td><td>Logged at the time as <b>highest risk</b> in the account. Brand spend and query mix, weekly. Constrained by brand list.</td><td>End Aug</td></tr><tr><td>AI Max Search | Cast Iron</td><td>3 Aug</td><td>New campaign. CPA and query relevance against 46 negatives.</td><td>Mid Sep</td></tr><tr><td>Past-purchaser exclusion on all PMax</td><td>31 Jul</td><td>Deliberate trade-off — see below.</td><td>End Aug</td></tr><tr><td>PMax Cast Iron with price-band listing groups</td><td>3 Aug</td><td>Currently ~1.02x ROAS, well below the 3.36x break-even.</td><td><b>End Aug — hard stop</b></td></tr><tr><td>Microsoft PMax with no tROAS target</td><td>4 Aug</td><td>Removed targets to let Max Conversion Value find its level on thin volume.</td><td>Mid Sep</td></tr></tbody></table></div>
+
+<div class="callout">
+  <div class="callout-h">The deliberate trade-off, and how it turned out</div>
+  <p>On 31 July I excluded past purchasers from all four Google PMax campaigns to force new-customer acquisition. The
+  change journal entry written at the time reads: <i>"Expect short-term CVR and ROAS to FALL — past purchasers are the
+  highest-converting audience being removed."</i></p>
+  <p>Ten days of data since: ROAS 4.48x → <b>4.23x</b>, a 6% dip rather than the fall I had budgeted for, while
+  <b>AOV rose from £338 to £388</b> and daily net sales went up. The trade-off has so far cost less than expected and
+  bought new customers going into peak. I am not declaring victory on ten days, but the early read is good.</p>
+</div>
+
+<h3>Amend or reverse</h3>
+<div class="tw"><table class=""><thead><tr><th>Campaign</th><th>Issue</th><th>Recommendation</th></tr></thead><tbody><tr><td><b>GGL | PMax | Cast Iron</b></td><td>Running at roughly <b>1.02x</b> against a 3.36x break-even. Losing money on every pound.</td><td><span class="chip chip-crit">Reverse</span> Pause by end Aug unless the feed fix (see Cast Iron) moves it. The products it needs to sell are not eligible to serve.</td></tr><tr><td><b>GGL | PMax | Towel</b></td><td>Final URL expansion was switched <b>on</b> at the same time as the tROAS was tightened — two settings pushing opposite ways. I logged the conflict when I made it.</td><td><span class="chip chip-part">Amend</span> Turn expansion back off; keep the tighter target.</td></tr><tr><td><b>MSFT | PMax | All</b></td><td>Was using 32% of its budget at 1.50x against break-even.</td><td><span class="chip chip-done">Done</span> Budget cut 57% on 31 Jul. Risk control, not a verdict — it launched 17 Jul and is still learning.</td></tr><tr><td><b>Search | Brand</b> (AI Max)</td><td>Highest-risk change in the account.</td><td><span class="chip chip-watch">Monitor</span> Weekly brand spend and query review. Reverse immediately if non-brand queries start leaking in.</td></tr></tbody></table></div></section><section class="panel" id="p-seo" role="tabpanel" aria-labelledby="tab-seo" hidden><p class="eyebrow">What&#x27;s been fixed · What pages improved · What opportunities · What needs dev · Plan for 3–6 months</p><h2>SEO</h2>
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Site health score</div><div class="kpi-v">83 / 100</div><div class="kpi-s">Ahrefs crawl, 10 Aug · 3,783 URLs</div></div>
+<div class="kpi "><div class="kpi-l">Organic sessions</div><div class="kpi-v">6,739</div><div class="kpi-s">July, the highest since Feb</div></div>
+<div class="kpi "><div class="kpi-l">Growth since I started</div><div class="kpi-v">+27%</div><div class="kpi-s">May 5,322 → Jul 6,739</div></div>
+<div class="kpi "><div class="kpi-l">Tracked keywords</div><div class="kpi-v">492</div><div class="kpi-s">rank tracker now live</div></div>
+<div class="kpi crit"><div class="kpi-l">Pages with broken JS</div><div class="kpi-v">612</div><div class="kpi-s">flagged as errors</div></div>
+<div class="kpi warn"><div class="kpi-l">Images missing alt text</div><div class="kpi-v">612</div><div class="kpi-s"></div></div>
+</div>
+
+<h3>What has been fixed</h3>
+<ul class="bul">
+  <li><b>290 H1 tags and 133 title tags changed</b> in the current crawl window — the on-page pass across category and
+      product templates.</li>
+  <li>Pages dropped out of the top 10 improved by 14 over the crawl period.</li>
+  <li>Rank tracking established across 492 keywords. Which is also a caveat: <b>there was no ranking baseline before
+      this</b>, so I can show you where we stand today but I cannot honestly show you a before-and-after on positions.
+      From now on we can.</li>
+</ul>
+
+<h3>Where we rank now</h3>
+<div class="tw"><table class=""><thead><tr><th>Keyword</th><th>Volume/mo</th><th>Position</th><th>Ranking URL</th></tr></thead><tbody><tr><td>column radiators</td><td>9,300</td><td><span class="chip chip-done">3</span></td><td>/product-category/</td></tr><tr><td>designer radiators</td><td>5,100</td><td><span class="chip chip-done">4</span></td><td>/product-category/designer-radiators/</td></tr><tr><td><b>cast iron radiators</b></td><td><b>4,500</b></td><td><span class="chip chip-crit">29</span></td><td>/product-category/column-radiators/ &nbsp;<i>— wrong page</i></td></tr><tr><td>column radiators uk</td><td>2,600</td><td><span class="chip chip-done">3</span></td><td>/product-category/column-radiators/</td></tr><tr><td>radiators direct</td><td>2,600</td><td><span class="chip chip-watch">9</span></td><td>/</td></tr><tr><td>traditional radiators</td><td>2,300</td><td><span class="chip chip-done">4</span></td><td>/product-category/traditional-radiators/</td></tr><tr><td>column radiator</td><td>2,000</td><td><span class="chip chip-done">3</span></td><td>/product-category/column-radiators/</td></tr><tr><td>brass radiator</td><td>1,800</td><td><span class="chip chip-watch">12</span></td><td>/product-category/antique-brass/</td></tr><tr><td>antique brass radiator</td><td>1,600</td><td><span class="chip chip-done">2</span></td><td>/product-category/antique-brass/</td></tr><tr><td>designer radiators uk</td><td>1,600</td><td><span class="chip chip-watch">7</span></td><td>/product-category/designer-radiators/</td></tr><tr><td>old fashioned radiators</td><td>1,200</td><td><span class="chip chip-crit">18</span></td><td>/product-category/traditional-radiators/</td></tr><tr><td>aluminium radiators for heat pumps</td><td>200</td><td><span class="chip chip-done">1</span></td><td>/product-category/heat-pump-compatible-radiators/</td></tr></tbody></table></div>
+
+<h3>The opportunities</h3>
+<ol class="steps">
+  <li><b>Cast iron is the whole game.</b> "cast iron radiators" is 4,500 searches a month and we sit at 29 — with the
+      column radiators page ranking for it, not a cast iron page. We also rank mid-page across a dozen cast iron
+      variants ("cast iron style" 9, "cast iron look" 6, "cast iron effect" 7, "cast iron column" 5) all pointing at
+      the same wrong URL. Full plan in <a href="#castiron" class="jump" data-go="castiron">Cast Iron</a>.</li>
+  <li><b>Heat pumps are a free win we are already holding.</b> We rank <b>#1</b> for "aluminium radiators for heat
+      pumps", "best radiators for heat pumps" and "best radiators for air source heat pump". Low volume today, but this
+      is a category that grows with the boiler ban and we already own it. Worth defending and expanding.</li>
+  <li><b>Colour variants.</b> Nine keyword research documents are already written, one per cast iron colour —
+      anthracite, black, bronze, cream, green, brass, grey, blue, gold, white. The research is done. They need pages.</li>
+  <li><b>"old fashioned radiators" (1,200) at 18 and "brass radiator" (1,800) at 12</b> are both realistic top-five
+      targets with the on-page work we already know how to do.</li>
+</ol>
+
+<h3>What needs dev support</h3>
+<div class="tw"><table class=""><thead><tr><th>Issue</th><th>Scale</th><th>Impact</th><th>Priority</th></tr></thead><tbody><tr><td><b>Broken JavaScript on pages</b></td><td>612 pages</td><td>Flagged as an error. Risks rendering and anything measurement-dependent. Needs a dev to identify the failing script.</td><td><span class="chip chip-crit">High</span></td></tr><tr><td>Missing image alt text</td><td>612 images</td><td>Accessibility and image search. Bulk-fixable.</td><td><span class="chip chip-watch">Medium</span></td></tr><tr><td>schema.org validation errors</td><td>178 pages</td><td>Blocks rich results on product pages.</td><td><span class="chip chip-part">High</span></td></tr><tr><td>Multiple H1 tags</td><td>130 pages</td><td>Template-level fix.</td><td><span class="chip chip-watch">Medium</span></td></tr><tr><td>Title too long</td><td>210 pages</td><td>Truncation in SERPs. Partly template.</td><td><span class="chip chip-watch">Medium</span></td></tr><tr><td>Page and SERP titles do not match</td><td>89 pages</td><td>Google rewriting our titles — signal that they are not earning the click.</td><td><span class="chip chip-watch">Medium</span></td></tr><tr><td>Orphan pages</td><td>13 pages</td><td>No internal links in. Invisible to crawlers and customers.</td><td><span class="chip chip-part">Quick win</span></td></tr><tr><td>Pages to submit to IndexNow</td><td>575 pages</td><td>Faster indexation of the new content.</td><td><span class="chip chip-part">Quick win</span></td></tr></tbody></table></div>
+
+<h3>The 3–6 month plan</h3>
+<div class="tw"><table class=""><thead><tr><th></th><th>Focus</th><th>Deliverable</th></tr></thead><tbody><tr><td><b>Sep</b></td><td>Cast iron hub</td><td>Dedicated /cast-iron-radiators category built and internally linked, taking the cluster off the column page. Colour variant pages one to four.</td></tr><tr><td><b>Oct</b></td><td>Peak protection</td><td>No structural changes during peak. Colour variants five to nine ship. Technical fixes only.</td></tr><tr><td><b>Nov</b></td><td>Heat pump expansion</td><td>Build out the category we already rank #1 in, ahead of winter demand and grant-driven search.</td></tr><tr><td><b>Dec–Jan</b></td><td>Technical debt</td><td>Broken JS, schema, H1s and titles cleared with dev. Post-peak is the right window.</td></tr><tr><td><b>Feb</b></td><td>Review and re-baseline</td><td>First genuine year-on-year ranking comparison, using the baseline established this month.</td></tr></tbody></table></div></section><section class="panel" id="p-cro" role="tabpanel" aria-labelledby="tab-cro" hidden><p class="eyebrow">Conversion rate · Product pages · Mobile · Checkout · Upsells/accessories · Any obvious issues stopping people buying</p><h2>Website and conversion</h2>
+<p class="lede">GA4 landing-page data, week of 30 July to 5 August: 4,511 sessions, £33,473 revenue, 105 key events.
+Site conversion rate <b>2.33%</b>, revenue per session <b>£7.42</b>.</p>
+
+<div class="kpis">
+<div class="kpi "><div class="kpi-l">Site CVR</div><div class="kpi-v">2.33%</div><div class="kpi-s">105 key events / 4,511 sessions</div></div>
+<div class="kpi "><div class="kpi-l">Revenue per session</div><div class="kpi-v">£7.42</div><div class="kpi-s"></div></div>
+<div class="kpi crit"><div class="kpi-l">Sessions on £0 pages</div><div class="kpi-v">35.1%</div><div class="kpi-s">1,583 sessions, 37 pages</div></div>
+<div class="kpi "><div class="kpi-l">Basket → key event</div><div class="kpi-v">17.9%</div><div class="kpi-s">28 sessions</div></div>
+<div class="kpi "><div class="kpi-l">Checkout → key event</div><div class="kpi-v">22.2%</div><div class="kpi-s">18 sessions</div></div>
+<div class="kpi warn"><div class="kpi-l">Untracked sessions</div><div class="kpi-v">5.3%</div><div class="kpi-s">237 sessions unattributable</div></div>
+</div>
+
+<h3>The obvious issue stopping people buying</h3>
+<div class="callout callout-crit">
+  <div class="callout-h">Our single most-visited product page converts nothing</div>
+  <p><code>/product/glo-kensington-range-column-radiator-horizontal-antique-brass</code> took <b>265 sessions</b> in the
+  week — more than any page except the homepage and the column radiators category. It produced <b>£0</b>, zero key
+  events, a 41% bounce rate and just <b>34 seconds</b> of engagement against a 90-second average on comparable pages.</p>
+  <p>People arrive, look for a few seconds, and leave. That is a page problem, not a traffic problem — and we are
+  actively buying traffic to it. It is the first thing I would fix on the site.</p>
+</div>
+
+<h3>High-traffic pages producing no revenue</h3>
+<div class="tw"><table class=""><thead><tr><th>Page</th><th>Sessions</th><th>Bounce</th><th>Engagement</th><th>Read</th></tr></thead><tbody><tr><td><code>…column-radiator-horizontal-antique-brass</code></td><td>265</td><td>41%</td><td>34s</td><td>Top product page. £0. Fix first.</td></tr><tr><td><code>(not set)</code></td><td>196</td><td>98%</td><td>12s</td><td><span class="chip chip-crit">Tracking</span> Unattributable. Measurement gap.</td></tr><tr><td><code>/product-category/cast-iron-radiators</code></td><td>118</td><td>26%</td><td>90s</td><td>Strong engagement, zero sales. Intent is there.</td></tr><tr><td><code>…traditional-cast-iron-horizontal-anthracite</code></td><td>87</td><td>31%</td><td>89s</td><td>Engaged, no conversion.</td></tr><tr><td><code>/product-category/heat-pump-compatible-radiators</code></td><td>60</td><td>17%</td><td>67s</td><td>Lowest bounce on the site. Nothing to buy?</td></tr><tr><td><code>…victorian-traditional-cast-iron-radiator</code></td><td>60</td><td>32%</td><td>44s</td><td>£0.</td></tr><tr><td><code>…trv-angled-radiator-valves-antique-brass</code></td><td>56</td><td>50%</td><td>39s</td><td>Top accessory page. £0.</td></tr><tr><td><code>/product-category/antique-brass</code></td><td>46</td><td>13%</td><td>72s</td><td>Very low bounce, no revenue.</td></tr></tbody></table></div>
+<p class="note"><b>37 pages, 1,583 sessions, 35.1% of all site traffic, £0 revenue.</b> Several have low bounce and high
+engagement, which is the tell: these are not bad pages attracting the wrong people. They are pages where interested
+people fail to complete.</p>
+
+<h3>Product pages</h3>
+<ul class="bul">
+  <li>Cast iron in <b>white</b> converts: <code>traditional-cast-iron-horizontal-white</code> did £2,179 from 78
+      sessions (5.1% key event rate) and the vertical white £821 from 32 (9.4%) — both well above the 2.33% site average.</li>
+  <li>Cast iron in <b>every other finish</b> does not. Anthracite, Victorian, Windsor, Piccadilly, Mayfair and Oxford
+      took <b>208 sessions between them and produced £0</b>.</li>
+  <li>That is not a demand problem — it is the same product family. It points at stock, price display, or lead times on
+      the period ranges. This needs a merchandising answer, not a marketing one.</li>
+</ul>
+
+<h3>Upsells and accessories</h3>
+<p>Accessories — valves, feet, pipe covers, wall stays — took <b>245 sessions (5.4% of traffic)</b> and produced
+<b>£777, or 2.3% of revenue</b>. In Shopping the picture is worse: TRVs got <b>7 clicks and £5.90 of spend</b> across
+the whole reporting period. We are effectively not selling the attachment.</p>
+<p>For a radiator business that is real money left on the table: every radiator sold needs valves. The opportunity is
+basket attachment at the point of sale, not paid traffic to a valve page. That is a site change — a "you'll also need"
+module on the product page and in the basket — and it is on the 90-day list.</p>
+
+<h3>Checkout</h3>
+<p>Basket-entry sessions convert at 17.9% and checkout-entry at 22.2%, both healthy. The funnel is not obviously
+leaking at the end. I would not prioritise checkout work over the product-page problem above.</p>
+
+<div class="callout callout-warn">
+  <div class="callout-h">Mobile — I cannot answer this one yet</div>
+  <p>You asked about mobile specifically and I do not have a device split in the data I hold. I am not going to
+  estimate it. Device-level CVR reporting is in the 90-day plan and I will have it for the next review. Given that
+  mobile is typically the majority of traffic and the weaker converter, this is a genuine gap rather than a formality.</p>
+</div></section><section class="panel" id="p-castiron" role="tabpanel" aria-labelledby="tab-castiron" hidden><p class="eyebrow">What opportunities are there</p><h2>Cast iron: one opportunity, broken in three places</h2>
+<p class="lede">This is the clearest finding in the whole review. Cast iron is simultaneously our biggest search
+opportunity, our newest paid investment and our largest content programme — and it is broken in the product feed, on
+the site and in search at the same time. Fix it in one place and the other two stay broken. Fix all three and it
+compounds.</p>
+
+<div class="tri">
+  <div class="tri-card tri-crit">
+    <div class="tri-h">In the feed</div>
+    <p>The flagship cast iron SKUs — Victorian (£924–£1,116), Windsor (£2,167), Mayfair (£1,470), Oxford (£2,320),
+    Piccadilly — are all marked <b>"Not eligible — excluded product or listing group"</b>.</p>
+    <p class="tri-f">They cannot serve. We built two campaigns to sell products that are switched off.</p>
+  </div>
+  <div class="tri-card tri-crit">
+    <div class="tri-h">On the site</div>
+    <p>The cast iron category took <b>118 sessions at 90 seconds engagement and made £0</b>. The period ranges took
+    another 208 sessions, also £0. Only the white finishes convert, and they convert well.</p>
+    <p class="tri-f">Intent is arriving and failing to complete.</p>
+  </div>
+  <div class="tri-card tri-warn">
+    <div class="tri-h">In search</div>
+    <p>"cast iron radiators" is <b>4,500 searches/month</b> and we rank <b>29</b> — with the column radiators page,
+    not a cast iron page. A dozen cast iron variants rank 5–15 on that same wrong URL.</p>
+    <p class="tri-f">We have the authority. It is pointed at the wrong page.</p>
+  </div>
+</div>
+
+<h3>What is already built and waiting</h3>
+<ul class="bul">
+  <li>Nine keyword research documents, one per colour — anthracite, black, bronze, brass, cream, green, grey, blue, gold, white.</li>
+  <li>Two how-to guides written: keeping a white cast iron radiator clean, installing a black cast iron radiator.</li>
+  <li>A dedicated <code>GGL | AI Max Search | Cast Iron</code> campaign, 4 ad groups, 32 keywords, 46 negatives.</li>
+  <li><code>PMax | Cast Iron</code> with price-band listing groups, five search themes and a 46-asset group.</li>
+  <li>On Microsoft: 701 product exclusion rows and 166 negative keyword rows already configured.</li>
+</ul>
+<p class="note">The marketing work is done. The blocker is upstream of marketing.</p>
+
+<h3>The sequence</h3>
+<ol class="steps">
+  <li><b>Feed eligibility first, this month.</b> Nothing else pays back until the products can serve. This needs
+      whoever owns the product data — I need to know who that is.</li>
+  <li><b>Then the category hub.</b> A real <code>/cast-iron-radiators</code> page that takes the cluster off the column
+      page, internally linked from the ranking pages that currently absorb it.</li>
+  <li><b>Then the colour pages</b>, using the nine research documents already written.</li>
+  <li><b>Then reassess the paid campaigns.</b> PMax Cast Iron at 1.02x gets paused at the end of August if the feed is
+      not fixed. I am not going to keep funding a campaign whose products cannot appear.</li>
+  <li><b>Diagnose why only white converts.</b> Merchandising question — stock, lead time, or price presentation on the
+      period ranges. Needs someone from the product side.</li>
+</ol></section><section class="panel" id="p-changes" role="tabpanel" aria-labelledby="tab-changes" hidden><p class="eyebrow">Why changes were made · What worked · What didn&#x27;t</p><h2>The change log</h2>
+<p class="lede">Every change since 31 July is logged with a timestamp, the before value, the after value and the reason.
+Ninety-plus entries. Round-trip edits are netted out so the log shows real movement rather than activity. This is the
+document that answers "why did you do that" for any campaign, on any date.</p>
+
+<h3>Budget movements, net of round-trips</h3>
+<div class="tw"><table class=""><thead><tr><th>Campaign</th><th>Before</th><th>After</th><th>Change</th><th>Reason</th></tr></thead><tbody><tr><td>GGL | AI Max Search | Column</td><td>£20</td><td>£80</td><td><b class='up'>+300%</b></td><td>Best-performing Search campaign in the account</td></tr><tr><td>GGL | AI Max Search | Cast Iron</td><td>£20</td><td>£50</td><td><b class='up'>+150%</b></td><td>New campaign, scaling into the cast iron push</td></tr><tr><td>GGL | PMax | Cast Iron</td><td>£60</td><td>£100</td><td><b class='up'>+67%</b></td><td>Scaled before the feed problem was known. Under review.</td></tr><tr><td>GGL | Search | Brand</td><td>£45</td><td>£60</td><td><b class='up'>+33%</b></td><td>Brand protection, cheap clicks, guaranteed position</td></tr><tr><td>GGL | PMax | Column</td><td>£340</td><td>£300</td><td><b class='dn'>−12%</b></td><td>Trimmed to fund Search</td></tr><tr><td>GGL | PMax | ALL</td><td>£200</td><td>£120</td><td><b class='dn'>−40%</b></td><td>Weakest format. Moved into Search.</td></tr><tr><td>MSFT | AI Max Search | Column</td><td>£10</td><td>£55</td><td><b class='up'>+450%</b></td><td>Best Bing performer, was budget-capped</td></tr><tr><td>MSFT | Pmax | Cast Iron</td><td>£15</td><td>£50</td><td><b class='up'>+233%</b></td><td>Mirror of the Google cast iron structure</td></tr><tr><td>MSFT | PMax | Column</td><td>£215</td><td>£100</td><td><b class='dn'>−54%</b></td><td>Overdelivering with weak return</td></tr><tr><td>MSFT | PMax | All</td><td>£85</td><td>£50</td><td><b class='dn'>−41%</b></td><td>1.50x against 3.36x break-even</td></tr></tbody></table></div>
+<p class="note">Direction of travel: out of broad PMax, into Search and cast iron. Google PMax budgets are down roughly
+a third in aggregate; Search budgets are up multiples.</p>
+
+<h3>What worked</h3>
+<ul class="bul">
+  <li><b>Brand exclusions on PMax.</b> The structural fix the account most needed. Stops the cannibalisation recurring.</li>
+  <li><b>Moving budget from PMax into Search.</b> Search was already the stronger format at takeover (3.09x vs 2.38x)
+      and AI Max Search Column is now the best performer in the account.</li>
+  <li><b>Pausing Meta cold prospecting.</b> Removed an estimated £14k/quarter of loss.</li>
+  <li><b>Getting Bing cost data into GA4.</b> £22,860 of revenue that previously had no cost attached to it.</li>
+  <li><b>The past-purchaser exclusion.</b> Cost less than forecast and lifted AOV 15%.</li>
+</ul>
+
+<h3>What didn't</h3>
+<ul class="bul">
+  <li><b>PMax Cast Iron.</b> ~1.02x against 3.36x break-even. In fairness to the campaign, its products are not
+      eligible to serve — but it should not have been scaled 67% before I checked feed eligibility. That is on me, and
+      it is the specific lesson from this quarter: check the feed before funding the campaign.</li>
+  <li><b>Towel campaign settings pulled in opposite directions.</b> I switched Final URL expansion on while tightening
+      the tROAS. I logged the conflict at the time, which is right, but I should not have made both changes together.</li>
+  <li><b>Too many changes in one window.</b> Ninety-plus edits across 31 July to 6 August, several as round trips.
+      Genuine attribution of what caused what is harder than it should be. Fewer, better-spaced changes from here.</li>
+  <li><b>The Microsoft customer-match list</b> was applied on 4 August and removed by 6 August — churn that produced
+      nothing.</li>
+</ul></section><section class="panel" id="p-workload" role="tabpanel" aria-labelledby="tab-workload" hidden><p class="eyebrow">What&#x27;s taking too much time · What could go to Flora · What needs documenting</p><h2>Workload and process</h2>
+<h3>What is taking too much time</h3>
+<div class="tw"><table class=""><thead><tr><th>Task</th><th>Frequency</th><th>Time</th><th>Verdict</th></tr></thead><tbody><tr><td><b>Daily media pacing</b> — hour-by-hour spend tracking across 30+ campaigns on three platforms, manually maintained</td><td>Daily</td><td>Largest single recurring cost</td><td><span class="chip chip-crit">Automate</span> This is a spreadsheet doing a script's job.</td></tr><tr><td>Daily sales flash entry</td><td>Daily</td><td>Moderate</td><td><span class="chip chip-part">Delegate</span> Mechanical data entry. Good fit for Flora.</td></tr><tr><td>Change journal upkeep</td><td>Per change</td><td>Moderate</td><td><span class="chip chip-done">Keep</span> This is the control that makes the account auditable. Worth the time.</td></tr><tr><td>Search term and negative keyword review</td><td>Weekly</td><td>Moderate</td><td><span class="chip chip-part">Part-delegate</span> Flora can pull and pre-sort; I make the calls.</td></tr><tr><td>Feed and product data QA</td><td>Ad hoc</td><td>Rising</td><td><span class="chip chip-watch">Needs an owner</span> Currently nobody's job, which is how cast iron broke.</td></tr></tbody></table></div>
+
+<h3>What could go to Flora</h3>
+<ol class="steps">
+  <li><b>Daily flash data entry</b> — clear rules, low judgement, high repetition. Straight handover with a written procedure.</li>
+  <li><b>Weekly search-term pulls</b> — Flora extracts and pre-sorts against the four negative lists; I approve the additions.</li>
+  <li><b>Feed health monitoring</b> — a weekly eligibility check against the merchant report. Had this existed, the cast
+      iron problem would have surfaced in week one rather than week ten.</li>
+  <li><b>Content production against the keyword docs</b> — the nine cast iron colour briefs are written and ready to be
+      turned into pages.</li>
+</ol>
+<p class="note">What I would keep: bidding, budget allocation, campaign structure, and anything touching the brand
+exclusions. Those need the account context, and mistakes there are expensive.</p>
+
+<h3>On documenting the process</h3>
+<div class="callout">
+  <p>You wrote: <i>"Not to micromanage, but so the business owns the process."</i> That is the right instinct and I
+  agree with it — with one thing worth saying plainly.</p>
+  <p>The change journal, the takeover checklist and the daily flash already exist and are already maintained. This pack
+  is built entirely from them. So the documentation habit is there; what is missing is the <b>procedures</b> — the
+  written "how to do this task" that lets someone else pick it up. Those are what make the business own the process,
+  and they are what I would write next.</p>
+  <p>Three I would commit to before peak: <b>daily pacing</b>, <b>weekly feed health check</b>, and
+  <b>monthly reporting</b>. One page each, written so Flora or anyone else can run them without me.</p>
+</div></section><section class="panel" id="p-next90" role="tabpanel" aria-labelledby="tab-next90" hidden><p class="eyebrow">Top priorities · What support you need from me · From Liam/Flora · Any budget/tools needed · What success looks like by month 6</p><h2>The next 90 days</h2>
+<p class="lede">Framed around peak. October to December is the season this business lives on, and the work divides
+cleanly into what must be finished before it starts and what must not be touched during it.</p>
+
+<h3>The three priorities</h3>
+<div class="tri">
+  <div class="tri-card tri-a"><div class="tri-h">1 · Fix cast iron end to end</div>
+  <p>Feed eligibility, then the category hub, then the colour pages, then reassess the paid campaigns. Biggest single
+  opportunity in the business and the research is already written.</p>
+  <p class="tri-f">Owner: me, blocked on product data access</p></div>
+  <div class="tri-card tri-b"><div class="tri-h">2 · Put a floor under discounting</div>
+  <p>Target 13.3% → 10% of gross by end of October. Worth roughly £13,712 on a
+  period this size — more than half of total contribution.</p>
+  <p class="tri-f">Owner: needs to be agreed — not mine to set</p></div>
+  <div class="tri-card tri-c"><div class="tri-h">3 · Be season-ready by 30 September</div>
+  <p>All structural changes done and settled, budgets set, procedures written. Then no structural changes during peak
+  — only monitoring and budget.</p>
+  <p class="tri-f">Owner: me</p></div>
+</div>
+
+<h3>Month by month</h3>
+<div class="tw"><table class=""><thead><tr><th></th><th>Paid</th><th>SEO / site</th><th>Process</th></tr></thead><tbody><tr><td><b>Aug</b> (rest)</td><td>Call on PMax Cast Iron. Turn off Towel URL expansion. Weekly brand-query review.</td><td>Cast iron feed eligibility fixed.</td><td>Daily pacing procedure written.</td></tr><tr><td><b>Sep</b></td><td>Budgets set for peak. Clean brand vs non-brand read. Device-level CVR reporting live.</td><td>Cast iron hub built. Colour pages 1–4. Fix the antique brass product page.</td><td>Feed health check running weekly. Flash handed to Flora.</td></tr><tr><td><b>Oct–Dec</b></td><td><b>Peak. Monitoring and budget only.</b> No structural changes.</td><td>Colour pages 5–9. Accessory attachment module.</td><td>Monthly reporting pack, this format, automated.</td></tr><tr><td><b>Jan–Feb</b></td><td>Post-peak review. Rebuild on what peak taught us.</td><td>Technical debt: broken JS, schema, H1s, titles.</td><td>Re-baseline. First true YoY ranking comparison.</td></tr></tbody></table></div>
+
+<h3>What I need from you</h3>
+<div class="tw"><table class=""><thead><tr><th>Ask</th><th>Why</th><th>Urgency</th></tr></thead><tbody><tr><td><b>Blended gross margin by product category</b></td><td>Every profit figure in this pack rests on an inferred 29.8%. With the real number I can tell you which categories are worth buying traffic for — and which we are currently paying to lose money on.</td><td><span class="chip chip-crit">This week</span></td></tr><tr><td><b>A decision on the discount rate</b></td><td>The largest profit lever available and it is not mine to pull. I need either a target or a mandate.</td><td><span class="chip chip-crit">This week</span></td></tr><tr><td><b>Who owns product feed data</b></td><td>Cast iron broke because nobody owns feed eligibility. Name someone and I will build the check around them.</td><td><span class="chip chip-warn">This month</span></td></tr><tr><td><b>Peak budget envelope</b></td><td>Efficiency holds at 4.44x on our highest-spend days, so there is room to scale. I need to know the ceiling to plan against it.</td><td><span class="chip chip-warn">By mid-Sep</span></td></tr></tbody></table></div>
+
+<h3>What I need from Liam and Flora</h3>
+<div class="tw"><table class=""><thead><tr><th>Who</th><th>Ask</th></tr></thead><tbody><tr><td><b>Liam</b></td><td>Dev time for the 612 pages with broken JavaScript and the 178 schema errors. Half a day scoping, then an estimate. Ideally scheduled for January, but the broken JS should be diagnosed sooner.</td></tr><tr><td><b>Flora</b></td><td>Roughly a day a week to take on the daily flash, weekly search-term pulls and the feed health check. I will write the procedures first so the handover is clean, not a transfer of confusion.</td></tr></tbody></table></div>
+
+<h3>Budget and tools</h3>
+<ul class="bul">
+  <li><b>No new tools requested.</b> Ahrefs and GA4 cover what we need; the gap is procedure, not software.</li>
+  <li><b>Peak media budget</b> — a number to plan against, not an increase request. The efficiency data supports scaling.</li>
+  <li>Possible small spend on cast iron product photography if the period ranges turn out to have a presentation
+      problem rather than a stock one. I will confirm which before asking.</li>
+</ul>
+
+<h3>What success looks like by month 6</h3>
+<div class="tw"><table class=""><thead><tr><th>Measure</th><th>Today</th><th>Month 6 target</th></tr></thead><tbody><tr><td>Contribution after media</td><td>7.3% of net</td><td><b>10%+</b>, driven mainly by discount discipline</td></tr><tr><td>Discount rate</td><td>13.3% of gross</td><td><b>10%</b> or below</td></tr><tr><td>Days below break-even ROAS</td><td>40% in Aug</td><td><b>Under 20%</b></td></tr><tr><td>&quot;cast iron radiators&quot; rank</td><td>29</td><td><b>Top 10</b>, on a dedicated cast iron page</td></tr><tr><td>Site conversion rate</td><td>2.33%</td><td><b>2.8%+</b>, with device split reported</td></tr><tr><td>Accessory attachment</td><td>2.3% of revenue</td><td><b>5%+</b></td></tr><tr><td>Sessions on zero-revenue pages</td><td>35.1%</td><td><b>Under 20%</b></td></tr><tr><td>Documented procedures</td><td>0</td><td><b>3 written and in use</b></td></tr></tbody></table></div></section><section class="panel" id="p-gaps" role="tabpanel" aria-labelledby="tab-gaps" hidden><p class="eyebrow">What hasn&#x27;t worked as expected · What still needs sorting</p><h2>What I cannot yet tell you, and why</h2>
+<p class="lede">Rather than fill these with estimates, here is what is genuinely missing, why, and when it will be
+answered. If any of these matter more than I have judged, tell me and I will reprioritise.</p>
+
+<div class="tw"><table class=""><thead><tr><th>Gap</th><th>Why it exists</th><th>When it is answered</th></tr></thead><tbody><tr><td><b>Mobile vs desktop conversion rate</b></td><td>No device split in the data I hold. Given mobile is usually the majority of traffic and the weaker converter, this is a real gap.</td><td>Device reporting live in September</td></tr><tr><td><b>Brand vs non-brand performance split</b></td><td>Brand exclusions only went live 31 July. Pre-31-July data is contaminated by the exact cannibalisation the exclusions were built to stop. Any comparison now would look precise and mean nothing.</td><td>Late September, after a clean month</td></tr><tr><td><b>True gross margin</b></td><td>Inferred at 29.8% from the break-even ROAS in the change journal. Not a given figure.</td><td>As soon as you send it</td></tr><tr><td><b>Ranking movement since I started</b></td><td>No rank tracking existed before this month. I can show where we stand, not how far we have come. The tracker is now live across 492 keywords.</td><td>February, for a true YoY read</td></tr><tr><td><b>Meta CAPI / server-side tracking</b></td><td>On the takeover checklist, still unverified. Without it a large share of users are invisible to optimisation.</td><td>September</td></tr><tr><td><b>Why only white cast iron converts</b></td><td>208 sessions across the period ranges produced £0 while white converts above site average. This is a merchandising question — stock, lead time or price presentation — not a marketing one.</td><td>Needs product-side input</td></tr><tr><td><b>237 unattributable sessions (5.3%)</b></td><td>Landing page recorded as (not set) or blank, 98–100% bounce. Points at a tracking or redirect fault.</td><td>Investigating now</td></tr></tbody></table></div>
+
+<h3>What has not worked as expected</h3>
+<ul class="bul">
+  <li><b>PMax Cast Iron</b> — scaled before feed eligibility was checked. 1.02x against a 3.36x break-even. My error,
+      and the reason a feed health check is now on the process list.</li>
+  <li><b>Change volume</b> — 90+ edits in one week makes clean attribution harder than it needed to be.</li>
+  <li><b>The Towel campaign</b> — two settings pushed against each other in the same session.</li>
+  <li><b>August discount rate</b> — went the wrong way, to 16.6%, at exactly the point I was focused on media efficiency.
+      I was looking at the smaller of the two numbers.</li>
+</ul>
+
+<div class="callout">
+  <div class="callout-h">One thing I would like to agree</div>
+  <p>This pack took a working day to build because the data lives in six places. Most of it can be automated into a
+  monthly pack in this format. If that is useful, I would rather send it to you monthly unprompted than assemble it for
+  reviews — it is less work for me and it means nothing waits ninety days to surface.</p>
+</div></section>
+<footer>
+  Built from: LRD Daily Flash 2026 · Master Change Journal · Paid Media Takeover Checklist (9 Jun) ·
+  MerchantCatalogReport · GA4 landing page export (30 Jul–5 Aug) · Ahrefs project 9919884 (crawl 10 Aug).<br>
+  Gross margin of 29.8% is inferred from the 3.36x break-even ROAS recorded in the change journal and
+  requires confirmation. August figures cover 1–10 August only.
+</footer>
+</div>
+<script>
+const tabs=[...document.querySelectorAll('.tab')];
+function go(id){
+  tabs.forEach(t=>{const on=t.dataset.go===id;t.setAttribute('aria-selected',on?'true':'false');});
+  document.querySelectorAll('.panel').forEach(p=>{
+    const on=p.id==='p-'+id; p.classList.toggle('on',on); p.hidden=!on;});
+  const t=document.getElementById('tab-'+id); if(t) t.scrollIntoView({block:'nearest',inline:'center'});
+  window.scrollTo({top:0,behavior:'instant'});
+}
+tabs.forEach(t=>t.addEventListener('click',()=>go(t.dataset.go)));
+document.querySelectorAll('a.jump').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();go(a.dataset.go);}));
+document.addEventListener('keydown',e=>{
+  if(e.target.classList.contains('tab')){
+    const i=tabs.indexOf(e.target);
+    if(e.key==='ArrowRight'&&i<tabs.length-1){tabs[i+1].focus();go(tabs[i+1].dataset.go);}
+    if(e.key==='ArrowLeft'&&i>0){tabs[i-1].focus();go(tabs[i-1].dataset.go);}
+  }});
+</script>
